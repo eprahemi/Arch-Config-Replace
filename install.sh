@@ -563,28 +563,20 @@ echo -e "  ${Y}─${N} Setting up USB/device plug/unplug sounds..."
 SOUND_DIR="$HOME/.local/share/sounds"
 mkdir -p "$SOUND_DIR"
 
-# Generate notification sounds using ffmpeg (already installed via codecs step)
-if command -v ffmpeg &>/dev/null; then
-    # Plug-in sound: ascending two-note chime
-    if [ ! -f "$SOUND_DIR/plug-in.mp3" ]; then
-        ffmpeg -hide_banner -loglevel error -y \
-            -f lavfi -i "sine=frequency=660:duration=0.1" \
-            -f lavfi -i "sine=frequency=880:duration=0.15" \
-            -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" \
-            -ac 1 -ar 44100 "$SOUND_DIR/plug-in.mp3" 2>/dev/null || true
-    fi
-
-    # Un-plug sound: descending two-note chime
-    if [ ! -f "$SOUND_DIR/un-plug.mp3" ]; then
-        ffmpeg -hide_banner -loglevel error -y \
-            -f lavfi -i "sine=frequency=880:duration=0.1" \
-            -f lavfi -i "sine=frequency=660:duration=0.15" \
-            -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" \
-            -ac 1 -ar 44100 "$SOUND_DIR/un-plug.mp3" 2>/dev/null || true
-    fi
-    echo -e "  ${G}✓${N} Device notification sounds generated"
+# Copy notification sounds from repo (always overwrite — these ship with every update)
+if [ -f "$INSTALL_DIR/Hyprland/sounds/plug-in.mp3" ] && [ -f "$INSTALL_DIR/Hyprland/sounds/un-plug.mp3" ]; then
+    cp -f "$INSTALL_DIR/Hyprland/sounds/plug-in.mp3" "$SOUND_DIR/plug-in.mp3" 2>/dev/null || true
+    cp -f "$INSTALL_DIR/Hyprland/sounds/un-plug.mp3" "$SOUND_DIR/un-plug.mp3" 2>/dev/null || true
+    echo -e "  ${G}✓${N} Device notification sounds deployed"
 else
-    echo -e "  ${Y}!${N} ffmpeg not found — skipping sound generation (USB/device sounds will be silent)"
+    # Fallback: generate with ffmpeg if sound files missing from repo
+    if command -v ffmpeg &>/dev/null; then
+        [ ! -f "$SOUND_DIR/plug-in.mp3" ] && ffmpeg -hide_banner -loglevel error -y -f lavfi -i "sine=frequency=660:duration=0.1" -f lavfi -i "sine=frequency=880:duration=0.15" -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" -ac 1 -ar 44100 "$SOUND_DIR/plug-in.mp3" 2>/dev/null || true
+        [ ! -f "$SOUND_DIR/un-plug.mp3" ] && ffmpeg -hide_banner -loglevel error -y -f lavfi -i "sine=frequency=880:duration=0.1" -f lavfi -i "sine=frequency=660:duration=0.15" -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" -ac 1 -ar 44100 "$SOUND_DIR/un-plug.mp3" 2>/dev/null || true
+        echo -e "  ${Y}─${N} Device notification sounds generated via ffmpeg"
+    else
+        echo -e "  ${Y}!${N} No sound files in repo and ffmpeg not found — USB/device sounds will be silent"
+    fi
 fi
 
 # ─── CLEAN UP OLD UDEV RULES ───────────────────────────────────────────
