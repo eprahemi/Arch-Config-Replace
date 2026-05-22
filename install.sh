@@ -1067,7 +1067,9 @@ XDG_RUNTIME_DIR="/run/user/$(id -u "$CURRENT_USER")" systemctl --user enable --n
 
 echo ""
 echo "  Reloading Hyprland..."
-hyprctl reload 2>/dev/null && echo -e "  ${G}✓${N} Hyprland reloaded" || echo -e "  ${Y}!${N} Hyprland not running"
+# Detach reload so terminal (kitty) survives — hyprctl reload can disrupt
+# the Wayland session and crash the GUI terminal running this script.
+( sleep 1; hyprctl reload 2>/dev/null; ) &
 
 # ─── CLEANUP ──────────────────────────────────────────────────────────
 
