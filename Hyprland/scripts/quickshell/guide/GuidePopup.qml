@@ -710,7 +710,7 @@ Item {
                             Layout.alignment: Qt.AlignVCenter
                             spacing: root.s(2)
                             Text { 
-                                text: "Imperative"
+                                text: "WifeRice"
                                 font.family: "JetBrains Mono"
                                 font.weight: Font.Black
                                 font.pixelSize: root.s(15)
