@@ -1006,12 +1006,22 @@ The install.sh summary claimed to install `tumbler`, `ffmpegthumbnailer`, `libop
 
 ---
 
-## 🎯 Session Log — v1.7.60 (May 22, 2026)
-**Fix:** Replaced broken `ttf-ms-win11-auto` with working open-source fonts.
+## 🎯 Session Log — v1.7.61 (May 22, 2026)
+**Fix:** Scale cascade bug + gaming mouse/touchpad acceleration.
 
-- v1.7.59 installation log (`All-system-installion`) confirmed `ttf-ms-win11-auto` fails with exit status 4 (~140 symlink errors from Microsoft download block)
-- Replaced with `ttf-liberation` (metric-compatible Arial/Times New Roman/Courier New) + `ttf-dejavu` (wider Unicode coverage)
-- Only real error in the entire 1705-line install log — everything else completed successfully across all 20 steps
+- **CRITICAL SCALE BUG**: The old v1.7.50 scale bug came back. Root cause: `settings_watcher.sh --compile` called `hyprctl reload`, which restarted Hyprland → spawned a SECOND watcher from the startup list. Two watchers raced, creating a positive feedback loop of `hyprctl reload`s that reset the scale to ~1.5 despite monitors.conf saying scale=1. The `hyprctl keyword monitor` scale-forcing code was correct but was defeated by the cascade.
+- **FIX**: Added PID lock file to `settings_watcher.sh` — prevents any duplicate instance from running. `--compile` mode now kills any old watcher before proceeding. This breaks the cascade permanently.
+- **GAMING**: Added `accel_profile = flat` to both mouse (input block) and touchpad — gamers get zero acceleration for precise aiming.
+- **FONT**: `ttf-ms-win11-auto` → `ttf-liberation` + `ttf-dejavu` (from v1.7.60).
+
+### New permanent rules from this bug
+- **R16 — PID lock every long-running script**: Any script that runs as a daemon/watcher MUST have a PID lock file to prevent duplicate instances. Two watchers racing = cascade of side effects.
+- **R17 — `hyprctl reload` from within a script can spawn duplicate processes**: Hyprland's startup list runs on EVERY reload. If your script calls `hyprctl reload` internally, expect your own startup commands to be re-invoked. Break the cycle with PID locks or separate the reload from the watcher.
+
+### Fixed in this version
+- ✅ Scale cascade: PID lock + kill old watcher before --compile
+- ✅ Mouse acceleration disabled for gamers
+- ✅ Touchpad acceleration disabled for gamers
 
 ---
 
@@ -1195,3 +1205,36 @@ pacman -S package 2>/dev/null
 pacman -S package
 ```
 **Rule**: Never suppress stderr on install/update commands. Users need to see errors to fix problems. Exception: expected non-error stderr (like `kill` on non-existent PID).
+
+### R16 — PID lock every long-running script (prevents cascade bugs)
+```bash
+# ❌ WRONG — no PID lock, two instances can race
+# (Watcher A starts → hyprctl reload → Watcher B starts → both race)
+
+# ✅ RIGHT — PID lock prevents duplicates
+SCRIPT_NAME="$(basename "$0")"
+PIDFILE="/tmp/${SCRIPT_NAME}.pid"
+if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE" 2>/dev/null)" 2>/dev/null; then
+    echo "Another instance already running (PID $(cat "$PIDFILE"))"
+    exit 0
+fi
+echo "$$" > "$PIDFILE"
+trap 'rm -f "$PIDFILE"' EXIT
+```
+**Rule**: Any script that runs as a daemon/watcher or could be started multiple times MUST have a PID lock file. Two instances racing = cascade of side effects. Always use `trap` to clean up the PID file on exit.
+
+### R17 — `hyprctl reload` from within a script can spawn duplicate processes
+```bash
+# ❌ WRONG — hyprctl reload inside a script that's also in the startup list
+# creates an infinite cascade of reload → startup → reload → startup
+compile_settings() {
+    hyprctl reload  # ← this restarts Hyprland, which re-runs startup commands
+}
+# The startup list includes: settings_watcher.sh &
+# So hyprctl reload spawns ANOTHER watcher → cascade!
+
+# ✅ RIGHT — either:
+# 1. Use PID lock to prevent duplicates (see R16)
+# 2. Or separate the reload from the watcher: compile configs first, reload later
+```
+**Rule**: Hyprland's `exec-once` startup list runs on EVERY `hyprctl reload`. If your script calls `hyprctl reload` internally and is also in the startup list, you create a cascade. Break the cycle with PID locks or restructure so the reload happens outside the watcher.

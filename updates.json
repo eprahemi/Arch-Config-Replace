@@ -1,7 +1,17 @@
 {
-  "latest_version": "1.7.60",
+  "latest_version": "1.7.61",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.61",
+            "changes": [
+                "CRITICAL FIX: Scale bug regression (v1.7.50) — settings_watcher.sh cascade loop caused Hyprland scale to reset to ~1.5",
+                "FIXED: Added PID lock file to settings_watcher.sh — prevents duplicate instances from racing",
+                "FIXED: --compile mode now kills old watcher before running, breaks the hyprctl reload cascade",
+                "NEW: Disabled mouse acceleration (accel_profile = flat) for gaming — precise aiming without pointer smoothing",
+                "NEW: Disabled touchpad acceleration (touchpad accel_profile = flat)"
+            ]
+        },
         {
             "version": "1.7.60",
             "changes": [

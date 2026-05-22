@@ -32,8 +32,13 @@ input {
     kb_layout = {{KB_LAYOUT}}
     kb_options = {{KB_OPTIONS}}
 
+    # Gaming: disable mouse acceleration for precise aiming
+    accel_profile = flat
+
     touchpad {
         natural_scroll = true
+        # Gaming: disable touchpad acceleration
+        accel_profile = flat
     }
 }
 

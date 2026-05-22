@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+# ─── PID LOCK: prevent duplicate watchers ─────────────────────────────────
+# The old watcher-cascade bug caused scale to reset to ~1.5 during install:
+# install.sh → --compile → hyprctl reload → Hyprland starts ANOTHER watcher
+# → two watchers race → hyprctl reload loop → scale never stabilizes.
+# This lock prevents multiple instances from running simultaneously.
+SCRIPT_NAME="$(basename "$0")"
+PIDFILE="/tmp/${SCRIPT_NAME}.pid"
+if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE" 2>/dev/null)" 2>/dev/null; then
+    if [[ "$1" != "--compile" ]]; then
+        echo "Another instance of $SCRIPT_NAME is already running (PID $(cat "$PIDFILE"))"
+        exit 0
+    else
+        # In --compile mode, kill the old watcher before proceeding
+        kill "$(cat "$PIDFILE")" 2>/dev/null || true
+        sleep 0.2
+    fi
+fi
+echo "$$" > "$PIDFILE"
+trap 'rm -f "$PIDFILE"' EXIT
+
 # File paths
 SETTINGS_FILE="$HOME/.config/hypr/settings.json"
 WEATHER_SCRIPT="$HOME/.config/hypr/scripts/quickshell/calendar/weather.sh"
