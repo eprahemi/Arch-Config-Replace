@@ -291,7 +291,7 @@ echo -e "  ${G}✓${N} Fonts installed"
 step_header 7 19 "Installing applications..."
 
 echo -e "  ${Y}─${N} Installing core applications..."
-sudo pacman -S --noconfirm --needed firefox kitty neovim thunar thunar-archive-plugin thunar-volman file-roller gwenview ark 2>&1 | sed 's/^/  /' || true
+sudo pacman -S --noconfirm --needed firefox kitty neovim thunar thunar-archive-plugin thunar-volman file-roller gwenview ark swayimg 2>&1 | sed 's/^/  /' || true
 
 echo -e "  ${Y}─${N} Installing media applications..."
 sudo pacman -S --noconfirm --needed vlc spotify-launcher obs-studio 2>&1 | sed 's/^/  /' || true
@@ -776,6 +776,19 @@ if [ ! -f /etc/pam.d/polkit-1 ] && [ -f /usr/lib/pam.d/polkit-1 ]; then
   sudo ln -s /usr/lib/pam.d/polkit-1 /etc/pam.d/polkit-1
   echo "  ✔ Linked /etc/pam.d/polkit-1 → /usr/lib/pam.d/polkit-1"
 fi
+
+# ─── MIME ASSOCIATIONS ───────────────────────────────────────────────────
+# Set correct default applications for file types
+echo -e "  ${Y}─${N} Setting default MIME associations..."
+# Thunar for folders (prevents Gwenview from stealing inode/directory)
+xdg-mime default thunar.desktop inode/directory 2>/dev/null || true
+# Gwenview for images (has basic editing tools)
+xdg-mime default org.kde.gwenview.desktop image/png 2>/dev/null || true
+xdg-mime default org.kde.gwenview.desktop image/jpeg 2>/dev/null || true
+xdg-mime default org.kde.gwenview.desktop image/webp 2>/dev/null || true
+xdg-mime default org.kde.gwenview.desktop image/gif 2>/dev/null || true
+xdg-mime default org.kde.gwenview.desktop image/bmp 2>/dev/null || true
+echo -e "  ${G}✓${N} MIME associations set"
 
 # ─── NTFS EXTERNAL DRIVE FIX ─────────────────────────────────────────────
 # Blacklist kernel ntfs3 driver so udisks uses ntfs-3g (FUSE) instead
