@@ -1006,6 +1006,15 @@ The install.sh summary claimed to install `tumbler`, `ffmpegthumbnailer`, `libop
 
 ---
 
+## 🎯 Session Log — v1.7.60 (May 22, 2026)
+**Fix:** Replaced broken `ttf-ms-win11-auto` with working open-source fonts.
+
+- v1.7.59 installation log (`All-system-installion`) confirmed `ttf-ms-win11-auto` fails with exit status 4 (~140 symlink errors from Microsoft download block)
+- Replaced with `ttf-liberation` (metric-compatible Arial/Times New Roman/Courier New) + `ttf-dejavu` (wider Unicode coverage)
+- Only real error in the entire 1705-line install log — everything else completed successfully across all 20 steps
+
+---
+
 ## 🧠 LESSONS LEARNED — Never Repeat These Bugs
 
 > These are permanent rules carved from bugs we actually shipped. Read them before every commit.

@@ -1,7 +1,16 @@
 {
-  "latest_version": "1.7.59",
+  "latest_version": "1.7.60",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.60",
+            "changes": [
+                "FIXED: ttf-ms-win11-auto AUR package consistently fails with symlink errors (exit status 4) — replaced with ttf-liberation and ttf-dejavu",
+                "FIXED: Installation log from v1.7.59 confirmed the ttf-ms-win11-auto failure — now permanently resolved",
+                "UPDATED: install.sh fonts step now includes ttf-liberation (metric-compatible Arial/Times/Courier) and ttf-dejavu (wider Unicode)",
+                "VERSION: Bumped to v1.7.60"
+            ]
+        },
         {
             "version": "1.7.59",
             "changes": [

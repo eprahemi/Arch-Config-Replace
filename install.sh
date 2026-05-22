@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.59"
+DOTS_VERSION="1.7.60"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -284,10 +284,8 @@ step_header 6 20 "Installing fonts and emojis..."
 echo -e "  ${Y}─${N} Installing fonts..."
 sudo pacman -S --noconfirm --needed ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-nerd-fonts-symbols ttf-font-awesome 2>&1 | sed 's/^/  /' || true
 
-# Also install some via yay if available
-if command -v yay &>/dev/null; then
-    yay -S --noconfirm --needed ttf-ms-win11-auto 2>&1 | sed 's/^/  /' || true
-fi
+# Open-source replacements for Microsoft fonts
+sudo pacman -S --noconfirm --needed ttf-liberation ttf-dejavu 2>&1 | sed 's/^/  /' || true
 echo -e "  ${G}✓${N} Fonts installed"
 
 step_header 7 20 "Installing applications..."
