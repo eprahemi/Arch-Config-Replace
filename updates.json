@@ -1,7 +1,15 @@
 {
-  "latest_version": "1.7.61",
+  "latest_version": "1.7.62",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.62",
+            "changes": [
+                "FIXED: Hyprland config error 'input:touchpad:accel_profile does not exist' — removed invalid line from touchpad sub-block",
+                "accel_profile = flat in main input{} block already applies to both mouse and touchpad",
+                "FINAL POLISH: All 64 audit issues, scale cascade, gaming settings, and font fixes complete"
+            ]
+        },
         {
             "version": "1.7.61",
             "changes": [

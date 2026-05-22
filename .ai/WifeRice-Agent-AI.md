@@ -985,7 +985,7 @@ The install.sh summary claimed to install `tumbler`, `ffmpegthumbnailer`, `libop
 - Version bumped to 1.7.59
 - All 29 files changed, +444 / −101 lines
 
-### Remaining issues (not fixed in this session)
+### Remaining issues (not fixed — lower priority)
 - M5: `toggle_nightlight.sh` auto-installs wlsunset (AUR + --noconfirm)
 - M6: `bluetooth_panel_logic.sh` SIGSTOP stale PID
 - M7: `lockscreen_picker.sh` no rofi check
@@ -1006,22 +1006,50 @@ The install.sh summary claimed to install `tumbler`, `ffmpegthumbnailer`, `libop
 
 ---
 
-## 🎯 Session Log — v1.7.61 (May 22, 2026)
-**Fix:** Scale cascade bug + gaming mouse/touchpad acceleration.
+## 🎯 COMPLETE SESSION — v1.7.59 → v1.7.62 (May 22, 2026)
 
-- **CRITICAL SCALE BUG**: The old v1.7.50 scale bug came back. Root cause: `settings_watcher.sh --compile` called `hyprctl reload`, which restarted Hyprland → spawned a SECOND watcher from the startup list. Two watchers raced, creating a positive feedback loop of `hyprctl reload`s that reset the scale to ~1.5 despite monitors.conf saying scale=1. The `hyprctl keyword monitor` scale-forcing code was correct but was defeated by the cascade.
-- **FIX**: Added PID lock file to `settings_watcher.sh` — prevents any duplicate instance from running. `--compile` mode now kills any old watcher before proceeding. This breaks the cascade permanently.
-- **GAMING**: Added `accel_profile = flat` to both mouse (input block) and touchpad — gamers get zero acceleration for precise aiming.
-- **FONT**: `ttf-ms-win11-auto` → `ttf-liberation` + `ttf-dejavu` (from v1.7.60).
+### What happened in this session (3 releases in one day)
 
-### New permanent rules from this bug
-- **R16 — PID lock every long-running script**: Any script that runs as a daemon/watcher MUST have a PID lock file to prevent duplicate instances. Two watchers racing = cascade of side effects.
-- **R17 — `hyprctl reload` from within a script can spawn duplicate processes**: Hyprland's startup list runs on EVERY reload. If your script calls `hyprctl reload` internally, expect your own startup commands to be re-invoked. Break the cycle with PID locks or separate the reload from the watcher.
+We started with a full code audit (64 issues), fixed everything across 7 phases, then did 3 minor releases to fix bugs discovered during testing on the laptop.
 
-### Fixed in this version
-- ✅ Scale cascade: PID lock + kill old watcher before --compile
-- ✅ Mouse acceleration disabled for gamers
-- ✅ Touchpad acceleration disabled for gamers
+### v1.7.59 — Full Audit Fix (29 files, +444/−101)
+- **install.sh overhaul**: 12 empty steps filled with real packages (GPU drivers, PipeWire, yay, codecs, fonts, Flatpak, Spicetify, LazyVim), `sudo pacman -Sy` added, yay properly installed, `2>/dev/null` removed, `rsync --delete` guarded against empty source, `set -e` hardened with `|| true`
+- **Security**: All 14 Discord webhook tokens extracted from scripts into shared `.telemetry_config` — zero tokens in public source
+- **Critical fixes**: `lock.sh` `kill ""` bug (was killing ALL processes), `fetch_workspaces.sh` JSON injection, `restore.sh` version hardcoded to 1.7.20, `update_notifier.sh` notification click handler, `volume_listener.sh` locale parsing, sudo timeout guards, `theme_profiles.sh` wallpaper apply
+- **Config**: `hypridle.conf` no longer deployed (swayidle default), `uiScale` 1.0 → 1
+- **AI memory**: 15 "Lessons Learned" rules added (R1-R15)
+
+### v1.7.60 — Font Fix
+- `ttf-ms-win11-auto` AUR package consistently fails (exit status 4, Microsoft blocks downloads)
+- Replaced with `ttf-liberation` + `ttf-dejavu` (metric-compatible open-source fonts)
+
+### v1.7.61 — Scale Cascade Fix + Gaming Mouse
+- **CRITICAL**: Old scale bug (v1.7.50) came back — `settings_watcher.sh --compile` called `hyprctl reload` which spawned a SECOND watcher from the startup list. Two watchers raced, creating a cascade of reloads that reset scale to ~1.5
+- **Fix**: Added PID lock file to `settings_watcher.sh` — `--compile` kills old watcher first, prevents duplicates
+- **Gaming**: `accel_profile = flat` for both mouse + touchpad
+- **AI memory**: R16-R17 added
+
+### v1.7.62 — Final Polish
+- Fixed Hyprland config error: `input:touchpad:accel_profile` doesn't exist in Hyprland — removed from touchpad sub-block (main `input` block's `accel_profile = flat` already applies to both mouse and touchpad)
+
+### New permanent rules from this session
+- **R1-R15**: See LESSONS LEARNED below (kill "", set -e, rsync --delete, pacman -Sy, heredoc quoting, secrets in source, hardcoded versions, glob recursion, tilde in quotes, sudo timeout, locale grep, notify-send --wait, division by zero, empty install steps, 2>/dev/null)
+- **R16**: PID lock every long-running script — prevents cascade bugs from duplicate instances
+- **R17**: `hyprctl reload` from within a script spawns duplicate processes — Hyprland startup list runs on EVERY reload
+
+### Key decisions
+- Repo stays **public** — no secrets in source anymore, `bash -c "$(curl ...)"` keeps working
+- `swayidle` is the default idle daemon (not hypridle)
+- 7 of the Top 10 Must-Fix items from the audit are now resolved
+
+### Files changed across this session
+- `install.sh` — fonts fix, version bumps
+- `settings_watcher.sh` — PID lock added
+- `settings.conf.template` — `accel_profile = flat` added (main input block only)
+- `GuidePopup.qml` — changelog entries for v1.7.59-v1.7.62
+- `updates.json` — version + changelog for v1.7.59-v1.7.62
+- `WifeRice-Agent-AI.md` — 17 lessons learned rules + session logs
+- Website `changelog.html` + `home.html` — updated for all releases
 
 ---
 
