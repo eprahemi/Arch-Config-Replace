@@ -103,8 +103,8 @@ else
 fi
 
 # ─── LOW BATTERY SOUND + AUTO-SUSPEND ──────────────────────────────────
-BAT_SOUND_2010="$HOME/.config/hypr/scripts/quickshell/battery/lowbattery20-10.mp3"
-BAT_SOUND_53="$HOME/.config/hypr/scripts/quickshell/battery/lowbattery5.mp3"
+BAT_SOUND_2010="$HOME/.config/hypr/scripts/quickshell/sounds/battery/lowbattery20-10.mp3"
+BAT_SOUND_53="$HOME/.config/hypr/scripts/quickshell/sounds/battery/lowbattery5.mp3"
 BAT20_FLAG="$HOME/.cache/bat20"
 BAT10_FLAG="$HOME/.cache/bat10"
 BAT5_FLAG="$HOME/.cache/bat5"

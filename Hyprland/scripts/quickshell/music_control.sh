@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-MUSIC_DIR="$HOME/.config/hypr/scripts/quickshell/music"
+MUSIC_DIR="$HOME/.config/hypr/scripts/quickshell/sounds/music"
 STATE_DIR="/tmp/lock-music"
 
 _apply_volume() {

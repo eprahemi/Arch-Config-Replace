@@ -1,7 +1,15 @@
 {
-  "latest_version": "1.7.72",
+  "latest_version": "1.7.73",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.73",
+            "changes": [
+                "CHANGED: All sound MP3s reorganized into quickshell/sounds/{battery,usb,updater,music}/ subfolders — consistent single location for all audio assets",
+                "CHANGED: Script paths updated in battery_fetch.sh, check_battery.sh, usb_sound.sh, update_notifier.sh, music_control.sh, lock.sh",
+                "CLEANUP: Old empty battery/ and music/ directories removed (scripts/QML stay in original locations)"
+            ]
+        },
         {
             "version": "1.7.72",
             "changes": [

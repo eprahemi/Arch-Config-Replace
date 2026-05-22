@@ -29,8 +29,8 @@ get_battery_icon() {
 percent=$(get_battery_percent)
 status=$(get_battery_status)
 WARN_DIR="/tmp/qs_battery_warn"
-BAT_SOUND_2010="$HOME/.config/hypr/scripts/quickshell/battery/lowbattery20-10.mp3"
-BAT_SOUND_53="$HOME/.config/hypr/scripts/quickshell/battery/lowbattery5.mp3"
+BAT_SOUND_2010="$HOME/.config/hypr/scripts/quickshell/sounds/battery/lowbattery20-10.mp3"
+BAT_SOUND_53="$HOME/.config/hypr/scripts/quickshell/sounds/battery/lowbattery5.mp3"
 mkdir -p "$WARN_DIR"
 
 _play_bat_sound() {
@@ -45,8 +45,8 @@ _play_bat_sound() {
 }
 
 # ─── CHARGER PLUG / UNPLUG SOUNDS ────────────────────────────────────
-CHARGER_PLUG_SOUND="$HOME/.config/hypr/scripts/quickshell/battery/charger-plug-sound.mp3"
-CHARGER_UNPLUG_SOUND="$HOME/.config/hypr/scripts/quickshell/battery/charger-unplug-sound.mp3"
+CHARGER_PLUG_SOUND="$HOME/.config/hypr/scripts/quickshell/sounds/battery/charger-plug-sound.mp3"
+CHARGER_UNPLUG_SOUND="$HOME/.config/hypr/scripts/quickshell/sounds/battery/charger-unplug-sound.mp3"
 PREV_STATUS_FILE="$WARN_DIR/prev_status"
 PREV_STATUS=$(cat "$PREV_STATUS_FILE" 2>/dev/null || echo "")
 

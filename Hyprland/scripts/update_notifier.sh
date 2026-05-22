@@ -8,7 +8,7 @@ CACHE_FILE="$HOME/.cache/qs_update_notified_version"
 # State file to tell the topbar to show the update button
 PENDING_FILE="$HOME/.cache/qs_update_pending"
 
-UPDATE_SOUND="$HOME/.config/hypr/scripts/quickshell/updater/update-notification.mp3"
+UPDATE_SOUND="$HOME/.config/hypr/scripts/quickshell/sounds/updater/update-notification.mp3"
 
 while true; do
     # Fetch local version
