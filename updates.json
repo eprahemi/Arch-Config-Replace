@@ -1,7 +1,17 @@
 {
-  "latest_version": "1.7.70",
+  "latest_version": "1.7.71",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.71",
+            "changes": [
+                "FIXED: Kitty no longer crashes during update — hyprctl reload now runs detached after the script exits",
+                "FIXED: USB sound MP3 files no longer silently lost — now shipped in the repo and copied every update instead of generated once by ffmpeg",
+                "FIXED: install.sh now uses systemctl --user restart for audio-autoswitch.service instead of kill $pids — prevents stale duplicate instances",
+                "FIXED: settings_watcher.sh --compile reload also detached to prevent kitty crash during updates",
+                "NEW: USB/device plug/unplug sound MP3 files now ship with the repo at Hyprland/sounds/"
+            ]
+        },
         {
             "version": "1.7.70",
             "changes": [
