@@ -15,7 +15,7 @@
 # Ensure PipeWire/PulseAudio can connect (critical when udev triggers this)
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
-SOUND_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/sounds"
+SOUND_DIR="$HOME/.config/hypr/scripts/quickshell/sounds"
 SOUND_PLUG="$SOUND_DIR/plug-in.mp3"
 SOUND_UNPLUG="$SOUND_DIR/un-plug.mp3"
 RATE_LIMIT_FILE="/tmp/.usb-sound-last"

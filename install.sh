@@ -557,29 +557,7 @@ fi
 [ -d "$INSTALL_DIR/Hyprland/templates" ] && mkdir -p "$HYPR_TARGET/templates" && cp -rf "$INSTALL_DIR/Hyprland/templates/"* "$HYPR_TARGET/templates/" 2>/dev/null || true
 echo -e "  ${G}✓${N} Faces & templates deployed"
 
-# ─── USB/DEVICE SOUND NOTIFICATIONS ─────────────────────────────────────
-echo -e "  ${Y}─${N} Setting up USB/device plug/unplug sounds..."
-
-SOUND_DIR="$HOME/.local/share/sounds"
-mkdir -p "$SOUND_DIR"
-
-# Copy notification sounds from repo (always overwrite — these ship with every update)
-if [ -f "$INSTALL_DIR/Hyprland/sounds/plug-in.mp3" ] && [ -f "$INSTALL_DIR/Hyprland/sounds/un-plug.mp3" ]; then
-    cp -f "$INSTALL_DIR/Hyprland/sounds/plug-in.mp3" "$SOUND_DIR/plug-in.mp3" 2>/dev/null || true
-    cp -f "$INSTALL_DIR/Hyprland/sounds/un-plug.mp3" "$SOUND_DIR/un-plug.mp3" 2>/dev/null || true
-    echo -e "  ${G}✓${N} Device notification sounds deployed"
-else
-    # Fallback: generate with ffmpeg if sound files missing from repo
-    if command -v ffmpeg &>/dev/null; then
-        [ ! -f "$SOUND_DIR/plug-in.mp3" ] && ffmpeg -hide_banner -loglevel error -y -f lavfi -i "sine=frequency=660:duration=0.1" -f lavfi -i "sine=frequency=880:duration=0.15" -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" -ac 1 -ar 44100 "$SOUND_DIR/plug-in.mp3" 2>/dev/null || true
-        [ ! -f "$SOUND_DIR/un-plug.mp3" ] && ffmpeg -hide_banner -loglevel error -y -f lavfi -i "sine=frequency=880:duration=0.1" -f lavfi -i "sine=frequency=660:duration=0.15" -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" -ac 1 -ar 44100 "$SOUND_DIR/un-plug.mp3" 2>/dev/null || true
-        echo -e "  ${Y}─${N} Device notification sounds generated via ffmpeg"
-    else
-        echo -e "  ${Y}!${N} No sound files in repo and ffmpeg not found — USB/device sounds will be silent"
-    fi
-fi
-
-# ─── CLEAN UP OLD UDEV RULES ───────────────────────────────────────────
+# ─── CLEAN UP OLD USB SOUND PATH ──────────────────────────────────────────
 # v1.7.68 and earlier used udev RUN rules → su → pw-play, which was
 # unreliable. Replaced with user-space udev monitor inside
 # audio_autoswitch.sh in v1.7.69.
