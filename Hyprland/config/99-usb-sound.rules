@@ -1,0 +1,18 @@
+# ─── WifeRice USB/Device Sound Notifications ──────────────────────────────
+# Plays plug/unplug sounds via usb_sound.sh
+# Rate-limited (2s) to prevent double-triggers
+#
+# Install:
+#   sudo cp 99-usb-sound.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules
+
+# USB storage: flash drives, external HDDs, SD cards
+# NOTE: __USER__ is replaced with the actual username by install.sh at deploy time.
+# udev does not support environment variable expansion in RUN+="..." directives.
+ACTION=="add",    SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ENV{DEVTYPE}=="partition", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh plug'"
+ACTION=="remove", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ENV{DEVTYPE}=="partition", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh unplug'"
+
+# General USB devices: mice, keyboards, gamepads, headsets, etc.
+# Excludes internal xHCI controllers (ID_VENDOR_ID=1d6b) and chargers (no ID_MODEL)
+ACTION=="add",    SUBSYSTEM=="usb", DEVTYPE=="usb_device", ENV{ID_VENDOR_ID}!="1d6b", ENV{ID_MODEL}=="?*", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh plug'"
+ACTION=="remove", SUBSYSTEM=="usb", DEVTYPE=="usb_device", ENV{ID_VENDOR_ID}!="1d6b", ENV{ID_MODEL}=="?*", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh unplug'"

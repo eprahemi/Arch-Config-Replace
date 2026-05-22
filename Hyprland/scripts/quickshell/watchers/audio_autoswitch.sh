@@ -48,6 +48,13 @@ pactl subscribe | while read -r raw_event; do
     continue
   fi
 
+  # Play notification sound for headphone/Bluetooth plug/unplug
+  if [ "$event_type" = "new" ]; then
+    "$HOME/.config/hypr/scripts/usb_sound.sh" plug 2>/dev/null || true
+  else
+    "$HOME/.config/hypr/scripts/usb_sound.sh" unplug 2>/dev/null || true
+  fi
+
   sleep 0.3
 
   external="$(_external_sink)"

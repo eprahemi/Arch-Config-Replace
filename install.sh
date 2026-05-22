@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.65"
+DOTS_VERSION="1.7.66"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -560,6 +560,54 @@ fi
 [ -d "$INSTALL_DIR/Faces" ] && mkdir -p "$HYPR_TARGET/Faces" && cp -rf "$INSTALL_DIR/Faces/"* "$HYPR_TARGET/Faces/" 2>/dev/null || true
 [ -d "$INSTALL_DIR/Hyprland/templates" ] && mkdir -p "$HYPR_TARGET/templates" && cp -rf "$INSTALL_DIR/Hyprland/templates/"* "$HYPR_TARGET/templates/" 2>/dev/null || true
 echo -e "  ${G}✓${N} Faces & templates deployed"
+
+# ─── USB/DEVICE SOUND NOTIFICATIONS ─────────────────────────────────────
+echo -e "  ${Y}─${N} Setting up USB/device plug/unplug sounds..."
+
+SOUND_DIR="$HOME/.local/share/sounds"
+mkdir -p "$SOUND_DIR"
+
+# Generate notification sounds using ffmpeg (already installed via codecs step)
+if command -v ffmpeg &>/dev/null; then
+    # Plug-in sound: ascending two-note chime
+    if [ ! -f "$SOUND_DIR/plug-in.mp3" ]; then
+        ffmpeg -hide_banner -loglevel error -y \
+            -f lavfi -i "sine=frequency=660:duration=0.1" \
+            -f lavfi -i "sine=frequency=880:duration=0.15" \
+            -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" \
+            -ac 1 -ar 44100 "$SOUND_DIR/plug-in.mp3" 2>/dev/null || true
+    fi
+
+    # Un-plug sound: descending two-note chime
+    if [ ! -f "$SOUND_DIR/un-plug.mp3" ]; then
+        ffmpeg -hide_banner -loglevel error -y \
+            -f lavfi -i "sine=frequency=880:duration=0.1" \
+            -f lavfi -i "sine=frequency=660:duration=0.15" \
+            -filter_complex "[0][1]concat=n=2:v=0:a=0,volume=0.5" \
+            -ac 1 -ar 44100 "$SOUND_DIR/un-plug.mp3" 2>/dev/null || true
+    fi
+    echo -e "  ${G}✓${N} Device notification sounds generated"
+else
+    echo -e "  ${Y}!${N} ffmpeg not found — skipping sound generation (USB/device sounds will be silent)"
+fi
+
+# Install udev rule (substitute __USER__ with actual username)
+if [ -f "$INSTALL_DIR/Hyprland/config/99-usb-sound.rules" ]; then
+    RULES_SRC="$INSTALL_DIR/Hyprland/config/99-usb-sound.rules"
+    RULES_TMP="/tmp/99-usb-sound.rules"
+    sed "s/__USER__/$CURRENT_USER/g" "$RULES_SRC" > "$RULES_TMP"
+    sudo cp "$RULES_TMP" /etc/udev/rules.d/99-usb-sound.rules 2>/dev/null || true
+    sudo udevadm control --reload-rules 2>/dev/null || true
+    rm -f "$RULES_TMP"
+    echo -e "  ${G}✓${N} udev rules installed for USB/device sound notifications"
+else
+    echo -e "  ${Y}!${N} udev rules file not found — skipping"
+fi
+
+# Ensure usb_sound.sh is executable
+if [ -f "$HYPR_TARGET/scripts/usb_sound.sh" ]; then
+    chmod +x "$HYPR_TARGET/scripts/usb_sound.sh" 2>/dev/null || true
+fi
 
 step_header 18 19 "Setting up wallpapers..."
 

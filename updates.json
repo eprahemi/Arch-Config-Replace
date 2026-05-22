@@ -1,7 +1,17 @@
 {
-  "latest_version": "1.7.65",
+  "latest_version": "1.7.66",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.66",
+            "changes": [
+                "NEW: USB/device plug/unplug notification sounds — ascending chime on plug, descending chime on unplug",
+                "NEW: udev rules for USB storage (flash drives, external HDDs) and USB devices (mice, keyboards, headsets)",
+                "NEW: Headphone/Bluetooth plug/unplug sounds via audio_autoswitch.sh integration",
+                "NEW: usb_sound.sh with rate limiting (2s cooldown) and boot-time protection (skips first 60s of enumeration)",
+                "FIXED: Safe udev exec via su with XDG_RUNTIME_DIR set for PipeWire connectivity"
+            ]
+        },
         {
             "version": "1.7.65",
             "changes": [
