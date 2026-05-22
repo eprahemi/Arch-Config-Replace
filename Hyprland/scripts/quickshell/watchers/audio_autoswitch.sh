@@ -37,6 +37,37 @@ fi
 # Sink 'change' events include user manual default-sink switches — we IGNORE
 # those so users can freely choose between multiple connected devices.
 
+# ─── USB DEVICE MONITOR (background) ─────────────────────────────────────
+# Uses udevadm monitor (no root needed, works in user space).
+# Same method as battery_fetch.sh — user process with full PipeWire access.
+# Replaces the old udev RUN → su → pw-play chain which was unreliable.
+
+(
+  udevadm monitor --udev --property --subsystem-match=usb --subsystem-match=block 2>/dev/null | while IFS= read -r line; do
+    case "$line" in
+      UDEV\ *|KERNEL\ *) unset a s d b v;;
+      *=*)
+        k="${line%%=*}"; val="${line#*=}"
+        case "$k" in
+          ACTION) a="$val";; SUBSYSTEM) s="$val";; DEVTYPE) d="$val";; ID_BUS) b="$val";; ID_VENDOR_ID) v="$val";;
+        esac;;
+      "")
+        [ "$a" != "add" ] && [ "$a" != "remove" ] && continue
+        # USB device (not root hub): usb subsystem, usb_device type, vendor != 1d6b
+        is_usb=false; [ "$s" = "usb" ] && [ "$d" = "usb_device" ] && [ "${v:-}" != "1d6b" ] && is_usb=true
+        # USB storage: block subsystem, partition type, on usb bus
+        is_block=false; [ "$s" = "block" ] && [ "$d" = "partition" ] && [ "$b" = "usb" ] && is_block=true
+        if $is_usb || $is_block; then
+          dir="plug"; [ "$a" = "remove" ] && dir="unplug"
+          nohup "$HOME/.config/hypr/scripts/usb_sound.sh" "$dir" >/dev/null 2>&1 &
+        fi;;
+    esac
+  done
+) &
+
+# ─── AUDIO SINK LISTENER ────────────────────────────────────────────────
+# Reacts to headphone/Bluetooth/USB audio sink plug/unplug
+
 pactl subscribe | while read -r raw_event; do
   # Parse: Event 'new' on sink #43
   read -r _ event_type _ object_type _ <<< "$raw_event"
@@ -49,11 +80,8 @@ pactl subscribe | while read -r raw_event; do
   fi
 
   # Play notification sound for headphone/Bluetooth plug/unplug
-  if [ "$event_type" = "new" ]; then
-    "$HOME/.config/hypr/scripts/usb_sound.sh" plug 2>/dev/null || true
-  else
-    "$HOME/.config/hypr/scripts/usb_sound.sh" unplug 2>/dev/null || true
-  fi
+  dir="plug"; [ "$event_type" = "remove" ] && dir="unplug"
+  nohup "$HOME/.config/hypr/scripts/usb_sound.sh" "$dir" >/dev/null 2>&1 &
 
   sleep 0.3
 

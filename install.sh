@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.68"
+DOTS_VERSION="1.7.69"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -594,20 +594,14 @@ else
     echo -e "  ${Y}!${N} ffmpeg not found — skipping sound generation (USB/device sounds will be silent)"
 fi
 
-# Install udev rule (substitute __USER__ with actual username)
-if [ -f "$INSTALL_DIR/Hyprland/config/99-usb-sound.rules" ]; then
-    RULES_SRC="$INSTALL_DIR/Hyprland/config/99-usb-sound.rules"
-    RULES_TMP="/tmp/99-usb-sound.rules"
-    sed "s/__USER__/$CURRENT_USER/g" "$RULES_SRC" > "$RULES_TMP"
-    if sudo cp "$RULES_TMP" /etc/udev/rules.d/99-usb-sound.rules 2>>"$INSTALL_LOG"; then
-        sudo udevadm control --reload-rules 2>>"$INSTALL_LOG" || true
-        echo -e "  ${G}✓${N} udev rules installed for USB/device sound notifications"
-    else
-        echo -e "  ${Y}!${N} Failed to install udev rules — USB/device sounds may not work"
-    fi
-    rm -f "$RULES_TMP"
-else
-    echo -e "  ${Y}!${N} udev rules file not found — skipping"
+# ─── CLEAN UP OLD UDEV RULES ───────────────────────────────────────────
+# v1.7.68 and earlier used udev RUN rules → su → pw-play, which was
+# unreliable. Replaced with user-space udev monitor inside
+# audio_autoswitch.sh in v1.7.69.
+if [ -f /etc/udev/rules.d/99-usb-sound.rules ]; then
+    sudo rm -f /etc/udev/rules.d/99-usb-sound.rules 2>>"$INSTALL_LOG" || true
+    sudo udevadm control --reload-rules 2>>"$INSTALL_LOG" || true
+    echo -e "  ${G}✓${N} Removed old udev rules (USB monitor now built into audio_autoswitch.sh)"
 fi
 
 # Ensure usb_sound.sh is executable

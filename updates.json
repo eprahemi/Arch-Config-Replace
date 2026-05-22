@@ -1,7 +1,17 @@
 {
-  "latest_version": "1.7.68",
+  "latest_version": "1.7.69",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.69",
+            "changes": [
+                "CRITICAL FIX: USB/device plug/unplug sounds still not playing — udev RUN → su → pw-play chain was fundamentally unreliable (PipeWire not accessible from udev context)",
+                "COMPLETELY REPLACED: Removed udev RUN rules approach entirely — USB monitoring is now built directly into audio_autoswitch.sh (same script, same service, zero new files)",
+                "SAME METHOD AS BATTERY SOUNDS: Uses udevadm monitor --property (no root) in a background fork — runs as user process with full PipeWire access, exactly like battery_fetch.sh",
+                "audio_autoswitch.sh now has a USB udev monitor alongside its pactl subscribe audio listener — no separate service or script needed",
+                "Old 99-usb-sound.rules automatically removed from /etc/udev/rules.d/ on update"
+            ]
+        },
         {
             "version": "1.7.68",
             "changes": [
