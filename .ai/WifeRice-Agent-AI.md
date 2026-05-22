@@ -812,3 +812,15 @@ External NTFS drives (Windows USB drives, external HDDs) failed to mount in Thun
 4. After fix, NTFS drives appear in Thunar → Devices sidebar automatically
 
 **Reference**: User-provided `ntfs-mount-fix.md` document.
+
+### ⚠️ KNOWN BUG FIXED: Thunar Thumbnails Never Worked (v1.7.58)
+The install.sh summary claimed to install `tumbler`, `ffmpegthumbnailer`, `libopenraw`, `libgepub`, and `webp` (WebP support) — but **NONE of these packages were ever installed**. The entire "Thumbnails" line in the summary was a lie. Every new WifeRice user had a Thunar without thumbnails.
+
+**Root cause**: The install.sh has many empty `step_header` calls (steps 2-9) with no actual package install commands. The only bulk install was at step 10 (MTP/gvfs/drivers). Thumbnail packages were never added to any `pacman -S` command.
+
+**Fix** (v1.7.58):
+1. Added `tumbler`, `ffmpegthumbnailer`, `webp-pixbuf-loader`, `libopenraw`, `libgepub` to step 5 package install
+2. Freedesktop thumbnail cache (`~/.cache/thumbnails/`) cleared on install so thumbnails regenerate fresh
+3. D-Bus activation for tumblerd was already configured by the tumbler package — just needed the package installed
+
+**Lesson**: The summary at the end of install.sh is just `echo` text — it does NOT actually install anything. Always verify that every package mentioned in the summary has a corresponding `pacman -S` command. The fact that the thumbnail packages were listed but never installed went unnoticed for months.
