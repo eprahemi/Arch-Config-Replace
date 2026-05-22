@@ -1,7 +1,13 @@
 {
-  "latest_version": "1.7.71",
+  "latest_version": "1.7.72",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.72",
+            "changes": [
+                "FIXED: 'Imperative' text in GuideAbout replaced with 'WifeRice'"
+            ]
+        },
         {
             "version": "1.7.71",
             "changes": [
