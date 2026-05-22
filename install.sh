@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.57"
+DOTS_VERSION="1.7.58"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -217,6 +217,9 @@ step_header 3 20 "Detecting and installing GPU drivers..."
 step_header 4 20 "Setting up AUR helper (yay)..."
 
 step_header 5 20 "Installing base system packages..."
+
+# Install thumbnail packages for Thunar and file manager previews
+sudo pacman -S --noconfirm tumbler ffmpegthumbnailer webp-pixbuf-loader libopenraw libgepub 2>/dev/null || true
 
 step_header 6 20 "Installing fonts and emojis..."
 
@@ -537,6 +540,12 @@ if command -v magick &>/dev/null || command -v convert &>/dev/null; then
 fi
 
 fi
+
+# ─── THUMBNAIL CACHE CLEANUP ──────────────────────────────────────────
+# Clear Freedesktop thumbnail cache so thumbnails regenerate fresh with
+# newly installed thumbnailers (webp-pixbuf-loader, ffmpegthumbnailer, etc.)
+echo -e "  ${Y}─${N} Refreshing Thunar thumbnail cache..."
+rm -rf "$HOME/.cache/thumbnails"/*/ 2>/dev/null || true
 
 # Install awww wallpaper setter if missing
 if ! command -v awww &>/dev/null; then
