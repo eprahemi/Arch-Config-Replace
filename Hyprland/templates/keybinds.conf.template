@@ -5,6 +5,10 @@
 # ───────── Mouse & Gestures ─────────
 gesture = 3, horizontal, workspace
 
+# ───────── Workspace Navigation ─────────
+bind = CTRL, left, workspace, -1
+bind = CTRL, right, workspace, +1
+
 # ───────── Dynamic Keybinds ─────────
 bindm = $mainMod, mouse:272, movewindow
 bindm = $mainMod, mouse:273, resizewindow
