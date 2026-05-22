@@ -207,7 +207,7 @@ fi
 # ─── DOWNLOAD REPO ────────────────────────────────────────────────────
 
 echo ""
-step_header 1 20 "Downloading dotfiles..."
+step_header 1 19 "Downloading dotfiles..."
 
 mkdir -p "$TMP_DIR"
 if command -v git &>/dev/null; then
@@ -216,14 +216,14 @@ else
     echo -e "  ${R}!${N} git not found — cannot download repo"
 fi
 
-step_header 2 20 "Updating system packages..."
+step_header 2 19 "Updating system packages..."
 
 # Sync package databases so pacman -S can find packages
 echo -e "  ${Y}─${N} Syncing package databases..."
 sudo pacman -Sy --noconfirm 2>&1 | sed 's/^/  /' || true
 echo -e "  ${G}✓${N} Package databases updated"
 
-step_header 3 20 "Detecting and installing GPU drivers..."
+step_header 3 19 "Detecting and installing GPU drivers..."
 
 # Detect GPU and install appropriate drivers
 GPU_VENDOR=""
@@ -246,7 +246,7 @@ else
     echo -e "  ${Y}─${N} No dedicated GPU detected or unknown — skipping driver install"
 fi
 
-step_header 4 20 "Setting up AUR helper (yay)..."
+step_header 4 19 "Setting up AUR helper (yay)..."
 
 if ! command -v yay &>/dev/null; then
     echo -e "  ${Y}─${N} Installing base-devel and git (required for yay)..."
@@ -264,7 +264,7 @@ else
     echo -e "  ${G}✓${N} yay already installed"
 fi
 
-step_header 5 20 "Installing base system packages..."
+step_header 5 19 "Installing base system packages..."
 
 # Essential system packages
 echo -e "  ${Y}─${N} Installing PipeWire audio stack..."
@@ -279,7 +279,7 @@ sudo pacman -S --noconfirm --needed polkit-kde-agent xdg-desktop-portal xdg-desk
 # Install thumbnail packages for Thunar and file manager previews
 sudo pacman -S --noconfirm --needed tumbler ffmpegthumbnailer webp-pixbuf-loader libopenraw libgepub 2>&1 | sed 's/^/  /' || true
 
-step_header 6 20 "Installing fonts and emojis..."
+step_header 6 19 "Installing fonts and emojis..."
 
 echo -e "  ${Y}─${N} Installing fonts..."
 sudo pacman -S --noconfirm --needed ttf-jetbrains-mono-nerd noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-nerd-fonts-symbols ttf-font-awesome 2>&1 | sed 's/^/  /' || true
@@ -288,7 +288,7 @@ sudo pacman -S --noconfirm --needed ttf-jetbrains-mono-nerd noto-fonts noto-font
 sudo pacman -S --noconfirm --needed ttf-liberation ttf-dejavu 2>&1 | sed 's/^/  /' || true
 echo -e "  ${G}✓${N} Fonts installed"
 
-step_header 7 20 "Installing applications..."
+step_header 7 19 "Installing applications..."
 
 echo -e "  ${Y}─${N} Installing core applications..."
 sudo pacman -S --noconfirm --needed firefox kitty neovim thunar thunar-archive-plugin thunar-volman file-roller gwenview ark 2>&1 | sed 's/^/  /' || true
@@ -308,18 +308,7 @@ else
 fi
 echo -e "  ${G}✓${N} Applications installed"
 
-step_header 8 20 "Installing Proton VPN..."
-
-if command -v yay &>/dev/null; then
-    echo -e "  ${Y}─${N} Installing Proton VPN from AUR..."
-    yay -S --noconfirm --needed proton-vpn-gtk-bin 2>&1 | sed 's/^/  /' || true
-    echo -e "  ${G}✓${N} Proton VPN installed"
-else
-    echo -e "  ${Y}─${N} yay not available — installing Proton VPN CLI from repo..."
-    sudo pacman -S --noconfirm --needed proton-vpn-gtk4 2>&1 | sed 's/^/  /' || true
-fi
-
-step_header 9 20 "Installing Qt6, SDDM, and Quickshell..."
+step_header 8 19 "Installing Qt6, SDDM, and Quickshell..."
 
 echo -e "  ${Y}─${N} Installing Qt6 libraries..."
 sudo pacman -S --noconfirm --needed qt6-base qt6-declarative qt6-svg qt6-wayland qt6-shadertools qt6-tools 2>&1 | sed 's/^/  /' || true
@@ -337,12 +326,12 @@ else
 fi
 echo -e "  ${G}✓${N} Qt6/SDDM/Quickshell setup complete"
 
-step_header 10 20 "Installing Bluetooth, Print, and drivers..."
+step_header 9 19 "Installing Bluetooth, Print, and drivers..."
 
 sudo pacman -S --noconfirm --needed libmtp mtpfs gvfs-mtp gvfs-gphoto2 android-file-transfer swayidle ntfs-3g 2>&1 | sed 's/^/  /' || true
 sudo usermod -aG adbusers "$CURRENT_USER" 2>&1 | sed 's/^/  /' || true
 
-step_header 11 20 "Setting up Flatpak..."
+step_header 10 19 "Setting up Flatpak..."
 
 if command -v flatpak &>/dev/null; then
     echo -e "  ${Y}─${N} Adding Flathub remote..."
@@ -354,7 +343,7 @@ else
     echo -e "  ${Y}─${N} Flatpak not installed — skipping"
 fi
 
-step_header 12 20 "Installing Spicetify..."
+step_header 11 19 "Installing Spicetify..."
 
 if command -v spotify-launcher &>/dev/null || command -v spotify &>/dev/null; then
     if command -v yay &>/dev/null; then
@@ -368,7 +357,7 @@ else
     echo -e "  ${Y}─${N} Spotify not installed — skipping Spicetify"
 fi
 
-step_header 13 20 "Setting up LazyVim..."
+step_header 12 19 "Setting up LazyVim..."
 
 if command -v nvim &>/dev/null; then
     echo -e "  ${Y}─${N} Backing up existing Neovim config..."
@@ -383,7 +372,7 @@ else
     echo -e "  ${Y}─${N} Neovim not installed — skipping LazyVim"
 fi
 
-step_header 14 20 "Installing Flatpak applications..."
+step_header 13 19 "Installing Flatpak applications..."
 
 if command -v flatpak &>/dev/null; then
     echo -e "  ${Y}─${N} Installing Flatpak applications..."
@@ -393,14 +382,14 @@ else
     echo -e "  ${Y}─${N} Flatpak not available — skipping"
 fi
 
-step_header 15 20 "Cleaning system..."
+step_header 14 19 "Cleaning system..."
 # Remove hypridle if still installed — replaced by swayidle
 if pacman -Q hypridle &>/dev/null; then
     sudo pacman -R --noconfirm hypridle 2>&1 | sed 's/^/  /' || true
     echo -e "  ${Y}─${N} Removed deprecated hypridle package"
 fi
 
-step_header 16 20 "Deploying Hyprland core config..."
+step_header 15 19 "Deploying Hyprland core config..."
 
 HYPR_TARGET="$HOME/.config/hypr"
 mkdir -p "$HYPR_TARGET/scripts"
@@ -518,7 +507,7 @@ else
     echo -e "  ${Y}─${N} Matugen config preserved"
 fi
 
-step_header 17 20 "Deploying QuickShell QML files..."
+step_header 16 19 "Deploying QuickShell QML files..."
 
 QS_TARGET="$HYPR_TARGET/scripts/quickshell"
 mkdir -p "$QS_TARGET"
@@ -553,7 +542,7 @@ for watcher in audio_autoswitch.sh; do
     fi
 done
 
-step_header 18 20 "Deploying scripts and extras..."
+step_header 17 19 "Deploying scripts and extras..."
 
 # Deploy scripts (excluding quickshell which is handled above)
 if [ -d "$INSTALL_DIR/Hyprland/scripts" ]; then
@@ -572,7 +561,7 @@ fi
 [ -d "$INSTALL_DIR/Hyprland/templates" ] && mkdir -p "$HYPR_TARGET/templates" && cp -rf "$INSTALL_DIR/Hyprland/templates/"* "$HYPR_TARGET/templates/" 2>/dev/null || true
 echo -e "  ${G}✓${N} Faces & templates deployed"
 
-step_header 19 20 "Setting up wallpapers..."
+step_header 18 19 "Setting up wallpapers..."
 
 # Always ensure lock screen wallpaper directory + README
 mkdir -p "$HOME/.Wallpapers"
@@ -739,7 +728,7 @@ echo -e "  ${G}✓${N} Wallpapers ready for picker (Super+W)"
 # ─── CLEANUP STALE REFERENCES ────────────────────────────────────────────
 
 echo ""
-step_header 20 20 "Finalizing..."
+step_header 19 19 "Finalizing..."
 
 # Remove old imperative-dots version file if it exists
 rm -f "$HOME/.local/state/imperative-dots-version" 2>/dev/null
