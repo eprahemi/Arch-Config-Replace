@@ -1,7 +1,16 @@
 {
-  "latest_version": "1.7.56",
+  "latest_version": "1.7.57",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.57",
+            "changes": [
+                "FIXED: External NTFS hard drives (Windows USB drives, external HDDs) failed to mount in Thunar with 'wrong fs type' error",
+                "FIXED: Kernel ntfs3 driver blacklisted — ntfs-3g FUSE driver used instead (better codepage/NLS support)",
+                "FIXED: Auto-installs ntfs-3g, creates /etc/modprobe.d/blacklist-ntfs3.conf, unloads ntfs3 module immediately",
+                "FIXED: Drives now appear in Thunar → Devices sidebar automatically after install/update"
+            ]
+        },
         {
             "version": "1.7.56",
             "changes": [

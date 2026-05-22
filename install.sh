@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.56"
+DOTS_VERSION="1.7.57"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -228,7 +228,7 @@ step_header 9 20 "Installing Qt6, SDDM, and Quickshell..."
 
 step_header 10 20 "Installing Bluetooth, Print, and drivers..."
 
-sudo pacman -S --noconfirm libmtp mtpfs gvfs-mtp gvfs-gphoto2 android-file-transfer swayidle 2>/dev/null || true
+sudo pacman -S --noconfirm libmtp mtpfs gvfs-mtp gvfs-gphoto2 android-file-transfer swayidle ntfs-3g 2>/dev/null || true
 sudo usermod -aG adbusers "$CURRENT_USER" 2>/dev/null || true
 
 step_header 11 20 "Setting up Flatpak..."
@@ -616,6 +616,19 @@ fi
 if [ ! -f /etc/pam.d/polkit-1 ] && [ -f /usr/lib/pam.d/polkit-1 ]; then
   sudo ln -s /usr/lib/pam.d/polkit-1 /etc/pam.d/polkit-1
   echo "  ✔ Linked /etc/pam.d/polkit-1 → /usr/lib/pam.d/polkit-1"
+fi
+
+# ─── NTFS EXTERNAL DRIVE FIX ─────────────────────────────────────────────
+# Blacklist kernel ntfs3 driver so udisks uses ntfs-3g (FUSE) instead
+# Kernel ntfs3 lacks codepage/NLS support → "wrong fs type" mount errors
+if [ ! -f /etc/modprobe.d/blacklist-ntfs3.conf ]; then
+  echo "blacklist ntfs3" | sudo tee /etc/modprobe.d/blacklist-ntfs3.conf >/dev/null
+  echo -e "  ${G}✓${N} Blacklisted kernel ntfs3 driver — udisks will use ntfs-3g instead"
+fi
+
+# Unload ntfs3 module immediately if loaded (no reboot needed)
+if lsmod | grep -q "^ntfs3"; then
+  sudo modprobe -r ntfs3 2>/dev/null && echo -e "  ${G}✓${N} Unloaded ntfs3 kernel module"
 fi
 
 # ─── DEPLOY TELEMETRY SCRIPTS ───────────────────────────────────────────

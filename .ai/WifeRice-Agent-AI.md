@@ -801,3 +801,14 @@ The Guide popup's changelog is a **hardcoded `ListModel`** in `GuidePopup.qml` (
 
 **Fix**: Added v1.7.53, v1.7.54, v1.7.55 entries at the top of the ListModel in commit `f62000b`.
 **Lesson**: GuidePopup.qml is NOT auto-updated. It requires a manual edit EVERY release. The rule now checks GuidePopup.qml FIRST, before install.sh or updates.json.
+
+### v1.7.57 — NTFS External Drive Auto-Fix
+External NTFS drives (Windows USB drives, external HDDs) failed to mount in Thunar with "wrong fs type" error. Root cause: Linux kernel's **ntfs3** driver conflicts with **ntfs-3g** FUSE driver. ntfs3 lacks codepage/NLS support, causing udisks mount failures.
+
+**Fix in install.sh**:
+1. `ntfs-3g` package added to install list (step 10)
+2. `/etc/modprobe.d/blacklist-ntfs3.conf` created to blacklist kernel ntfs3 driver
+3. `modprobe -r ntfs3` run immediately to unload without reboot
+4. After fix, NTFS drives appear in Thunar → Devices sidebar automatically
+
+**Reference**: User-provided `ntfs-mount-fix.md` document.
