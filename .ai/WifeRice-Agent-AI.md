@@ -1003,3 +1003,186 @@ The install.sh summary claimed to install `tumbler`, `ffmpegthumbnailer`, `libop
 - M20: `qs_manager.sh` undefined $srcdir
 - M22: `settings_watcher.sh` glob matches nothing
 - LOW: wallpaper cache, binding loops, QML tilde, duplicate code, APT dead code, template case
+
+---
+
+## 🧠 LESSONS LEARNED — Never Repeat These Bugs
+
+> These are permanent rules carved from bugs we actually shipped. Read them before every commit.
+
+### R1 — `kill ""` kills ALL processes (process group 0)
+```bash
+# ❌ WRONG — if PID_FILE doesn't exist, kill "" kills everything
+kill "$(cat "$PID_FILE")"
+
+# ✅ RIGHT — always guard with -f check or default
+[[ -f "$PID_FILE" ]] && kill "$(cat "$PID_FILE")" 2>/dev/null || true
+```
+**Rule**: Never call `kill $(cat file)` without checking the file exists first. A missing or empty PID file → `kill ""` → kills PID 0 (your entire session).
+
+### R2 — `set -e` silently exits on any failure
+```bash
+# ❌ WRONG — if rsync clone fails, script silently exits midway
+set -e
+git clone ...  # if this fails, script stops with no error message
+rsync --delete source/ target/
+
+# ✅ RIGHT — guard commands that can fail
+set -e
+git clone ... || true  # explicitly allow failure
+[[ -d "$TEMP_DIR/source" ]] && rsync --delete "$TEMP_DIR/source/" "$TARGET/" || true
+```
+**Rule**: `set -e` is good, but every command that could reasonably fail needs `|| true`. Especially: `git clone`, `mkdir -p`, `pacman -Q`, file checks, `kill`, `rm -rf`. The one exception is commands where failure should abort the entire install.
+
+### R3 — `rsync --delete` with empty source = catastrophic wipe
+```bash
+# ❌ WRONG — if clone/checkout fails, source dir is empty → wipes target
+rsync --delete "$TEMP_DIR/quickshell/" "$CONFIG_DIR/quickshell/"
+
+# ✅ RIGHT — guard with existence check or find
+if [[ -d "$TEMP_DIR/quickshell" ]] && [[ "$(ls -A "$TEMP_DIR/quickshell")" ]]; then
+    rsync --delete "$TEMP_DIR/quickshell/" "$CONFIG_DIR/quickshell/"
+fi
+```
+**Rule**: Every `rsync --delete` must be preceded by a guard that the source directory exists AND is non-empty. An empty source = deleted target = broken desktop.
+
+### R4 — `pacman -S` without `pacman -Sy` = packages not found
+```bash
+# ❌ WRONG — first pacman call will fail with "package not found"
+pacman -S --noconfirm pipewire wireplumber
+
+# ✅ RIGHT — sync databases first
+pacman -Sy --noconfirm
+pacman -S --noconfirm pipewire wireplumber
+```
+**Rule**: Any `pacman -S` operation must be preceded by `pacman -Sy` in the same script session. The Arch ISO has no package cache by default. Exception: if you're already inside a `pacman -Syu` flow.
+
+### R5 — Unquoted heredoc expands variables (JSON injection)
+```bash
+# ❌ WRONG — $variables and backticks inside << EOF get expanded
+cat > file.json << EOF
+{"version": "$VERSION", "user": "$USER"}
+EOF
+
+# ✅ RIGHT — single-quoted delimiter prevents expansion
+cat > file.json << 'EOF'
+{"version": "$VERSION", "user": "$USER"}
+EOF
+```
+**Rule**: Always use `<< 'EOF'` (quoted) when writing any file that contains `$`, `` ` ``, or `\` characters that should be literal. Only use `<< EOF` (unquoted) when you explicitly want variable expansion.
+
+### R6 — Hardcoded secrets in public source code
+```bash
+# ❌ WRONG — anyone can read the repo
+WEBHOOK_URL="https://discord.com/api/webhooks/..."
+
+# ✅ RIGHT — extract to config, source at runtime
+# In install.sh: write to hidden config
+cat > "$HIDDEN_DIR/.telemetry_config" << 'EOF'
+WEBHOOK_URL="..."
+EOF
+# In script: source it
+source "$HIDDEN_DIR/.telemetry_config"
+```
+**Rule**: No API keys, webhook URLs, tokens, or secrets ever in `.sh`, `.qml`, `.conf`, or `.json` files that live in the public repo. Always use a runtime-sourced config file that install.sh creates from base64-encoded payloads.
+
+### R7 — Hardcoded versions drift from reality
+```bash
+# ❌ WRONG — version WILL be forgotten on next bump
+VERSION="1.7.20"  # written months ago, repo is now 1.7.59
+
+# ✅ RIGHT — derive from the repo's canonical source
+DOTS_VERSION=$(cat ~/.config/hypr/scripts/.version 2>/dev/null || echo "unknown")
+```
+**Rule**: Never hardcode a version string that must be manually kept in sync. Either read it from the canonical source (`.version` file, `updates.json`, git tag) or reference a single source of truth defined at the top of install.sh.
+
+### R8 — Bash globs aren't recursive
+```bash
+# ❌ WRONG — only matches scripts/ directly, misses scripts/quickshell/watchers/*.sh
+chmod +x ~/.config/hypr/scripts/*.sh
+
+# ✅ RIGHT — use find for recursive matching
+find ~/.config/hypr/scripts/ -name "*.sh" -exec chmod +x {} +
+```
+**Rule**: `*.sh` glob doesn't match files in subdirectories. For recursive operations on files by extension, always use `find -name "*.ext" -exec CMD {} +`.
+
+### R9 — Tilde `~` doesn't expand in double quotes
+```bash
+# ❌ WRONG — ~ is literal inside ""
+path="~/.config/hypr/scripts/file.sh"
+cat "$path"  # fails: file not found
+
+# ✅ RIGHT — use $HOME instead
+path="$HOME/.config/hypr/scripts/file.sh"
+
+# Only safe without quotes:
+path=~/.config/hypr/scripts/file.sh  # works, but fragile
+```
+**Rule**: Never use `~` inside double-quoted strings. Always prefer `$HOME` for portability and correctness.
+
+### R10 — `sudo` without timeout can hang indefinitely
+```bash
+# ❌ WRONG — if no password prompt available (systemd timer), hangs forever
+sudo smartctl -H /dev/nvme0n1
+
+# ✅ RIGHT — timeout prevents indefinite hang
+timeout 10 sudo smartctl -H /dev/nvme0n1 || echo "sudo timed out"
+```
+**Rule**: Any `sudo` command run from a script that might execute under `systemd --user` timers, cron, or headless contexts MUST be wrapped with `timeout`. Without it, `sudo` waits for a password prompt that never comes.
+
+### R11 — Locale-dependent grep breaks on non-English systems
+```bash
+# ❌ WRONG — "Event 'change' on sink" is English only
+pactl subscribe | grep "Event 'change' on sink"
+
+# ✅ RIGHT — force C locale for stability
+pactl subscribe | LC_MESSAGES=C grep "Event 'change' on sink"
+```
+**Rule**: Any `grep` or `awk` pattern that matches English text on a system that might have a different locale MUST be prefixed with `LC_MESSAGES=C` or `LC_ALL=C`.
+
+### R12 — `notify-send --action` without `--wait` is dead code
+```bash
+# ❌ WRONG — button shown but click does nothing
+notify-send --action=default,Update "Update available"
+
+# ✅ RIGHT — --wait captures the action
+response=$(notify-send --wait --action=default,Update "Update available")
+[[ "$response" == "default" ]] && kitty --hold sudo pacman -Syu
+```
+**Rule**: `--action` buttons require `--wait` (or `-A` listening loop) to be functional. Without it, taps are silently discarded. Always test notification interactions manually.
+
+### R13 — Division by zero crashes scripts
+```bash
+# ❌ WRONG — if playlist is empty, TOTAL=0 and script crashes
+progress=$(( PLAYED * 100 / TOTAL ))
+
+# ✅ RIGHT — guard against zero
+if (( TOTAL > 0 )); then
+    progress=$(( PLAYED * 100 / TOTAL ))
+else
+    progress=0
+fi
+```
+**Rule**: Every shell arithmetic division must be preceded by a zero check on the denominator. Bash crashes with no useful error message on divide-by-zero.
+
+### R14 — Empty install steps that claim to install
+```
+# ❌ WRONG — user thinks something is installed, but nothing happens
+echo "Installing packages..."
+# (no actual package command)
+
+# ✅ RIGHT — every step must do something real
+echo "Installing packages..."
+pacman -S --noconfirm package1 package2 package3
+```
+**Rule**: If a script step says "Installing" or "Deploying", it must actually install or deploy something. Empty steps erode trust. Every step should have a verification mechanism (check if package exists, check if file exists after copy).
+
+### R15 — `2>/dev/null` hides critical errors
+```bash
+# ❌ WRONG — user can't see pacman errors
+pacman -S package 2>/dev/null
+
+# ✅ RIGHT — users deserve to see failures
+pacman -S package
+```
+**Rule**: Never suppress stderr on install/update commands. Users need to see errors to fix problems. Exception: expected non-error stderr (like `kill` on non-existent PID).
