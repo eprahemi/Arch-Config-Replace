@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.67"
+DOTS_VERSION="1.7.68"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -599,10 +599,13 @@ if [ -f "$INSTALL_DIR/Hyprland/config/99-usb-sound.rules" ]; then
     RULES_SRC="$INSTALL_DIR/Hyprland/config/99-usb-sound.rules"
     RULES_TMP="/tmp/99-usb-sound.rules"
     sed "s/__USER__/$CURRENT_USER/g" "$RULES_SRC" > "$RULES_TMP"
-    sudo cp "$RULES_TMP" /etc/udev/rules.d/99-usb-sound.rules 2>/dev/null || true
-    sudo udevadm control --reload-rules 2>/dev/null || true
+    if sudo cp "$RULES_TMP" /etc/udev/rules.d/99-usb-sound.rules 2>>"$INSTALL_LOG"; then
+        sudo udevadm control --reload-rules 2>>"$INSTALL_LOG" || true
+        echo -e "  ${G}✓${N} udev rules installed for USB/device sound notifications"
+    else
+        echo -e "  ${Y}!${N} Failed to install udev rules — USB/device sounds may not work"
+    fi
     rm -f "$RULES_TMP"
-    echo -e "  ${G}✓${N} udev rules installed for USB/device sound notifications"
 else
     echo -e "  ${Y}!${N} udev rules file not found — skipping"
 fi

@@ -1,7 +1,18 @@
 {
-  "latest_version": "1.7.67",
+  "latest_version": "1.7.68",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.68",
+            "changes": [
+                "FIXED: USB/device sounds not playing for many users — udev rules were too restrictive",
+                "FIXED: Block rule used ENV{ID_FS_USAGE}=filesystem which missed some filesystems — now uses ENV{ID_BUS}=usb for reliable USB storage detection",
+                "FIXED: USB device rule required ENV{ID_MODEL}=?* which excluded devices without a model string — now removed, matched by ID_VENDOR_ID alone",
+                "NEW: usb_sound.sh --test plays both plug and unplug chimes for manual troubleshooting",
+                "NEW: usb_sound.sh --check shows diagnostics (sound file paths, PipeWire status, boot guard state)",
+                "FIXED: udev rule install errors no longer hidden behind '2>/dev/null' — logged to INSTALL_LOG with visible warning on failure"
+            ]
+        },
         {
             "version": "1.7.67",
             "changes": [

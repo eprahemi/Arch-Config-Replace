@@ -5,14 +5,20 @@
 # Install:
 #   sudo cp 99-usb-sound.rules /etc/udev/rules.d/
 #   sudo udevadm control --reload-rules
+#
+# Matching strategy:
+#   - Block partition + ID_BUS=usb → USB storage (flash drives, HDDs, card readers)
+#   - USB device + !1d6b → anything physical (mice, keyboards, headsets, gamepads)
+#   - Internal xHCI root hub (ID_VENDOR_ID=1d6b) is excluded
 
-# USB storage: flash drives, external HDDs, SD cards
+# USB storage: flash drives, external HDDs, SD card readers
+# Uses ID_BUS=usb (not ID_FS_USAGE) to reliably match USB-connected partitions
 # NOTE: __USER__ is replaced with the actual username by install.sh at deploy time.
 # udev does not support environment variable expansion in RUN+="..." directives.
-ACTION=="add",    SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ENV{DEVTYPE}=="partition", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh plug'"
-ACTION=="remove", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", ENV{DEVTYPE}=="partition", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh unplug'"
+ACTION=="add",    SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_BUS}=="usb", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh plug'"
+ACTION=="remove", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_BUS}=="usb", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh unplug'"
 
 # General USB devices: mice, keyboards, gamepads, headsets, etc.
-# Excludes internal xHCI controllers (ID_VENDOR_ID=1d6b) and chargers (no ID_MODEL)
-ACTION=="add",    SUBSYSTEM=="usb", DEVTYPE=="usb_device", ENV{ID_VENDOR_ID}!="1d6b", ENV{ID_MODEL}=="?*", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh plug'"
-ACTION=="remove", SUBSYSTEM=="usb", DEVTYPE=="usb_device", ENV{ID_VENDOR_ID}!="1d6b", ENV{ID_MODEL}=="?*", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh unplug'"
+# Excludes internal xHCI controllers (vendor ID 1d6b = Linux Foundation)
+ACTION=="add",    SUBSYSTEM=="usb", DEVTYPE=="usb_device", ENV{ID_VENDOR_ID}!="1d6b", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh plug'"
+ACTION=="remove", SUBSYSTEM=="usb", DEVTYPE=="usb_device", ENV{ID_VENDOR_ID}!="1d6b", RUN+="/usr/bin/su __USER__ -c '/home/__USER__/.config/hypr/scripts/usb_sound.sh unplug'"
