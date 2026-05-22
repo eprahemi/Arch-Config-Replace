@@ -1,7 +1,14 @@
 {
-  "latest_version": "1.7.66",
+  "latest_version": "1.7.67",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.67",
+            "changes": [
+                "FIXED: settings_watcher.sh --compile errors were silently swallowed by '2>/dev/null || true' — if monitors.conf generation failed, Hyprland fell back to default 1.5 scale with no warning",
+                "FIXED: install.sh now logs compile errors to INSTALL_LOG and shows a yellow warning instead of a green checkmark when --compile fails"
+            ]
+        },
         {
             "version": "1.7.66",
             "changes": [

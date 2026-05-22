@@ -10,9 +10,10 @@ set -e
 # Read from installed version file first (keeps in sync with install.sh)
 if [ -f "$HOME/.local/state/wiferice-version" ]; then
     source "$HOME/.local/state/wiferice-version"
-    DOTS_VERSION="${LOCAL_VERSION:-1.7.66}"
+    DOTS_VERSION="${LOCAL_VERSION:-1.7.67}"
+
 else
-    DOTS_VERSION="1.7.66"
+    DOTS_VERSION="1.7.67"
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
