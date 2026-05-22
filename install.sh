@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.62"
+DOTS_VERSION="1.7.63"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -297,12 +297,12 @@ echo -e "  ${Y}─${N} Installing media applications..."
 sudo pacman -S --noconfirm --needed vlc spotify-launcher obs-studio 2>&1 | sed 's/^/  /' || true
 
 echo -e "  ${Y}─${N} Installing development tools..."
-sudo pacman -S --noconfirm --needed code 2>&1 | sed 's/^/  /' || true
+# (VS Code is installed via AUR below — using visual-studio-code-bin instead of code)
 
 # Install AUR packages if yay is available
 if command -v yay &>/dev/null; then
     echo -e "  ${Y}─${N} Installing AUR applications..."
-    yay -S --noconfirm --needed google-chrome discord steam microsoft-edge-stable-bin 2>&1 | sed 's/^/  /' || true
+    yay -S --noconfirm --needed visual-studio-code-bin google-chrome discord steam microsoft-edge-stable-bin 2>&1 | sed 's/^/  /' || true
 else
     echo -e "  ${Y}─${N} yay not available — skipping AUR packages (Chrome, Discord, Steam, Edge)"
 fi

@@ -1,7 +1,13 @@
 {
-  "latest_version": "1.7.62",
+  "latest_version": "1.7.63",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.63",
+            "changes": [
+                "FIXED: VS Code package conflict — replaced official repo 'code' with AUR 'visual-studio-code-bin' (Microsoft's official binary, preferred by users)"
+            ]
+        },
         {
             "version": "1.7.62",
             "changes": [
