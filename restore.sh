@@ -7,7 +7,13 @@
 
 set -e
 
-DOTS_VERSION="1.7.59"
+# Read from installed version file first (keeps in sync with install.sh)
+if [ -f "$HOME/.local/state/wiferice-version" ]; then
+    source "$HOME/.local/state/wiferice-version"
+    DOTS_VERSION="${LOCAL_VERSION:-1.7.64}"
+else
+    DOTS_VERSION="1.7.64"
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BACKUP_DIR="$HOME/.config/backup_$(date +%Y%m%d_%H%M%S)"
