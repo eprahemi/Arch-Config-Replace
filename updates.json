@@ -1,7 +1,13 @@
 {
-  "latest_version": "1.7.63",
+  "latest_version": "1.7.64",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.64",
+            "changes": [
+                "FIXED: QuickShell package conflict — replaced official repo 'quickshell' with AUR 'quickshell-git' (same QML API, avoids conflict with existing git installs)"
+            ]
+        },
         {
             "version": "1.7.63",
             "changes": [

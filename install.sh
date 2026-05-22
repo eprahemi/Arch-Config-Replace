@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.63"
+DOTS_VERSION="1.7.64"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -329,7 +329,9 @@ sudo pacman -S --noconfirm --needed sddm 2>&1 | sed 's/^/  /' || true
 
 echo -e "  ${Y}─${N} Installing Quickshell from AUR..."
 if command -v yay &>/dev/null; then
-    yay -S --noconfirm --needed quickshell 2>&1 | sed 's/^/  /' || true
+    # Use quickshell-git (AUR) instead of quickshell (official repo) —
+    # same QML API, avoids conflict for users who already have git version
+    yay -S --noconfirm --needed quickshell-git 2>&1 | sed 's/^/  /' || true
 else
     echo -e "  ${Y}!${N} yay not available — quickshell must be installed manually from AUR"
 fi
