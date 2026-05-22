@@ -1,7 +1,17 @@
 {
-  "latest_version": "1.7.64",
+  "latest_version": "1.7.65",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.65",
+            "changes": [
+                "NEW: swayimg — lightweight Wayland-native image viewer with pixelation/blur censor keys",
+                "NEW: MIME associations — Thunar for folders (fixes Discord/Vencord 'Open folder' opening Gwenview), Gwenview for image editing",
+                "NEW: Ctrl+Left/Right workspace navigation — does not interfere with Super+1-10 or swipe gestures",
+                "FIXED: restore.sh version made dynamic — reads from installed state file with fallback (was stuck at v1.7.59)",
+                "FIXED: Proton VPN package removed from install.sh — package not found in AUR, fallback also failed"
+            ]
+        },
         {
             "version": "1.7.64",
             "changes": [
