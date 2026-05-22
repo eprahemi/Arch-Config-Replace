@@ -531,16 +531,9 @@ fi
 echo -e "  ${G}✓${N} All QuickShell QML files deployed (Floating.qml, GuidePopup.qml, Main.qml, Lock.qml, TopBar.qml)"
 
 # Restart watchers that might have stale code in running processes
-for watcher in audio_autoswitch.sh; do
-    pids=$(pgrep -f "$watcher" 2>/dev/null || true)
-    if [ -n "$pids" ]; then
-        kill $pids 2>/dev/null || true
-        sleep 0.2
-    fi
-    if [ -f "$QS_TARGET/watchers/$watcher" ]; then
-        nohup bash "$QS_TARGET/watchers/$watcher" >/dev/null 2>&1 &
-    fi
-done
+# Use systemctl for service-managed watchers (systemd Restart=always
+# would restart with old code if we just kill)
+XDG_RUNTIME_DIR="/run/user/$(id -u "$CURRENT_USER")" systemctl --user restart audio-autoswitch.service 2>/dev/null || true
 
 step_header 17 19 "Deploying scripts and extras..."
 
