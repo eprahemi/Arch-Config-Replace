@@ -1,7 +1,17 @@
 {
-  "latest_version": "1.7.69",
+  "latest_version": "1.7.70",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.70",
+            "changes": [
+                "CRITICAL FIX: Ctrl+Left/Right workspace navigation never worked — keybinding was only in generated keybindings.conf but NOT in keybinds.conf.template, so it was silently wiped on every settings_watcher --compile",
+                "FIXED: Added Ctrl+Left/Right to keybinds.conf.template so it survives regeneration and actually reaches users",
+                "FIXED: USB sounds played multiple times per plug/unplug — udev fires multiple events for one physical action (USB add, block add, partition add). Added 1s dedup rate limiter back to usb_sound.sh.",
+                "CHANGED: install.sh config preservation defaults flipped — Enter now means OVERWRITE (was 'keep'). Updates actually update users' configs now. Type Y explicitly to keep old configs.",
+                "NEW: AI Rule 11 — 'When we ship an update, THE USER GETS IT'. No more 'preserve' defaults that silently skip updates."
+            ]
+        },
         {
             "version": "1.7.69",
             "changes": [

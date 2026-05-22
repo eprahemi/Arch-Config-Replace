@@ -27,6 +27,14 @@ uptime_sec="${uptime_sec%.*}"
 # ─── PLAY SOUND ─────────────────────────────────────────────────────────
 _play() {
     local file="$1"
+    # Simple 1s dedup: udev fires multiple events for one physical plug/unplug
+    local now
+    now=$(date +%s)
+    if [ -f /tmp/.usb-sound-last ]; then
+        read -r last < /tmp/.usb-sound-last
+        [ "${last:-0}" -gt "$((now - 1))" ] && return 0
+    fi
+    echo "$now" > /tmp/.usb-sound-last
     pw-play "$file" 2>/dev/null || paplay "$file" 2>/dev/null || true
 }
 

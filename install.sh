@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.69"
+DOTS_VERSION="1.7.70"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -135,26 +135,26 @@ fi
 # ─── CONFIGURATION PRESERVATION ──────────────────────────────────────
 
 echo ""
-echo "  ╭──────────────────────────────────────╮"
-echo "  │  ${G}🛡  Configuration${N}                   │"
-echo "  │  ${Y}Enter${N}=keep  ${R}N${N}=overwrite          │"
-echo "  ╰──────────────────────────────────────╯"
+echo "  ╭──────────────────────────────────────────╮"
+echo "  │  ${G}🛡  Configuration${N}                       │"
+echo "  │  ${Y}Enter${N}=overwrite  ${G}Y${N}=keep         │"
+echo "  ╰──────────────────────────────────────────╯"
 echo ""
 
-echo -e "  ${G}◉${N}  Keep ${G}keybinds & shortcuts${N}?  [Y/n] "
+echo -e "  ${G}◉${N}  Keep ${G}keybinds & shortcuts${N}?  [y/N] "
 read -r KEEP_KEYBINDS
-KEEP_KEYBINDS="${KEEP_KEYBINDS:-Y}"
-case "${KEEP_KEYBINDS,,}" in y|yes) KEEP_KEYBINDS="Y" ;; n|no) KEEP_KEYBINDS="N" ;; *) KEEP_KEYBINDS="Y" ;; esac
+KEEP_KEYBINDS="${KEEP_KEYBINDS:-N}"
+case "${KEEP_KEYBINDS,,}" in y|yes) KEEP_KEYBINDS="Y" ;; n|no) KEEP_KEYBINDS="N" ;; *) KEEP_KEYBINDS="N" ;; esac
 
-echo -e "  ${G}◉${N}  Keep ${G}terminal & editor${N} (Kitty, Neovim)?  [Y/n] "
+echo -e "  ${G}◉${N}  Keep ${G}terminal & editor${N} (Kitty, Neovim)?  [y/N] "
 read -r KEEP_TERM_EDITOR
-KEEP_TERM_EDITOR="${KEEP_TERM_EDITOR:-Y}"
-case "${KEEP_TERM_EDITOR,,}" in y|yes) KEEP_TERM_EDITOR="Y" ;; n|no) KEEP_TERM_EDITOR="N" ;; *) KEEP_TERM_EDITOR="Y" ;; esac
+KEEP_TERM_EDITOR="${KEEP_TERM_EDITOR:-N}"
+case "${KEEP_TERM_EDITOR,,}" in y|yes) KEEP_TERM_EDITOR="Y" ;; n|no) KEEP_TERM_EDITOR="N" ;; *) KEEP_TERM_EDITOR="N" ;; esac
 
-echo -e "  ${G}◉${N}  Keep ${G}desktop configs${N} (Rofi, SwayNC, Matugen)?  [Y/n] "
+echo -e "  ${G}◉${N}  Keep ${G}desktop configs${N} (Rofi, SwayNC, Matugen)?  [y/N] "
 read -r KEEP_DESKTOP
-KEEP_DESKTOP="${KEEP_DESKTOP:-Y}"
-case "${KEEP_DESKTOP,,}" in y|yes) KEEP_DESKTOP="Y" ;; n|no) KEEP_DESKTOP="N" ;; *) KEEP_DESKTOP="Y" ;; esac
+KEEP_DESKTOP="${KEEP_DESKTOP:-N}"
+case "${KEEP_DESKTOP,,}" in y|yes) KEEP_DESKTOP="Y" ;; n|no) KEEP_DESKTOP="N" ;; *) KEEP_DESKTOP="N" ;; esac
 
 echo -e "  ${G}◉${N}  Keep ${G}wallpapers${N}?  [Y/n] "
 read -r KEEP_WALLPAPERS
