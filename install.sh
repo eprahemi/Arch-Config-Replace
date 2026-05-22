@@ -552,8 +552,11 @@ fi
 
 # Regenerate monitors.conf from settings.json and reload Hyprland
 if [ -f "$HYPR_TARGET/scripts/settings_watcher.sh" ]; then
-    bash "$HYPR_TARGET/scripts/settings_watcher.sh" --compile 2>/dev/null || true
-    echo -e "  ${G}✓${N} Monitor config regenerated from settings.json"
+    if bash "$HYPR_TARGET/scripts/settings_watcher.sh" --compile 2>>"$INSTALL_LOG"; then
+        echo -e "  ${G}✓${N} Monitor config regenerated from settings.json"
+    else
+        echo -e "  ${Y}!${N} Monitor config regeneration had issues — scale may be incorrect (check install log)"
+    fi
 fi
 
 # Faces + Templates
