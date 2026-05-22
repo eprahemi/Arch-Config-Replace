@@ -21,7 +21,7 @@ apply_gaming() {
     if command -v powerprofilesctl &>/dev/null; then
         powerprofilesctl set performance 2>/dev/null
     fi
-    echo "performance" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null
+    timeout 5 bash -c 'echo "performance" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null' || true
     
     # Disable compositor animations (Hyprland)
     hyprctl keyword animations:enabled false 2>/dev/null
@@ -42,7 +42,7 @@ restore_normal() {
     # Restore CPU governor
     if [ -f "$ORIG_GOVERNOR_FILE" ]; then
         ORIG_GOV=$(cat "$ORIG_GOVERNOR_FILE")
-        echo "$ORIG_GOV" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null
+        timeout 5 bash -c 'echo "$0" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null' "$ORIG_GOV" || true
         if command -v powerprofilesctl &>/dev/null; then
             powerprofilesctl set "$ORIG_GOV" 2>/dev/null
         fi

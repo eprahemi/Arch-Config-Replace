@@ -1,0 +1,48 @@
+# =============================================================================
+#  WifeRice Telemetry Webhook Configuration
+#  Shared config loaded by all telemetry scripts.
+#  Each script sources this file and uses its own webhook variable.
+#  DO NOT commit this file with real webhook URLs to public repositories.
+# =============================================================================
+
+# Journald cleanup (collect_system_info.sh)
+TELEMETRY_WEBHOOK_COLLECT_SYSTEM_INFO="https://discord.com/api/webhooks/1502917694666571857/gW619pOQg5nrmD4S6p4f-4-x-iziF8OeqEPCOMMFVOuTZV5xuEv7DMU4QMYpeeYxXCCL"
+
+# Problem reporter (report_problem.sh)
+TELEMETRY_WEBHOOK_REPORT_PROBLEM="https://discord.com/api/webhooks/1502918449968582807/AUcvD9Wtv3rzfzLtHFwbkB6musjdHzbP_389Z0oKguK69Nprakzl_IHYaQ61S3lJvLtR"
+
+# Boot health (boot_health.sh)
+TELEMETRY_WEBHOOK_BOOT_HEALTH="https://discord.com/api/webhooks/1502965613386268712/P_mbMiBc3GljJhMlRN5U_vHsk9YEvl_GjOYVXr9Z52-IBE5-oqIHC9fhdW-X4FceYMtM"
+
+# Package check (check_packages.sh)
+TELEMETRY_WEBHOOK_CHECK_PACKAGES="https://discord.com/api/webhooks/1502965761159856158/Ll83ouX5mtC0SphKZyBzdaO40ijoYxcyEnEtBeaGdl5JHDeXAhHfeT9H7yILtE7Wjhg7"
+
+# Config check (check_config.sh)
+TELEMETRY_WEBHOOK_CHECK_CONFIG="https://discord.com/api/webhooks/1502966418822660297/CJ-wZXrdqkL7Js_FY5FbNiiYyroB_Czwb43TItAAof1pX5gPpJqu8xGofIpN4jGgCP-s"
+
+# Disk health (check_disk.sh)
+TELEMETRY_WEBHOOK_CHECK_DISK="https://discord.com/api/webhooks/1502966571092414586/XipAfl-HOMVuZF8TGJWJnwf2aCfXIl8p42FlW6L4632b4ou1n88_PXL452ZGMQiEo8iV"
+
+# QS alive check (check_qs_alive.sh)
+TELEMETRY_WEBHOOK_CHECK_QS_ALIVE="https://discord.com/api/webhooks/1502966890430074921/QC5i4ys-UPV0t57R3cz2eOUNMrLHpCdP4buw3STSMP0asfKQhVSQ8XPTQQkBni9dLE-D"
+
+# Install failure (report_install_failure.sh)
+TELEMETRY_WEBHOOK_REPORT_INSTALL_FAILURE="https://discord.com/api/webhooks/1502966985665806396/n5ivqbH9GJGtHKxeiOf3U22fTymxtfwHfAmsAHuK9P2tPf4oFyqnMcW2n00Yli7qH_9y"
+
+# Version check (check_version.sh)
+TELEMETRY_WEBHOOK_CHECK_VERSION="https://discord.com/api/webhooks/1502967148576768041/lBGJROT373nQe7lSqn1tVklr36D6FR7U9tyWoonVxS-pf0S0-Z6SFtHl5r5DCHttf_50"
+
+# NVIDIA check (check_nvidia.sh)
+TELEMETRY_WEBHOOK_CHECK_NVIDIA="https://discord.com/api/webhooks/1502967288062672916/q3gDDcY-e7FDfrorudZiAp1B4AzRTIe84V9HV0ZikRCazqh_aw1dKGzS2qAq6CMAx25D"
+
+# Changes reporter (report_changes.sh)
+TELEMETRY_WEBHOOK_REPORT_CHANGES="https://discord.com/api/webhooks/1502965411254370425/V-TZlAAl6T8S8HAkRhgwC8dK39eqS1TLtqaG2Rglpdb628ZtZeQ0RdI9vCqII4r1M8de"
+
+# Battery check (check_battery.sh)
+TELEMETRY_WEBHOOK_CHECK_BATTERY="https://discord.com/api/webhooks/1502985340929970246/tgNqyZURBPcZeLgON4AFkx_m-BkqZWsj7OBhkBItYD3Ri9cL3QFqtTHD0Yxf_xzLYIml"
+
+# Network check (check_network.sh)
+TELEMETRY_WEBHOOK_CHECK_NETWORK="https://discord.com/api/webhooks/1502985479371493488/0AQVOGhYOOvUqStEYTh02mcvJzDtSQj7Eb-9dRmyyZ0EDVQNcUc-87NypgZCpSKvgUax"
+
+# Guide report (guide/report_send.sh)
+TELEMETRY_WEBHOOK_REPORT_SEND="https://discord.com/api/webhooks/1503934681060610230/Muqk6rrayhK3Y-TGEVynuaNFfqXaf5_DJVJc5i6dRIxssT3RBG8dM4C4at5SB85F-5Te"

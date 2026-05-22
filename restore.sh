@@ -7,6 +7,8 @@
 
 set -e
 
+DOTS_VERSION="1.7.59"
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BACKUP_DIR="$HOME/.config/backup_$(date +%Y%m%d_%H%M%S)"
 CURRENT_USER=$(whoami)
@@ -61,45 +63,45 @@ echo ""
 
 # Hyprland (force overwrite all configs including config/ subdirectory)
 if [ -d "$SCRIPT_DIR/Hyprland" ]; then
-    rm -rf ~/.config/hypr 2>/dev/null
-    mkdir -p ~/.config/hypr
-    cp -rf "$SCRIPT_DIR/Hyprland"/* ~/.config/hypr/
+    rm -rf "$HOME/.config/hypr" 2>/dev/null || true
+    mkdir -p "$HOME/.config/hypr"
+    cp -rf "$SCRIPT_DIR/Hyprland"/* "$HOME/.config/hypr/"
     echo "    [RESTORED] Hyprland (force overwrite)"
 fi
 
 if [ -d "$SCRIPT_DIR/Kitty" ]; then
-    rm -rf ~/.config/kitty 2>/dev/null
-    mkdir -p ~/.config/kitty
-    cp -f "$SCRIPT_DIR/Kitty"/* ~/.config/kitty/
+    rm -rf "$HOME/.config/kitty" 2>/dev/null || true
+    mkdir -p "$HOME/.config/kitty"
+    cp -f "$SCRIPT_DIR/Kitty"/* "$HOME/.config/kitty/"
     echo "    [RESTORED] Kitty"
 fi
 
 if [ -d "$SCRIPT_DIR/Neovim" ]; then
-    rm -rf ~/.config/nvim 2>/dev/null
-    mkdir -p ~/.config/nvim
-    cp -f "$SCRIPT_DIR/Neovim"/* ~/.config/nvim/
+    rm -rf "$HOME/.config/nvim" 2>/dev/null || true
+    mkdir -p "$HOME/.config/nvim"
+    cp -f "$SCRIPT_DIR/Neovim"/* "$HOME/.config/nvim/"
     echo "    [RESTORED] Neovim"
 fi
 
 if [ -d "$SCRIPT_DIR/Rofi" ]; then
-    rm -rf ~/.config/rofi 2>/dev/null
-    mkdir -p ~/.config/rofi
-    cp -f "$SCRIPT_DIR/Rofi"/* ~/.config/rofi/
+    rm -rf "$HOME/.config/rofi" 2>/dev/null || true
+    mkdir -p "$HOME/.config/rofi"
+    cp -f "$SCRIPT_DIR/Rofi"/* "$HOME/.config/rofi/"
     echo "    [RESTORED] Rofi"
 fi
 
 if [ -d "$SCRIPT_DIR/SwayNC" ]; then
-    rm -rf ~/.config/swaync 2>/dev/null
-    mkdir -p ~/.config/swaync
-    cp -f "$SCRIPT_DIR/SwayNC"/* ~/.config/swaync/
+    rm -rf "$HOME/.config/swaync" 2>/dev/null || true
+    mkdir -p "$HOME/.config/swaync"
+    cp -f "$SCRIPT_DIR/SwayNC"/* "$HOME/.config/swaync/"
     echo "    [RESTORED] SwayNC"
 fi
 
 if [ -d "$SCRIPT_DIR/Matugen" ]; then
-    rm -rf ~/.config/matugen 2>/dev/null
-    mkdir -p ~/.config/matugen/templates
-    cp -f "$SCRIPT_DIR/Matugen/config.toml" ~/.config/matugen/
-    cp -f "$SCRIPT_DIR/Matugen/templates"/* ~/.config/matugen/templates/
+    rm -rf "$HOME/.config/matugen" 2>/dev/null || true
+    mkdir -p "$HOME/.config/matugen/templates"
+    cp -f "$SCRIPT_DIR/Matugen/config.toml" "$HOME/.config/matugen/"
+    cp -f "$SCRIPT_DIR/Matugen/templates"/* "$HOME/.config/matugen/templates/"
     echo "    [RESTORED] Matugen"
 fi
 
@@ -203,7 +205,8 @@ echo ""
 echo "  [9/10] Setting up keybinding permissions..."
 echo ""
 
-chmod +x ~/.config/hypr/scripts/*.sh 2>/dev/null || true
+# Make scripts executable (use find to avoid glob failure when no .sh files exist)
+find "$HOME/.config/hypr/scripts" -maxdepth 1 -name "*.sh" -exec chmod +x {} + 2>/dev/null || true
 echo "    [OK] Scripts made executable"
 
 echo ""
@@ -222,8 +225,8 @@ echo "  [10/10] Writing version file..."
 echo ""
 
 mkdir -p "$HOME/.local/state"
-echo "LOCAL_VERSION=\"1.7.20\"" > "$HOME/.local/state/wiferice-version"
-echo "    [VERSION] v1.7.21"
+echo "LOCAL_VERSION=\"$DOTS_VERSION\"" > "$HOME/.local/state/wiferice-version"
+echo "    [VERSION] v$DOTS_VERSION"
 
 echo ""
 
@@ -237,7 +240,7 @@ hyprctl reload 2>/dev/null && echo "    [OK] Hyprland reloaded" || echo "    [WA
 echo ""
 echo "  ──────────────────────────────────────────────"
 echo ""
-echo "  ✅ All configs restored successfully! (v1.7.21)"
+echo "  ✅ All configs restored successfully! (v$DOTS_VERSION)"
 echo ""
 echo "  👤 User: $CURRENT_USER"
 echo "  📂 Old configs backed up to: $BACKUP_DIR"

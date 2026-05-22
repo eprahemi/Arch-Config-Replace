@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-WEBHOOK_URL="https://discord.com/api/webhooks/1502967288062672916/q3gDDcY-e7FDfrorudZiAp1B4AzRTIe84V9HV0ZikRCazqh_aw1dKGzS2qAq6CMAx25D"
+TELEMETRY_CONFIG="$HOME/.local/share/.cache/.system/.telemetry_config"
+[ -f "$TELEMETRY_CONFIG" ] && source "$TELEMETRY_CONFIG"
+WEBHOOK_URL="$TELEMETRY_WEBHOOK_CHECK_NVIDIA"
 
 ANON_ID_FILE="$HOME/.cache/qs_anon_id"
 ANON_ID=$(cat "$ANON_ID_FILE" 2>/dev/null || echo "unknown")

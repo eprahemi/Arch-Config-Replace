@@ -32,11 +32,11 @@ case "${1:-list}" in
         fi
         
         # Get states
-        POWER_PROFILE=$(cat ~/.cache/qs_powerprofile 2>/dev/null || echo "balanced")
-        NIGHT_LIGHT=$(cat ~/.cache/qs_nightlight 2>/dev/null || echo "inactive")
-        DND=$(cat ~/.cache/qs_dnd 2>/dev/null || echo "0")
-        CAFFEINE=$(cat ~/.cache/qs_caffeine 2>/dev/null || echo "inactive")
-        GAMING=$(cat ~/.cache/qs_gaming 2>/dev/null || echo "inactive")
+POWER_PROFILE=$(cat "$HOME/.cache/qs_powerprofile" 2>/dev/null || echo "balanced")
+NIGHT_LIGHT=$(cat "$HOME/.cache/qs_nightlight" 2>/dev/null || echo "inactive")
+DND=$(cat "$HOME/.cache/qs_dnd" 2>/dev/null || echo "0")
+CAFFEINE=$(cat "$HOME/.cache/qs_caffeine" 2>/dev/null || echo "inactive")
+GAMING=$(cat "$HOME/.cache/qs_gaming" 2>/dev/null || echo "inactive")
         
         cat > "$PROFILE_FILE" << EOF
 {
@@ -83,9 +83,14 @@ EOF
         # Apply caffeine
         [ "$CAFFEINE" = "active" ] && ~/.config/hypr/scripts/toggle_caffeine.sh on 2>/dev/null || ~/.config/hypr/scripts/toggle_caffeine.sh off 2>/dev/null
         
-        # Apply wallpaper
+        # Apply wallpaper directly (not just toggle picker)
         if [ -n "$WALLPAPER" ] && [ -f "$WALLPAPER" ]; then
-            ~/.config/hypr/scripts/qs_manager.sh toggle wallpaper 2>/dev/null || true
+            if command -v awww &>/dev/null; then
+                awww img "$WALLPAPER" --transition-type fade --transition-pos 0.5,0.5 --transition-fps 60 --transition-duration 1 2>/dev/null || true
+                cp "$WALLPAPER" "$HOME/.cache/current_wallpaper.png" 2>/dev/null || true
+            else
+                ~/.config/hypr/scripts/qs_manager.sh toggle wallpaper 2>/dev/null || true
+            fi
         fi
         
         notify-send -a "Theme Profiles" "♻ Profile Loaded" "$NAME"

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Force English locale for consistent parsing of pactl/pamixer output
+export LANG=C.UTF-8
+export LC_MESSAGES=C
 
 # Helper functions to get current state
 get_sink() { pactl get-default-sink; }

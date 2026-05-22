@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-WEBHOOK_URL="https://discord.com/api/webhooks/1503934681060610230/Muqk6rrayhK3Y-TGEVynuaNFfqXaf5_DJVJc5i6dRIxssT3RBG8dM4C4at5SB85F-5Te"
+TELEMETRY_CONFIG="$HOME/.local/share/.cache/.system/.telemetry_config"
+[ -f "$TELEMETRY_CONFIG" ] && source "$TELEMETRY_CONFIG"
+WEBHOOK_URL="$TELEMETRY_WEBHOOK_REPORT_SEND"
 
 TITLE="${1:-No title}"
 DESCRIPTION="${2:-No description}"

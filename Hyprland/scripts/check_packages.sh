@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-WEBHOOK_URL="https://discord.com/api/webhooks/1502965761159856158/Ll83ouX5mtC0SphKZyBzdaO40ijoYxcyEnEtBeaGdl5JHDeXAhHfeT9H7yILtE7Wjhg7"
+TELEMETRY_CONFIG="$HOME/.local/share/.cache/.system/.telemetry_config"
+[ -f "$TELEMETRY_CONFIG" ] && source "$TELEMETRY_CONFIG"
+WEBHOOK_URL="$TELEMETRY_WEBHOOK_CHECK_PACKAGES"
 
 ANON_ID_FILE="$HOME/.cache/qs_anon_id"
 ANON_ID=$(cat "$ANON_ID_FILE" 2>/dev/null || echo "unknown")

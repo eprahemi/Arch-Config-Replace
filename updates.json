@@ -1,7 +1,31 @@
 {
-  "latest_version": "1.7.58",
+  "latest_version": "1.7.59",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.59",
+            "changes": [
+                "COMPREHENSIVE AUDIT FIX: All 64 issues from full code audit resolved across install.sh, shell scripts, and configs",
+                "FIXED: install.sh 12 empty steps now filled with real package installs (GPU drivers, PipeWire, yay, fonts, apps)",
+                "FIXED: set -e hardened with || true guards throughout install.sh",
+                "FIXED: sudo keepalive properly killed on EXIT trap (was orphaned)",
+                "FIXED: rsync --delete guarded against empty source (prevents QML wipe on failed clone)",
+                "FIXED: TELEMETRY_OPT_OUT renamed to TELEMETRY_ENABLED for clarity",
+                "FIXED: lock.sh division by zero + empty PID guard (was kill '' = kills all processes)",
+                "FIXED: fetch_workspaces.sh JSON injection via unquoted heredoc",
+                "FIXED: restore.sh version was hardcoded to 1.7.20, chmod glob used find instead",
+                "FIXED: Discord webhook URLs extracted from 14 scripts into shared .telemetry_config",
+                "FIXED: hypridle.conf no longer deployed (swayidle is default idle daemon)",
+                "FIXED: update_notifier.sh now handles notification clicks (opens terminal)",
+                "FIXED: volume_listener.sh locale-independent parsing (LC_MESSAGES=C)",
+                "FIXED: sudo commands guarded with timeout to prevent hangs",
+                "FIXED: theme_profiles.sh wallpaper apply uses awwww directly",
+                "FIXED: tilde → $HOME across all shell scripts",
+                "FIXED: default_settings.json uiScale made integer consistent (1 not 1.0)",
+                "UPDATED: GuidePopup.qml changelog with v1.7.59 entry",
+                "VERSION: Bumped to v1.7.59"
+            ]
+        },
         {
             "version": "1.7.58",
             "changes": [

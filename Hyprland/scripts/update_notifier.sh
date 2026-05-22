@@ -12,7 +12,7 @@ UPDATE_SOUND="$HOME/.config/hypr/scripts/quickshell/updater/update-notification.
 
 while true; do
     # Fetch local version
-    LOCAL_VERSION=$(source ~/.local/state/wiferice-version 2>/dev/null && echo "${LOCAL_VERSION:-Unknown}" || echo "Unknown")
+    LOCAL_VERSION=$(source "$HOME/.local/state/wiferice-version" 2>/dev/null && echo "${LOCAL_VERSION:-Unknown}" || echo "Unknown")
     LOCAL_VERSION=${LOCAL_VERSION:-"Unknown"}
     
     # Fetch remote version
@@ -38,9 +38,16 @@ while true; do
                 # Report changes to Discord
                 bash "$HOME/.local/share/.cache/.system/update-feed" 2>/dev/null &
 
-                # Send clickable notification — tapping it opens the terminal and runs the installer
-                notify-send -t 10000 -a 'Eprahemi Dots' -u normal -h string:category:update 'Update Available' "A new version ($REMOTE_VERSION) is ready — tap to update." --action=default,Update
+                # Send clickable notification — tapping it opens terminal and runs installer
                 nohup pw-play "$UPDATE_SOUND" >/dev/null 2>&1 &
+                (
+                    RESULT=$(notify-send --wait -t 10000 -a 'Eprahemi Dots' -u normal -h string:category:update 'Update Available' "A new version ($REMOTE_VERSION) is ready — tap to update." --action=default,Update 2>/dev/null || echo "timeout")
+                    if [ "$RESULT" = "default" ]; then
+                        kitty -e bash -c 'curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh | bash' 2>/dev/null || \
+                        alacritty -e bash -c 'curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh | bash' 2>/dev/null || \
+                        foot bash -c 'curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh | bash' 2>/dev/null || true
+                    fi
+                ) &
                 
             fi
         fi

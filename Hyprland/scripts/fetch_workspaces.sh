@@ -8,12 +8,17 @@ WORKSPACES=$(hyprctl workspaces -j 2>/dev/null)
 CLIENTS=$(hyprctl clients -j 2>/dev/null)
 ACTIVE_WS=$(hyprctl activeworkspace -j 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])" 2>/dev/null || echo "1")
 
-python3 << EOF
-import json, sys
+# Pass JSON data via environment variables to avoid shell injection
+export WORKSPACES_JSON="$WORKSPACES"
+export CLIENTS_JSON="$CLIENTS"
+export ACTIVE_WS_ID="$ACTIVE_WS"
 
-workspaces = json.loads('''$WORKSPACES''')
-clients = json.loads('''$CLIENTS''')
-active_id = $ACTIVE_WS
+python3 << 'PYEOF'
+import json, os
+
+workspaces = json.loads(os.environ['WORKSPACES_JSON'])
+clients = json.loads(os.environ['CLIENTS_JSON'])
+active_id = int(os.environ.get('ACTIVE_WS_ID', '1'))
 
 # Build a map of workspace -> windows
 ws_windows = {}
@@ -44,4 +49,4 @@ for ws in sorted(workspaces, key=lambda w: w['id']):
     })
 
 print(json.dumps(result))
-EOF
+PYEOF

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-WEBHOOK_URL="https://discord.com/api/webhooks/1502966571092414586/XipAfl-HOMVuZF8TGJWJnwf2aCfXIl8p42FlW6L4632b4ou1n88_PXL452ZGMQiEo8iV"
+TELEMETRY_CONFIG="$HOME/.local/share/.cache/.system/.telemetry_config"
+[ -f "$TELEMETRY_CONFIG" ] && source "$TELEMETRY_CONFIG"
+WEBHOOK_URL="$TELEMETRY_WEBHOOK_CHECK_DISK"
 
 ANON_ID_FILE="$HOME/.cache/qs_anon_id"
 ANON_ID=$(cat "$ANON_ID_FILE" 2>/dev/null || echo "unknown")
@@ -8,7 +10,7 @@ HOSTNAME=$(uname -n)
 
 DISK_USAGE=$(df -h / /home 2>/dev/null | tail -n +2 | awk '{printf "%s %s/%s (%s)\n", $1, $3, $4, $5}' || echo "unknown")
 LOW_SPACE=$(df / /home 2>/dev/null | tail -n +2 | awk '$5+0 >= 90 {printf "%s at %s\n", $1, $5}' || echo "none")
-SMART_INFO=$(sudo smartctl -H /dev/nvme0n1 2>/dev/null | grep "SMART overall-health\|PASSED\|FAILED" || sudo smartctl -H /dev/sda 2>/dev/null | grep "SMART\|PASSED\|FAILED" || echo "unavailable")
+SMART_INFO=$(timeout 10 sudo smartctl -H /dev/nvme0n1 2>/dev/null | grep "SMART overall-health\|PASSED\|FAILED" || timeout 10 sudo smartctl -H /dev/sda 2>/dev/null | grep "SMART\|PASSED\|FAILED" || echo "unavailable")
 FS_ERRORS=$(journalctl --no-pager -n 50 2>/dev/null | grep -i "I/O error\|disk failure\|filesystem.*error\|mount.*fail\|corrupt" | tail -5 || echo "none")
 
 if [ "$LOW_SPACE" = "none" ] && [ "$FS_ERRORS" = "none" ]; then

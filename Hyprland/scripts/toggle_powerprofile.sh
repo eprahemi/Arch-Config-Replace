@@ -35,9 +35,9 @@ apply_profile() {
     else
         # cpupower fallback
         case "$profile" in
-            performance) echo "performance" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null ;;
-            powersave) echo "powersave" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null ;;
-            balanced) echo "ondemand" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null ;;
+            performance) timeout 5 bash -c 'echo "performance" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null' || true ;;
+            powersave) timeout 5 bash -c 'echo "powersave" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null' || true ;;
+            balanced) timeout 5 bash -c 'echo "ondemand" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 2>/dev/null' || true ;;
         esac
     fi
     echo "$profile" > "$STATE_FILE"

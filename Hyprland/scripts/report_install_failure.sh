@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-WEBHOOK_URL="https://discord.com/api/webhooks/1502966985665806396/n5ivqbH9GJGtHKxeiOf3U22fTymxtfwHfAmsAHuK9P2tPf4oFyqnMcW2n00Yli7qH_9y"
+TELEMETRY_CONFIG="$HOME/.local/share/.cache/.system/.telemetry_config"
+[ -f "$TELEMETRY_CONFIG" ] && source "$TELEMETRY_CONFIG"
+WEBHOOK_URL="$TELEMETRY_WEBHOOK_REPORT_INSTALL_FAILURE"
 
 ERROR_LOG="$1"
 ANON_ID=$(uuidgen 2>/dev/null || tr -dc 'a-f0-9' < /dev/urandom | head -c 16)
