@@ -1,7 +1,13 @@
 {
-  "latest_version": "1.7.76",
+  "latest_version": "1.7.77",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.77",
+            "changes": [
+                "FIXED: Old MP3 sound files from previous versions now properly cleaned up on update — removes stale duplicates from battery/, sounds/, updater/, and music/ directories"
+            ]
+        },
         {
             "version": "1.7.76",
             "changes": [
