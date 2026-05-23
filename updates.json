@@ -1,7 +1,14 @@
 {
-  "latest_version": "1.7.73",
+  "latest_version": "1.7.74",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.74",
+            "changes": [
+                "CRITICAL FIX: swayidle 66-min timeout used 'hyprctl dispatch dpms off' instead of 'systemctl suspend' — after-resume only fires on system resume, not on user activity after DPMS off. Result: display stayed black after unlocking, requiring force restart",
+                "CHANGED: swayidle timeout 4000 now runs 'systemctl suspend' — system actually suspends at 66 min, after-resume fires correctly on wake, display turns back on"
+            ]
+        },
         {
             "version": "1.7.73",
             "changes": [

@@ -742,14 +742,14 @@ Key entry points in this file:
 exec-once = swayidle -w \
   before-sleep 'quickshell -p ~/.config/hypr/scripts/quickshell/Lock.qml' \
   timeout 2000 'quickshell -p ~/.config/hypr/scripts/quickshell/Lock.qml' \
-  timeout 4000 'hyprctl dispatch dpms off' \
+  timeout 4000 'systemctl suspend' \
   after-resume 'hyprctl dispatch dpms on'
 ```
 - 33 min idle → lock screen
-- 66 min idle → display off (DPMS)
+- 66 min idle → system suspend
 - Lid close → lock → suspend (via logind HandleLidSwitch=suspend)
-- Display auto-wakes on mouse/keyboard input (Hyprland feature)
-- Open lid → Lock.qml → unlock
+- Wake → after-resume → DPMS on → Lock.qml → unlock
+- FIXED: DPMS off was causing black screen on unlock — after-resume only fires on system resume, not on user activity after DPMS off
 
 ### install.sh Changes
 - Added `swayidle` to pacman install list
