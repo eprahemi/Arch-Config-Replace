@@ -1,7 +1,15 @@
 {
-  "latest_version": "1.7.77",
+  "latest_version": "1.7.78",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.78",
+            "changes": [
+                "CHANGED: Network sounds (connect, disconnect, error, power_on, power_off, switch) converted from WAV to MP3 — 2.1MB → 220KB, same quality",
+                "CHANGED: Network sounds organized into subfolders inside sounds/network/: connection/, power/, navigation/",
+                "CLEANUP: Old network/sounds/ WAV files cleaned up on update"
+            ]
+        },
         {
             "version": "1.7.77",
             "changes": [

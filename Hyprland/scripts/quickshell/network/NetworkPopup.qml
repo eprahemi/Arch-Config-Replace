@@ -25,7 +25,7 @@ Item {
                 window.pendingWifiId = ""; window.pendingWifiSsid = "";
                 return;
             }
-            window.playSfx("switch.wav");
+            window.playSfx("navigation/switch.mp3");
             let modes = [];
             if (window.ethPresent) modes.push("eth");
             if (window.wifiPresent) modes.push("wifi");
@@ -238,7 +238,7 @@ Item {
             if (code !== 0) {
                 window.failedId = targetId;
                 failClearTimer.restart();
-                window.playSfx("error.wav"); 
+                window.playSfx("connection/error.mp3"); 
                 
                 if (window.activeMode === "wifi" && targetSsid !== "") {
                     Quickshell.execDetached(["bash", "-c", "nmcli connection delete '" + targetSsid + "' 2>/dev/null"]);
@@ -614,7 +614,7 @@ Item {
 
             let newConnected = data.connected;
             if (JSON.stringify(window.ethConnected) !== JSON.stringify(newConnected)) {
-                if (!window.isEthConn && newConnected && window.activeMode === "eth") window.playSfx("connect.wav");
+                if (!window.isEthConn && newConnected && window.activeMode === "eth") window.playSfx("connection/connect.mp3");
                 window.ethConnected = newConnected;
             }
         } catch(e) {}
@@ -719,7 +719,7 @@ Item {
                     window.connectingId = "";
                 }
                 if (newlyConnected) {
-                    window.playSfx("connect.wav");
+                    window.playSfx("connection/connect.mp3");
                     window.busyTasks = Object.assign({}, bt);
                     if (Object.keys(window.busyTasks).length === 0 && Object.keys(window.disconnectingDevices).length === 0) busyTimeout.stop();
                 }
@@ -807,7 +807,7 @@ Item {
                     }
                 }
                 if (newlyConnected) {
-                    window.playSfx("connect.wav");
+                    window.playSfx("connection/connect.mp3");
                     window.busyTasks = Object.assign({}, bt);
                     if (Object.keys(window.busyTasks).length === 0 && Object.keys(window.disconnectingDevices).length === 0) busyTimeout.stop();
                 }
@@ -1608,7 +1608,7 @@ Item {
                                     coreFlashAnim.start();
                                     coreBumpAnim.start();
                                     
-                                    window.playSfx("disconnect.wav");
+                                    window.playSfx("connection/disconnect.mp3");
                                     
                                     let dd = window.disconnectingDevices;
                                     dd[coreContainer.myId] = true;
@@ -2144,7 +2144,7 @@ Item {
                                         cardBumpAnim.start();
                                         
                                         if (cmdStr === "TOGGLE_VIEW") {
-                                            window.playSfx("switch.wav");
+                                            window.playSfx("navigation/switch.mp3");
                                             window.showInfoView = !window.showInfoView;
                                             floatCard.triggered = false;
                                             drainAnim.start();
@@ -2308,7 +2308,7 @@ Item {
                                 if (window.activeMode !== "eth") {
                                     window.powerAnimAllowed = false;
                                     powerAnimBlocker.restart();
-                                    window.playSfx("switch.wav");
+                                    window.playSfx("navigation/switch.mp3");
                                     window.activeMode = "eth";
                                 }
                             }
@@ -2347,7 +2347,7 @@ Item {
                                 if (window.activeMode !== "wifi") {
                                     window.powerAnimAllowed = false;
                                     powerAnimBlocker.restart();
-                                    window.playSfx("switch.wav");
+                                    window.playSfx("navigation/switch.mp3");
                                     window.activeMode = "wifi";
                                 }
                             }
@@ -2378,7 +2378,7 @@ Item {
                                 if (window.activeMode !== "bt") {
                                     window.powerAnimAllowed = false;
                                     powerAnimBlocker.restart();
-                                    window.playSfx("switch.wav");
+                                    window.playSfx("navigation/switch.mp3");
                                     window.activeMode = "bt";
                                 }
                             }
@@ -2489,7 +2489,7 @@ Item {
                                 if (window.ethPowerPending) return;
                                 window.expectedEthPower = window.ethPower === "on" ? "off" : "on";
                                 window.ethPowerPending = true;
-                                if (window.expectedEthPower === "on") window.playSfx("power_on.wav"); else window.playSfx("power_off.wav");
+                                if (window.expectedEthPower === "on") window.playSfx("power/power_on.mp3"); else window.playSfx("power/power_off.mp3");
                                 ethPendingReset.restart();
                                 window.ethPower = window.expectedEthPower; 
                                 let targetDev = window.ethDeviceName !== "" ? window.ethDeviceName : (window.currentCores[0] ? window.currentCores[0].id : "");
@@ -2502,7 +2502,7 @@ Item {
                                 if (window.wifiPowerPending) return;
                                 window.expectedWifiPower = window.wifiPower === "on" ? "off" : "on";
                                 window.wifiPowerPending = true;
-                                if (window.expectedWifiPower === "on") window.playSfx("power_on.wav"); else window.playSfx("power_off.wav");
+                                if (window.expectedWifiPower === "on") window.playSfx("power/power_on.mp3"); else window.playSfx("power/power_off.mp3");
                                 wifiPendingReset.restart();
                                 window.wifiPower = window.expectedWifiPower;
                                 Quickshell.execDetached(["nmcli", "radio", "wifi", window.wifiPower]);
@@ -2511,7 +2511,7 @@ Item {
                                 if (window.btPowerPending) return;
                                 window.expectedBtPower = window.btPower === "on" ? "off" : "on";
                                 window.btPowerPending = true;
-                                if (window.expectedBtPower === "on") window.playSfx("power_on.wav"); else window.playSfx("power_off.wav");
+                                if (window.expectedBtPower === "on") window.playSfx("power/power_on.mp3"); else window.playSfx("power/power_off.mp3");
                                 btPendingReset.restart();
                                 window.btPower = window.expectedBtPower;
                                 Quickshell.execDetached(["bash", window.scriptsDir + "/bluetooth_panel_logic.sh", "--toggle"]);
