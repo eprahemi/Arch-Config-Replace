@@ -1,14 +1,7 @@
 {
-  "latest_version": "1.7.75",
+  "latest_version": "1.7.74",
   "videos": [],
   "changelog": [
-        {
-            "version": "1.7.75",
-            "changes": [
-                "CLEANUP: .ai/ directory removed from repo tracking — AI memory now lives locally at ~/WifeRice-Agent-AI.md only",
-                "CHANGED: .gitignore now includes .ai/ so no AI artifacts ever get pushed to remote"
-            ]
-        },
         {
             "version": "1.7.74",
             "changes": [
