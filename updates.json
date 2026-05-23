@@ -1,7 +1,14 @@
 {
-  "latest_version": "1.7.74",
+  "latest_version": "1.7.76",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.76",
+            "changes": [
+                "SECURITY: Hardened shell script input validation across audio_autoswitch.sh and usb_sound.sh — prevents potential command injection via malformed USB device descriptors",
+                "SECURITY: Patched path traversal vector in settings_watcher.sh — sanitized template variable substitution to prevent arbitrary file read"
+            ]
+        },
         {
             "version": "1.7.74",
             "changes": [
