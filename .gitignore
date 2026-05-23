@@ -1,2 +1,3 @@
 *.env
 Hyprland/config/env.conf
+.ai/
