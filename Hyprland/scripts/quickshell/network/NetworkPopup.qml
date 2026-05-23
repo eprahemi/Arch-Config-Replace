@@ -157,7 +157,7 @@ Item {
 
     function playSfx(filename) {
         try {
-            let rawUrl = Qt.resolvedUrl("sounds/" + filename).toString();
+            let rawUrl = Qt.resolvedUrl("../sounds/network/" + filename).toString();
             let cleanPath = rawUrl;
             if (cleanPath.indexOf("file://") === 0) cleanPath = cleanPath.substring(7); 
             let cmd = "pw-play '" + cleanPath + "' 2>/dev/null || paplay '" + cleanPath + "' 2>/dev/null";

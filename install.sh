@@ -530,11 +530,12 @@ else
 fi
 echo -e "  ${G}✓${N} All QuickShell QML files deployed (Floating.qml, GuidePopup.qml, Main.qml, Lock.qml, TopBar.qml)"
 
-# Clean up old MP3 locations that were moved to quickshell/sounds/{battery,usb,updater,music}/
+# Clean up old audio locations that were moved to quickshell/sounds/{battery,usb,updater,music,network}/
 rm -f "$QS_TARGET"/battery/*.mp3 2>/dev/null || true
 rm -f "$QS_TARGET"/sounds/plug-in.mp3 "$QS_TARGET"/sounds/un-plug.mp3 2>/dev/null || true
 rm -f "$QS_TARGET"/updater/update-notification.mp3 2>/dev/null || true
 rm -f "$QS_TARGET"/music/*.mp3 2>/dev/null || true
+rm -rf "$QS_TARGET"/network/sounds/ 2>/dev/null || true
 
 # Restart watchers that might have stale code in running processes
 # Use systemctl for service-managed watchers (systemd Restart=always
