@@ -536,8 +536,8 @@ rm -f "$QS_TARGET"/sounds/plug-in.mp3 "$QS_TARGET"/sounds/un-plug.mp3 2>/dev/nul
 rm -f "$QS_TARGET"/updater/update-notification.mp3 2>/dev/null || true
 rm -f "$QS_TARGET"/music/*.mp3 2>/dev/null || true
 rm -rf "$QS_TARGET"/network/sounds/ 2>/dev/null || true
-# Clean up old WAVs that were converted to MP3 and organized into subfolders
-rm -f "$QS_TARGET"/sounds/network/*.wav 2>/dev/null || true
+# Clean up old WAVs and any stale MP3s that were converted to subfolder structure
+rm -f "$QS_TARGET"/sounds/network/*.wav "$QS_TARGET"/sounds/network/*.mp3 2>/dev/null || true
 
 # Restart watchers that might have stale code in running processes
 # Use systemctl for service-managed watchers (systemd Restart=always
