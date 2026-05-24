@@ -561,10 +561,13 @@ if [ -f "$HYPR_TARGET/scripts/settings_watcher.sh" ]; then
     fi
 fi
 
-# Faces + Templates (use /./ to also copy hidden files like .face.icon)
-[ -d "$INSTALL_DIR/Faces" ] && mkdir -p "$HYPR_TARGET/Faces" && cp -rf "$INSTALL_DIR/Faces/." "$HYPR_TARGET/Faces/" 2>/dev/null || true
+# Faces icon — deploy to $HOME/.face.icon (where QML/scripts actually read it)
+[ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$HOME/.face.icon" 2>/dev/null || true
+# Clean up old Faces directory that was deployed to the wrong location
+rm -rf "$HYPR_TARGET/Faces" 2>/dev/null || true
+# Templates
 [ -d "$INSTALL_DIR/Hyprland/templates" ] && mkdir -p "$HYPR_TARGET/templates" && cp -rf "$INSTALL_DIR/Hyprland/templates/"* "$HYPR_TARGET/templates/" 2>/dev/null || true
-echo -e "  ${G}✓${N} Faces & templates deployed"
+echo -e "  ${G}✓${N} Templates deployed"
 
 # ─── CLEAN UP OLD USB SOUND PATH ──────────────────────────────────────────
 # v1.7.68 and earlier used udev RUN rules → su → pw-play, which was
