@@ -142,10 +142,13 @@ echo ""
 echo "  [6/10] Installing user face icon..."
 echo ""
 
-if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "$HOME/.face.icon" ] && [ ! -f "/usr/share/sddm/faces/.face.icon" ]; then
-    cp -f "$SCRIPT_DIR/Faces/.face.icon" "$HOME/.face.icon"
-    echo "    [INSTALLED] ~/.face.icon (Lockscreen)"
-    
+if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "$HOME/.config/hypr/Faces/.face.icon" ]; then
+    mkdir -p "$HOME/.config/hypr/Faces"
+    cp -f "$SCRIPT_DIR/Faces/.face.icon" "$HOME/.config/hypr/Faces/.face.icon"
+    echo "    [INSTALLED] ~/.config/hypr/Faces/.face.icon"
+fi
+
+if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "/usr/share/sddm/faces/.face.icon" ]; then
     if command -v sudo &>/dev/null; then
         sudo mkdir -p /usr/share/sddm/faces
         sudo cp -f "$SCRIPT_DIR/Faces/.face.icon" "/usr/share/sddm/faces/.face.icon"
@@ -262,7 +265,7 @@ echo "     • Super+D = App launcher"
 echo "     • Super+H = Help/Guide"
 echo ""
 echo "  🖼  Face Icon:"
-echo "     • Lockscreen → ~/.face.icon"
+echo "     • Lockscreen → ~/.config/hypr/Faces/.face.icon"
 echo "     • SDDM Login → /usr/share/sddm/faces/.face.icon"
 echo ""
 echo "  🖼  Wallpapers:"

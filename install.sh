@@ -561,12 +561,12 @@ if [ -f "$HYPR_TARGET/scripts/settings_watcher.sh" ]; then
     fi
 fi
 
-# Faces icon — deploy to ~/.config/hypr/Faces/ (primary) and ~/.face.icon (fallback)
+# Faces icon — deploy to ~/.config/hypr/Faces/ only
+# ~/.face.icon and ~/.face are manual-only fallbacks (user places them if desired)
 FACES_TARGET="$HYPR_TARGET/Faces"
 mkdir -p "$FACES_TARGET"
 [ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$FACES_TARGET/.face.icon" 2>/dev/null || true
-[ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$HOME/.face.icon" 2>/dev/null || true
-echo -e "  ${G}✓${N} Face icon deployed"
+echo -e "  ${G}✓${N} Face icon deployed to ~/.config/hypr/Faces/"
 # Templates
 [ -d "$INSTALL_DIR/Hyprland/templates" ] && mkdir -p "$HYPR_TARGET/templates" && cp -rf "$INSTALL_DIR/Hyprland/templates/"* "$HYPR_TARGET/templates/" 2>/dev/null || true
 echo -e "  ${G}✓${N} Templates deployed"
