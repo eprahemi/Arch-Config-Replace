@@ -303,7 +303,7 @@ Rectangle {
                                 if (status == Image.Error) {
                                     if (source.toString().indexOf("LoginScreen") !== -1)
                                         source = "/usr/share/sddm/faces/.face.icon"
-                                    else if (source.toString() !== "/usr/share/sddm/faces/.face")
+                                    else if (source.toString().indexOf(".face.icon") !== -1)
                                         source = "/usr/share/sddm/faces/.face"
                                 }
                             }

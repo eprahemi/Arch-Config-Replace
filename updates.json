@@ -1,7 +1,18 @@
 {
-  "latest_version": "1.7.88",
+  "latest_version": "1.7.89",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.89",
+            "changes": [
+                "FIXED: GuidePopup face icon cache now re-validates — if cached path no longer exists, rescans all face icon locations",
+                "FIXED: SDDM avatar fallback logic — final .face path can now actually be reached (was blocked by incorrect condition)",
+                "FIXED: install.sh and restore.sh now self-deploy to ~/.config/hypr/scripts/ during updates (were stuck at old versions)",
+                "FIXED: Deployed install.sh updated from stale v1.7.78 to v1.7.88 — LoginScreen Settings deploy, removed stale ~/.face.icon copy",
+                "FIXED: Deployed restore.sh per-username face icon (${CURRENT_USER}.face.icon) replaced with generic .face.icon in SDDM fallback chain",
+                "FIXED: SDDM Main.qml deployed copy now has corrected avatar fallback condition"
+            ]
+        },
         {
             "version": "1.7.88",
             "changes": [

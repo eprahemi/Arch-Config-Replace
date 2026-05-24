@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.88"
+DOTS_VERSION="1.7.89"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -551,6 +551,12 @@ if [ -d "$INSTALL_DIR/Hyprland/scripts" ]; then
     rsync -a --exclude='quickshell/' "$INSTALL_DIR/Hyprland/scripts/" "$HYPR_TARGET/scripts/" 2>/dev/null || true
     echo -e "  ${G}✓${N} Scripts deployed"
 fi
+
+# Self-update: ensure install.sh and restore.sh from repo root are deployed too
+# (they live at repo root but are not in Hyprland/scripts/ so rsync misses them)
+[ -f "$INSTALL_DIR/install.sh" ] && cp -f "$INSTALL_DIR/install.sh" "$HYPR_TARGET/scripts/install.sh"
+[ -f "$INSTALL_DIR/restore.sh" ] && cp -f "$INSTALL_DIR/restore.sh" "$HYPR_TARGET/scripts/restore.sh"
+echo -e "  ${G}✓${N} Installer/restorer synced"
 
 # Regenerate monitors.conf from settings.json and reload Hyprland
 if [ -f "$HYPR_TARGET/scripts/settings_watcher.sh" ]; then
