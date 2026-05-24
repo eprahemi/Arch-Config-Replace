@@ -1,7 +1,19 @@
 {
-  "latest_version": "1.7.82",
+  "latest_version": "1.7.83",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.83",
+            "changes": [
+                "NEW: GuidePopup System tab — rotating tips with SVG lightbulb icon, glass-morphism card, fade transitions",
+                "NEW: System tab Quick Stats — live CPU%, RAM, Disk, Uptime via resource monitor",
+                "FIXED: GuidePopup tipOpacity fatal error on non-About tabs — Behavior removed from all tabs except About",
+                "FIXED: CPU stat stuck at 0% — top -bn1 command with awk syntax fix + ps fallback",
+                "FIXED: SDDM face icon now reads .face.icon (generic) with fallback to .face instead of per-username file",
+                "CHANGED: restore.sh copies face icon to /usr/share/sddm/faces/.face.icon only (no username variant)",
+                "CHANGED: Rotating tips moved from About tab to System tab; About tab shows only links + version"
+            ]
+        },
         {
             "version": "1.7.82",
             "changes": [
