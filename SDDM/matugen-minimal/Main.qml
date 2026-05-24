@@ -151,11 +151,15 @@ Rectangle {
             anchors.fill: parent
             fillMode: Image.PreserveAspectCrop
             visible: false
-            // Primary: user's custom login wallpaper from LoginScreen Settings; fallback: theme default
-            source: "file:///home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper.png"
+            // Tries png/jpg/jpeg/webp/bmp in LoginScreen Settings, then falls back to theme default
+            property int _wpFB: 0
+            property var _wpExts: ["png", "jpg", "jpeg", "webp", "bmp"]
+            source: _wpFB <= 4
+                ? "file:///home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper." + _wpExts[_wpFB]
+                : config.background
             onStatusChanged: {
-                if (status == Image.Error) {
-                    source = config.background
+                if (status == Image.Error && _wpFB <= 4) {
+                    _wpFB++
                 }
             }
         }

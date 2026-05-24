@@ -1388,7 +1388,7 @@ Item {
                             "Drop images in ~/Pictures/Wallpapers/ to add them to the picker",
                             "Place MP4 files in ~/Pictures/Wallpapers/ for video wallpapers",
                             "Drop images in ~/.config/hypr/Lockscreen Wallpaper/ to change the lock screen",
-                            "Replace wallpaper.png in /usr/share/sddm/themes/matugen-minimal/ to change the login screen",
+                            "Drop any image (PNG, JPG, WEBP, BMP) in ~/.config/hypr/LoginScreen Settings/Wallpaper/ to change the login screen",
                             "Place a .face.icon in /usr/share/sddm/faces/ for the login screen avatar",
                             "Settings are stored at ~/.config/hypr/settings.json",
                             "Use the Report tab (Super+H) to report bugs with system info",

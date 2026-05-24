@@ -1,7 +1,15 @@
 {
-  "latest_version": "1.7.87",
+  "latest_version": "1.7.88",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.88",
+            "changes": [
+                "CHANGED: SDDM wallpaper now supports any image format (PNG, JPG, JPEG, WEBP, BMP) in ~/.config/hypr/LoginScreen Settings/Wallpaper/",
+                "CHANGED: GuidePopup tip updated — now points to LoginScreen Settings/ override folder instead of system SDDM path",
+                "FIXED: Repo SDDM Main.qml now has multi-format wallpaper fallback (was limited to wallpaper.png only)"
+            ]
+        },
         {
             "version": "1.7.83",
             "changes": [
