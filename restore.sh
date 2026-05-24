@@ -142,7 +142,7 @@ echo ""
 echo "  [6/10] Installing user face icon..."
 echo ""
 
-if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "$HOME/.face.icon" ] && [ ! -f "/usr/share/sddm/faces/${CURRENT_USER}.face.icon" ]; then
+if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "$HOME/.face.icon" ] && [ ! -f "/usr/share/sddm/faces/.face.icon" ]; then
     cp -f "$SCRIPT_DIR/Faces/.face.icon" "$HOME/.face.icon"
     echo "    [INSTALLED] ~/.face.icon (Lockscreen)"
     
@@ -263,7 +263,7 @@ echo "     • Super+H = Help/Guide"
 echo ""
 echo "  🖼  Face Icon:"
 echo "     • Lockscreen → ~/.face.icon"
-echo "     • SDDM Login → /usr/share/sddm/faces/${CURRENT_USER}.face.icon"
+echo "     • SDDM Login → /usr/share/sddm/faces/.face.icon"
 echo ""
 echo "  🖼  Wallpapers:"
 echo "     • Folder → ~/Pictures/Wallpapers/ (for picker - Super+W)"
