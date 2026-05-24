@@ -302,9 +302,9 @@ echo -e "  ${Y}─${N} Installing development tools..."
 # Install AUR packages if yay is available
 if command -v yay &>/dev/null; then
     echo -e "  ${Y}─${N} Installing AUR applications..."
-    yay -S --noconfirm --needed visual-studio-code-bin google-chrome discord steam microsoft-edge-stable-bin 2>&1 | sed 's/^/  /' || true
+    yay -S --noconfirm --needed visual-studio-code-bin google-chrome discord microsoft-edge-stable-bin 2>&1 | sed 's/^/  /' || true
 else
-    echo -e "  ${Y}─${N} yay not available — skipping AUR packages (Chrome, Discord, Steam, Edge)"
+    echo -e "  ${Y}─${N} yay not available — skipping AUR packages (Chrome, Discord, Edge)"
 fi
 echo -e "  ${G}✓${N} Applications installed"
 
