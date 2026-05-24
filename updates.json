@@ -1,5 +1,5 @@
 {
-  "latest_version": "1.7.86",
+  "latest_version": "1.7.87",
   "videos": [],
   "changelog": [
         {
@@ -35,6 +35,16 @@
                 "FIXED: restore.sh condition and summary still referenced username-specific face icon path",
                 "FIXED: restore.sh face icon block split into correct separate blocks for hypr vs SDDM",
                 "FIXED: install.sh no longer copies face icon to ~/.face.icon (manual fallback only)"
+            ]
+        },
+        {
+            "version": "1.7.87",
+            "changes": [
+                "NEW: SDDM login screen reads ~/.config/hypr/LoginScreen Settings/ first — drop wallpaper.png and .face.icon there to customize login screen without touching system files",
+                "FIXED: SDDM theme wallpaper and avatar now check LoginScreen Settings before SDDM system paths",
+                "CHANGED: install.sh and restore.sh deploy default wallpaper + face icon to LoginScreen Settings/",
+                "CHANGED: SDDM avatar fallback chain: LoginScreen Settings → /usr/share/sddm/faces/.face.icon → /usr/share/sddm/faces/.face",
+                "CHANGED: SDDM wallpaper fallback chain: LoginScreen Settings → theme default wallpaper.png"
             ]
         },
         {

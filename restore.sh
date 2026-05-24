@@ -10,9 +10,9 @@ set -e
 # Read from installed version file first (keeps in sync with install.sh)
 if [ -f "$HOME/.local/state/wiferice-version" ]; then
     source "$HOME/.local/state/wiferice-version"
-    DOTS_VERSION="${LOCAL_VERSION:-1.7.86}"
+    DOTS_VERSION="${LOCAL_VERSION:-1.7.87}"
 
-    DOTS_VERSION="1.7.86"
+    DOTS_VERSION="1.7.87"
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -156,6 +156,13 @@ if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "/usr/share/sddm/faces/.face.
     fi
 fi
 
+# Always ensure LoginScreen Settings has defaults
+LOGIN_SCREEN_SETTINGS="$HOME/.config/hypr/LoginScreen Settings"
+mkdir -p "$LOGIN_SCREEN_SETTINGS/faces" "$LOGIN_SCREEN_SETTINGS/Wallpaper"
+[ -f "$SCRIPT_DIR/Faces/.face.icon" ] && cp -f "$SCRIPT_DIR/Faces/.face.icon" "$LOGIN_SCREEN_SETTINGS/faces/.face.icon" 2>/dev/null || true
+[ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_SETTINGS/Wallpaper/wallpaper.png" 2>/dev/null || true
+echo "    [INSTALLED] ~/.config/hypr/LoginScreen Settings/ (SDDM override)"
+
 echo ""
 
 # ─── COPY WALLPAPERS TO PICTURES FOLDER ───────────────────────────────
@@ -267,11 +274,13 @@ echo ""
 echo "  🖼  Face Icon:"
 echo "     • Lockscreen → ~/.config/hypr/Faces/.face.icon"
 echo "     • SDDM Login → /usr/share/sddm/faces/.face.icon"
+echo "     • SDDM Override → ~/.config/hypr/LoginScreen Settings/faces/.face.icon"
 echo ""
 echo "  🖼  Wallpapers:"
 echo "     • Folder → ~/Pictures/Wallpapers/ (for picker - Super+W)"
 echo "     • Lockscreen → /usr/share/wallpapers/lock.png (default)"
 echo "     • Login (SDDM) → /usr/share/sddm/themes/matugen-minimal/wallpaper.png"
+echo "     • SDDM Override → ~/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper.png"
 echo ""
 echo "  📝 Terminal:"
 echo "     • ~/.zshrc installed (oh-my-zsh auto-installs)"

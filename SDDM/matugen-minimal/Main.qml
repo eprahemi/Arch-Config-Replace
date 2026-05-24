@@ -149,9 +149,15 @@ Rectangle {
         Image {
             id: bgWallpaper
             anchors.fill: parent
-            source: config.background
             fillMode: Image.PreserveAspectCrop
             visible: false
+            // Primary: user's custom login wallpaper from LoginScreen Settings; fallback: theme default
+            source: "file:///home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper.png"
+            onStatusChanged: {
+                if (status == Image.Error) {
+                    source = config.background
+                }
+            }
         }
 
         FastBlur {
@@ -285,11 +291,17 @@ Rectangle {
                         Image {
                             id: avatarImage
                             anchors.fill: parent
-                            source: "/usr/share/sddm/faces/.face.icon"
                             fillMode: Image.PreserveAspectCrop
                             visible: false
+                            // Primary: user's LoginScreen Settings face; fallback: SDDM faces dir
+                            source: "file:///home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/faces/.face.icon"
                             onStatusChanged: {
-                                if (status == Image.Error) source = "/usr/share/sddm/faces/.face"
+                                if (status == Image.Error) {
+                                    if (source.toString().indexOf("LoginScreen") !== -1)
+                                        source = "/usr/share/sddm/faces/.face.icon"
+                                    else if (source.toString() !== "/usr/share/sddm/faces/.face")
+                                        source = "/usr/share/sddm/faces/.face"
+                                }
                             }
                         }
 

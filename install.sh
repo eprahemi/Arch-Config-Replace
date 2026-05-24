@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.86"
+DOTS_VERSION="1.7.87"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -669,6 +669,15 @@ SDDMEOF
         echo -e "  ${Y}─${N} SDDM theme kept (user choice)"
     fi
 
+fi
+
+# Always ensure LoginScreen Settings directory has default wallpaper + face icon
+LOGIN_SCREEN_DIR="$HOME/.config/hypr/LoginScreen Settings"
+mkdir -p "$LOGIN_SCREEN_DIR/Wallpaper" "$LOGIN_SCREEN_DIR/faces"
+[ -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_DIR/Wallpaper/wallpaper.png" 2>/dev/null || true
+[ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$LOGIN_SCREEN_DIR/faces/.face.icon" 2>/dev/null || true
+echo -e "  ${G}✓${N} LoginScreen Settings deployed (~/.config/hypr/LoginScreen Settings/)"
+
 # Clear wallpaper picker cache on first install or when folder was empty (user deleted all)
 if [ ! -d "$HOME/Pictures/Wallpapers" ] || [ -z "$(ls -A "$HOME/Pictures/Wallpapers" 2>/dev/null)" ]; then
     rm -rf "$HOME/.cache/wallpaper_picker"
@@ -715,8 +724,6 @@ if command -v magick &>/dev/null || command -v convert &>/dev/null; then
     ls -1 "$HOME/.cache/wallpaper_picker/thumbs/" \
         | grep -v '^\.source_dir$' | grep -v '^\.manifest$' \
         > "$HOME/.cache/wallpaper_picker/thumbs/.manifest" 2>/dev/null || true
-fi
-
 fi
 
 # ─── THUMBNAIL CACHE CLEANUP ──────────────────────────────────────────
