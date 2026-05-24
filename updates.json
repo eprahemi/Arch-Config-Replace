@@ -1,7 +1,34 @@
 {
-  "latest_version": "1.7.78",
+  "latest_version": "1.7.82",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.82",
+            "changes": [
+                "FIXED: All ~/.Wallpapers/ references removed — no fallback, no migration code left behind",
+                "CHANGED: Face icon and lockscreen wallpaper paths consolidated under ~/.config/hypr/Faces/ and ~/.config/hypr/Lockscreen Wallpaper/"
+            ]
+        },
+        {
+            "version": "1.7.81",
+            "changes": [
+                "CHANGED: Face icon and lockscreen wallpaper organized under ~/.config/hypr/ — QML and scripts read from new paths first",
+                "FIXED: .face.icon deploy now copies hidden files correctly with /./ source path instead of * glob"
+            ]
+        },
+        {
+            "version": "1.7.80",
+            "changes": [
+                "FIXED: USB sounds path in deployed usb_sound.sh was stale (pointed to sounds/ not sounds/usb/)",
+                "FIXED: .face.icon now deployed to correct location that QML actually reads"
+            ]
+        },
+        {
+            "version": "1.7.79",
+            "changes": [
+                "REMOVED: Steam removed from install.sh AUR packages — saves 1.5GB of forced downloads; users who need it install manually with 'yay -S steam'"
+            ]
+        },
         {
             "version": "1.7.78",
             "changes": [
