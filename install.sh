@@ -567,12 +567,16 @@ if [ -f "$HYPR_TARGET/scripts/settings_watcher.sh" ]; then
     fi
 fi
 
-# Faces icon — deploy to ~/.config/hypr/Faces/ only
+# Faces icon — deploy to ~/.config/hypr/Faces/ only if user hasn't placed one
 # ~/.face.icon and ~/.face are manual-only fallbacks (user places them if desired)
 FACES_TARGET="$HYPR_TARGET/Faces"
 mkdir -p "$FACES_TARGET"
-[ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$FACES_TARGET/.face.icon" 2>/dev/null || true
-echo -e "  ${G}✓${N} Face icon deployed to ~/.config/hypr/Faces/"
+if [ ! -f "$FACES_TARGET/.face.icon" ]; then
+    [ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$FACES_TARGET/.face.icon" 2>/dev/null || true
+    echo -e "  ${G}✓${N} Face icon deployed to ~/.config/hypr/Faces/"
+else
+    echo -e "  ${Y}─${N} Face icon exists in ~/.config/hypr/Faces/ — keeping user's"
+fi
 # Templates
 [ -d "$INSTALL_DIR/Hyprland/templates" ] && mkdir -p "$HYPR_TARGET/templates" && cp -rf "$INSTALL_DIR/Hyprland/templates/"* "$HYPR_TARGET/templates/" 2>/dev/null || true
 echo -e "  ${G}✓${N} Templates deployed"
@@ -677,12 +681,23 @@ SDDMEOF
 
 fi
 
-# Always ensure LoginScreen Settings directory has default wallpaper + face icon
+# Ensure LoginScreen Settings directory exists — never overwrite user's files
 LOGIN_SCREEN_DIR="$HOME/.config/hypr/LoginScreen Settings"
 mkdir -p "$LOGIN_SCREEN_DIR/Wallpaper" "$LOGIN_SCREEN_DIR/faces"
-[ -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_DIR/Wallpaper/wallpaper.png" 2>/dev/null || true
-[ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$LOGIN_SCREEN_DIR/faces/.face.icon" 2>/dev/null || true
-echo -e "  ${G}✓${N} LoginScreen Settings deployed (~/.config/hypr/LoginScreen Settings/)"
+# Wallpaper: only deploy default if dir has no image files (any format)
+if [ -z "$(ls -A "$LOGIN_SCREEN_DIR/Wallpaper/" 2>/dev/null | grep -iE '\.(png|jpg|jpeg|webp|bmp)$' 2>/dev/null)" ]; then
+    [ -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_DIR/Wallpaper/wallpaper.png" 2>/dev/null || true
+    echo -e "  ${G}✓${N} Default wallpaper deployed to LoginScreen Settings/Wallpaper/"
+else
+    echo -e "  ${Y}─${N} Wallpaper exists in LoginScreen Settings — keeping user's"
+fi
+# Face icon: only deploy if not already present
+if [ ! -f "$LOGIN_SCREEN_DIR/faces/.face.icon" ]; then
+    [ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$LOGIN_SCREEN_DIR/faces/.face.icon" 2>/dev/null || true
+    echo -e "  ${G}✓${N} Default face icon deployed to LoginScreen Settings/faces/"
+else
+    echo -e "  ${Y}─${N} Face icon exists in LoginScreen Settings — keeping user's"
+fi
 
 # Clear wallpaper picker cache on first install or when folder was empty (user deleted all)
 if [ ! -d "$HOME/Pictures/Wallpapers" ] || [ -z "$(ls -A "$HOME/Pictures/Wallpapers" 2>/dev/null)" ]; then

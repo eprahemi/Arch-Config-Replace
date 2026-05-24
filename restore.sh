@@ -156,12 +156,23 @@ if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "/usr/share/sddm/faces/.face.
     fi
 fi
 
-# Always ensure LoginScreen Settings has defaults
+# Ensure LoginScreen Settings has defaults — never overwrite user's files
 LOGIN_SCREEN_SETTINGS="$HOME/.config/hypr/LoginScreen Settings"
 mkdir -p "$LOGIN_SCREEN_SETTINGS/faces" "$LOGIN_SCREEN_SETTINGS/Wallpaper"
-[ -f "$SCRIPT_DIR/Faces/.face.icon" ] && cp -f "$SCRIPT_DIR/Faces/.face.icon" "$LOGIN_SCREEN_SETTINGS/faces/.face.icon" 2>/dev/null || true
-[ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_SETTINGS/Wallpaper/wallpaper.png" 2>/dev/null || true
-echo "    [INSTALLED] ~/.config/hypr/LoginScreen Settings/ (SDDM override)"
+# Face icon: only deploy if not already present
+if [ ! -f "$LOGIN_SCREEN_SETTINGS/faces/.face.icon" ]; then
+    [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && cp -f "$SCRIPT_DIR/Faces/.face.icon" "$LOGIN_SCREEN_SETTINGS/faces/.face.icon" 2>/dev/null || true
+    echo "    [INSTALLED] ~/.config/hypr/LoginScreen Settings/faces/.face.icon"
+else
+    echo "    [SKIPPED] ~/.config/hypr/LoginScreen Settings/faces/.face.icon — user file exists"
+fi
+# Wallpaper: only deploy default if dir has no image files (any format)
+if [ -z "$(ls -A "$LOGIN_SCREEN_SETTINGS/Wallpaper/" 2>/dev/null | grep -iE '\.(png|jpg|jpeg|webp|bmp)$' 2>/dev/null)" ]; then
+    [ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_SETTINGS/Wallpaper/wallpaper.png" 2>/dev/null || true
+    echo "    [INSTALLED] ~/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper.png"
+else
+    echo "    [SKIPPED] ~/.config/hypr/LoginScreen Settings/Wallpaper/ — user files exist"
+fi
 
 echo ""
 
