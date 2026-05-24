@@ -1,7 +1,14 @@
 {
-  "latest_version": "1.7.90",
+  "latest_version": "1.7.91",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.91",
+            "changes": [
+                "FIXED: SDDM wallpaper and avatar paths changed from file:/// URLs to absolute paths — file:/// URLs with spaces/%20 fail on some Qt/SDDM versions; plain absolute paths work universally",
+                "FIXED: LoginScreen Settings/Wallpaper/ and faces/ re-deployed with proper files after update accidentally replaced user files"
+            ]
+        },
         {
             "version": "1.7.90",
             "changes": [
