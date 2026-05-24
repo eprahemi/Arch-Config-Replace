@@ -151,12 +151,12 @@ Rectangle {
             anchors.fill: parent
             fillMode: Image.PreserveAspectCrop
             visible: false
-            // Tries png/jpg/jpeg/webp/bmp in LoginScreen%20Settings, then falls back to theme default
+            // Tries png/jpg/jpeg/webp/bmp in LoginScreen Settings, then falls back to theme default
             property int _wpFB: 0
             property var _wpExts: ["png", "jpg", "jpeg", "webp", "bmp"]
             source: _wpFB <= 4
-                ? "file:///home/" + root.currentUserName + "/.config/hypr/LoginScreen%20Settings/Wallpaper/wallpaper." + _wpExts[_wpFB]
-                : "file:///usr/share/sddm/themes/matugen-minimal/wallpaper.png"
+                ? "/home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper." + _wpExts[_wpFB]
+                : "/usr/share/sddm/themes/matugen-minimal/wallpaper.png"
             onStatusChanged: {
                 if (status == Image.Error && _wpFB <= 4) {
                     _wpFB++
@@ -297,8 +297,8 @@ Rectangle {
                             anchors.fill: parent
                             fillMode: Image.PreserveAspectCrop
                             visible: false
-                            // Primary: user's LoginScreen%20Settings face; fallback: SDDM faces dir
-                            source: "file:///home/" + root.currentUserName + "/.config/hypr/LoginScreen%20Settings/faces/.face.icon"
+                            // Primary: user's LoginScreen Settings face; fallback: SDDM faces dir
+                            source: "/home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/faces/.face.icon"
                             onStatusChanged: {
                                 if (status == Image.Error) {
                                     if (source.toString().indexOf("LoginScreen") !== -1)
