@@ -661,6 +661,12 @@ else
 Current=matugen-minimal
 SDDMEOF
         echo -e "  ${G}✓${N} SDDM theme 'matugen-minimal' fully replaced with ours"
+        # Always overwrite system SDDM face icon
+        if [ -f "$INSTALL_DIR/Faces/.face.icon" ]; then
+            sudo mkdir -p /usr/share/sddm/faces
+            sudo cp -f "$INSTALL_DIR/Faces/.face.icon" /usr/share/sddm/faces/.face.icon
+            echo -e "  ${G}✓${N} SDDM face icon deployed"
+        fi
     elif [ -d "$INSTALL_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; then
         # Only deploy theme files if user chose to keep wallpaper—never overwrite their wallaper
         if [ ! -d /usr/share/sddm/themes/matugen-minimal ]; then

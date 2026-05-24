@@ -148,7 +148,7 @@ if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "$HOME/.config/hypr/Faces/.fa
     echo "    [INSTALLED] ~/.config/hypr/Faces/.face.icon"
 fi
 
-if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "/usr/share/sddm/faces/.face.icon" ]; then
+if [ -f "$SCRIPT_DIR/Faces/.face.icon" ]; then
     if command -v sudo &>/dev/null; then
         sudo mkdir -p /usr/share/sddm/faces
         sudo cp -f "$SCRIPT_DIR/Faces/.face.icon" "/usr/share/sddm/faces/.face.icon"
@@ -220,8 +220,8 @@ if [ -d "$SCRIPT_DIR/SDDM-Wallpaper" ]; then
         sudo cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/wallpapers/lock.png
         echo "    [RESTORED] /usr/share/wallpapers/lock.png (System default lockscreen)"
     fi
-    # SDDM login wallpaper — only set on first install
-    if [ ! -d /usr/share/sddm/themes/matugen-minimal ] && command -v sudo &>/dev/null; then
+    # SDDM login wallpaper — always overwrite with latest
+    if command -v sudo &>/dev/null; then
         sudo mkdir -p /usr/share/sddm/themes/matugen-minimal
         sudo cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/wallpaper.png
         echo "    [RESTORED] /usr/share/sddm/themes/matugen-minimal/wallpaper.png (Login Screen)"
