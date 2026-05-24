@@ -1,5 +1,5 @@
 {
-  "latest_version": "1.7.83",
+  "latest_version": "1.7.86",
   "videos": [],
   "changelog": [
         {
@@ -7,11 +7,34 @@
             "changes": [
                 "NEW: GuidePopup System tab — rotating tips with SVG lightbulb icon, glass-morphism card, fade transitions",
                 "NEW: System tab Quick Stats — live CPU%, RAM, Disk, Uptime via resource monitor",
+                "CHANGED: Rotating tips moved from About tab to System tab; About tab shows only links + version",
+                "NEW: tip_icon.svg — custom lightbulb SVG icon with gradient fills and glow dots"
+            ]
+        },
+        {
+            "version": "1.7.84",
+            "changes": [
                 "FIXED: GuidePopup tipOpacity fatal error on non-About tabs — Behavior removed from all tabs except About",
                 "FIXED: CPU stat stuck at 0% — top -bn1 command with awk syntax fix + ps fallback",
-                "FIXED: SDDM face icon now reads .face.icon (generic) with fallback to .face instead of per-username file",
-                "CHANGED: restore.sh copies face icon to /usr/share/sddm/faces/.face.icon only (no username variant)",
-                "CHANGED: Rotating tips moved from About tab to System tab; About tab shows only links + version"
+                "FIXED: Uptime stuck at 'Loading...' — resource monitor now populates sysUptime",
+                "FIXED: Uptime format changed from 'X hours, Y minutes' to 'Xh Ym'"
+            ]
+        },
+        {
+            "version": "1.7.85",
+            "changes": [
+                "FIXED: SDDM face icon now reads /usr/share/sddm/faces/.face.icon (generic) with fallback to .face instead of per-username file",
+                "FIXED: SDDM theme Main.qml updated in repo + deployed copy with onStatusChanged Image.Error fallback chain",
+                "CHANGED: restore.sh copies face icon to /usr/share/sddm/faces/.face.icon only (no username variant)"
+            ]
+        },
+        {
+            "version": "1.7.86",
+            "changes": [
+                "CHANGED: Face icon deployed only to ~/.config/hypr/Faces/.face.icon — ~/.face.icon is now manual-only fallback",
+                "FIXED: restore.sh condition and summary still referenced username-specific face icon path",
+                "FIXED: restore.sh face icon block split into correct separate blocks for hypr vs SDDM",
+                "FIXED: install.sh no longer copies face icon to ~/.face.icon (manual fallback only)"
             ]
         },
         {
