@@ -148,7 +148,6 @@ if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "$HOME/.face.icon" ] && [ ! -
     
     if command -v sudo &>/dev/null; then
         sudo mkdir -p /usr/share/sddm/faces
-        sudo cp -f "$SCRIPT_DIR/Faces/.face.icon" "/usr/share/sddm/faces/${CURRENT_USER}.face.icon"
         sudo cp -f "$SCRIPT_DIR/Faces/.face.icon" "/usr/share/sddm/faces/.face.icon"
         echo "    [INSTALLED] /usr/share/sddm/faces/.face.icon (SDDM Login)"
     fi
