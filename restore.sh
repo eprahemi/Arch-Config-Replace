@@ -165,13 +165,8 @@ mkdir -p "$LOCK_WALL_DIR"
 if [ -f "$SCRIPT_DIR/Wallpapers/README.md" ]; then
     cp -f "$SCRIPT_DIR/Wallpapers/README.md" "$LOCK_WALL_DIR/README.md" 2>/dev/null || true
 fi
-# Migrate old ~/.Wallpapers if it exists
-if [ -d "$HOME/.Wallpapers" ] && [ ! -L "$HOME/.Wallpapers" ]; then
-    for f in "$HOME/.Wallpapers"/lock.*; do
-        [ -f "$f" ] && cp -f "$f" "$LOCK_WALL_DIR/" 2>/dev/null || true
-    done
-    rm -rf "$HOME/.Wallpapers" 2>/dev/null || true
-fi
+# Clean up old ~/.Wallpapers location (no longer used)
+rm -rf "$HOME/.Wallpapers" 2>/dev/null || true
 mkdir -p "$HOME/Pictures/Wallpapers"
 
 if [ -d "$SCRIPT_DIR/Wallpapers" ]; then
