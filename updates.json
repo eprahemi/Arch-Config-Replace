@@ -1,7 +1,16 @@
 {
-  "latest_version": "1.7.89",
+  "latest_version": "1.7.90",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.90",
+            "changes": [
+                "FIXED: User override dirs (~/.config/hypr/Faces/, LoginScreen Settings/, Lockscreen Wallpaper/) — install.sh and restore.sh never overwrite existing user files",
+                "FIXED: System SDDM dirs (/usr/share/sddm/faces/, /usr/share/sddm/themes/matugen-minimal/) — always overwritten with latest defaults",
+                "FIXED: install.sh now also deploys face icon to /usr/share/sddm/faces/ (was missing entirely)",
+                "FIXED: restore.sh SDDM theme deploy no longer skips if directory exists — always updates"
+            ]
+        },
         {
             "version": "1.7.89",
             "changes": [
