@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-WALL_DIR="$HOME/.Wallpapers"
+WALL_DIR="$HOME/.config/hypr/Lockscreen Wallpaper"
 mkdir -p "$WALL_DIR"
 
 CHOSEN=$(find "$HOME/Pictures/Wallpapers" "$HOME" -maxdepth 3 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" -o -iname "*.gif" \) 2>/dev/null \

@@ -113,7 +113,7 @@ ShellRoot {
                 Process {
                     id: lockWallpaperFinder; running: true
                     command: ["bash", "-c",
-                        "for dir in \"$HOME/.Wallpapers\" /usr/share/wallpapers; do " +
+                        "for dir in \"$HOME/.config/hypr/Lockscreen Wallpaper\" \"$HOME/.Wallpapers\" /usr/share/wallpapers; do " +
                         "for f in \"$dir\"/lock.*; do " +
                         "[ -f \"$f\" ] && echo \"$f\" && exit 0; " +
                         "done; done; " +
@@ -244,7 +244,9 @@ ShellRoot {
                     id: userPoller
                     command: ["bash", "-c",
                         "USER_VAR=$(whoami); ICON_PATH=''; " +
-                        "if [ -f ~/.face.icon ]; then ICON_PATH=$(readlink -f ~/.face.icon); " +
+                        "FACES_DIR=\"$HOME/.config/hypr/Faces\"; " +
+                        "if [ -f \"$FACES_DIR/.face.icon\" ]; then ICON_PATH=$(readlink -f \"$FACES_DIR/.face.icon\"); " +
+                        "elif [ -f ~/.face.icon ]; then ICON_PATH=$(readlink -f ~/.face.icon); " +
                         "elif [ -f ~/.face ]; then ICON_PATH=$(readlink -f ~/.face); fi; " +
                         "echo -n \"$USER_VAR|$ICON_PATH\""]
                     stdout: StdioCollector {

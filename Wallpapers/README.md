@@ -2,6 +2,8 @@
 ║          LOCKSCREEN WALLPAPER        ║
 ╚══════════════════════════════════════╝
 
+Location: ~/.config/hypr/Lockscreen Wallpaper/
+
 ┌─ STEP 1 ─────────────────────────────┐
 │  Drop your favorite image here        │
 │  (any format — png, jpg, webp, ...)   │

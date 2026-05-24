@@ -561,10 +561,12 @@ if [ -f "$HYPR_TARGET/scripts/settings_watcher.sh" ]; then
     fi
 fi
 
-# Faces icon — deploy to $HOME/.face.icon (where QML/scripts actually read it)
+# Faces icon — deploy to ~/.config/hypr/Faces/ (primary) and ~/.face.icon (fallback)
+FACES_TARGET="$HYPR_TARGET/Faces"
+mkdir -p "$FACES_TARGET"
+[ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$FACES_TARGET/.face.icon" 2>/dev/null || true
 [ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$HOME/.face.icon" 2>/dev/null || true
-# Clean up old Faces directory that was deployed to the wrong location
-rm -rf "$HYPR_TARGET/Faces" 2>/dev/null || true
+echo -e "  ${G}✓${N} Face icon deployed"
 # Templates
 [ -d "$INSTALL_DIR/Hyprland/templates" ] && mkdir -p "$HYPR_TARGET/templates" && cp -rf "$INSTALL_DIR/Hyprland/templates/"* "$HYPR_TARGET/templates/" 2>/dev/null || true
 echo -e "  ${G}✓${N} Templates deployed"
@@ -587,18 +589,27 @@ fi
 step_header 18 19 "Setting up wallpapers..."
 
 # Always ensure lock screen wallpaper directory + README
-mkdir -p "$HOME/.Wallpapers"
+LOCK_WALL_DIR="$HOME/.config/hypr/Lockscreen Wallpaper"
+mkdir -p "$LOCK_WALL_DIR"
 if [ -f "$INSTALL_DIR/Wallpapers/README.md" ]; then
-    cp -f "$INSTALL_DIR/Wallpapers/README.md" "$HOME/.Wallpapers/README.md" 2>/dev/null || true
-    echo -e "  ${G}✓${N} Lock screen README copied to ~/.Wallpapers/"
+    cp -f "$INSTALL_DIR/Wallpapers/README.md" "$LOCK_WALL_DIR/README.md" 2>/dev/null || true
+    echo -e "  ${G}✓${N} Lock screen README copied to $LOCK_WALL_DIR/"
 else
     echo -e "  ${Y}─${N} README not found at \$INSTALL_DIR — trying script directory..."
     # Fallback: check relative to the install script itself
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     if [ -f "$SCRIPT_DIR/Wallpapers/README.md" ]; then
-        cp -f "$SCRIPT_DIR/Wallpapers/README.md" "$HOME/.Wallpapers/README.md" 2>/dev/null || true
+        cp -f "$SCRIPT_DIR/Wallpapers/README.md" "$LOCK_WALL_DIR/README.md" 2>/dev/null || true
         echo -e "  ${G}✓${N} Lock screen README copied from script dir"
     fi
+fi
+# Clean up old ~/.Wallpapers location — move any existing lock image to new location
+if [ -d "$HOME/.Wallpapers" ] && [ ! -L "$HOME/.Wallpapers" ]; then
+    for f in "$HOME/.Wallpapers"/lock.*; do
+        [ -f "$f" ] && cp -f "$f" "$LOCK_WALL_DIR/" 2>/dev/null || true
+    done
+    rm -rf "$HOME/.Wallpapers" 2>/dev/null || true
+    echo -e "  ${Y}─${N} Migrated lock screen images from ~/.Wallpapers/ to $LOCK_WALL_DIR/"
 fi
 
 # Add Himeno wallpaper — smart copy based on user choice
@@ -624,11 +635,11 @@ else
     echo -e "  ${R}!${N} Himeno wallpaper not found in repo — skipping"
 fi
 
-# Lock screen wallpaper — always deploy the default, never touch user's ~/.Wallpapers
+# Lock screen wallpaper — always deploy the default, never touch user's custom lock image
 if [ -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" ]; then
     sudo mkdir -p /usr/share/wallpapers
     sudo cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/wallpapers/lock.png
-    echo -e "  ${Y}─${N} System lockscreen set — place your own image in ~/.Wallpapers/lock.* to override"
+    echo -e "  ${Y}─${N} System lockscreen set — place your own image in ~/.config/hypr/Lockscreen Wallpaper/lock.* to override"
 fi
 
 if [[ "$KEEP_WALLPAPERS" =~ ^[Yy]$ ]]; then

@@ -437,7 +437,7 @@ Item {
             "bash", "-c",
             "CACHE=\"$HOME/.cache/qs_sysinfo.txt\"; " +
             "if [ ! -f \"$CACHE\" ]; then " +
-            "  ICON=\"\"; if [ -f ~/.face.icon ]; then ICON=$(readlink -f ~/.face.icon); elif [ -f ~/.face ]; then ICON=$(readlink -f ~/.face); fi; " +
+            "  ICON=\"\"; FACES_DIR=\"$HOME/.config/hypr/Faces\"; if [ -f \"$FACES_DIR/.face.icon\" ]; then ICON=$(readlink -f \"$FACES_DIR/.face.icon\"); elif [ -f ~/.face.icon ]; then ICON=$(readlink -f ~/.face.icon); elif [ -f ~/.face ]; then ICON=$(readlink -f ~/.face); fi; " +
             "  echo \"$(whoami)|$(hostname)|$(uname -r)|$(cat /etc/os-release | grep '^PRETTY_NAME=' | cut -d'=' -f2 | tr -d '\\\"')|$(grep -m1 'model name' /proc/cpuinfo | cut -d':' -f2 | xargs)|$(lspci 2>/dev/null | grep -iE 'vga|3d|display' | tail -n1 | cut -d':' -f3 | xargs)|$ICON\" > \"$CACHE\"; " +
             "fi; " +
             "cat \"$CACHE\""

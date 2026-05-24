@@ -160,9 +160,17 @@ echo ""
 echo "  [7/10] Setting up wallpapers for picker (Super+W)..."
 echo ""
 
-mkdir -p "$HOME/.Wallpapers"
+LOCK_WALL_DIR="$HOME/.config/hypr/Lockscreen Wallpaper"
+mkdir -p "$LOCK_WALL_DIR"
 if [ -f "$SCRIPT_DIR/Wallpapers/README.md" ]; then
-    cp -f "$SCRIPT_DIR/Wallpapers/README.md" "$HOME/.Wallpapers/README.md" 2>/dev/null || true
+    cp -f "$SCRIPT_DIR/Wallpapers/README.md" "$LOCK_WALL_DIR/README.md" 2>/dev/null || true
+fi
+# Migrate old ~/.Wallpapers if it exists
+if [ -d "$HOME/.Wallpapers" ] && [ ! -L "$HOME/.Wallpapers" ]; then
+    for f in "$HOME/.Wallpapers"/lock.*; do
+        [ -f "$f" ] && cp -f "$f" "$LOCK_WALL_DIR/" 2>/dev/null || true
+    done
+    rm -rf "$HOME/.Wallpapers" 2>/dev/null || true
 fi
 mkdir -p "$HOME/Pictures/Wallpapers"
 
@@ -190,7 +198,7 @@ echo "  [8/10] Restoring SDDM wallpaper..."
 echo ""
 
 if [ -d "$SCRIPT_DIR/SDDM-Wallpaper" ]; then
-    # Lock screen wallpaper — always restore the default, never touch user's ~/.Wallpapers
+    # Lock screen wallpaper — always restore the default, never touch user's custom lock image
     if command -v sudo &>/dev/null; then
         sudo mkdir -p /usr/share/wallpapers
         sudo cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/wallpapers/lock.png
