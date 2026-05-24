@@ -10,7 +10,8 @@
                 "FIXED: install.sh and restore.sh now self-deploy to ~/.config/hypr/scripts/ during updates (were stuck at old versions)",
                 "FIXED: Deployed install.sh updated from stale v1.7.78 to v1.7.88 — LoginScreen Settings deploy, removed stale ~/.face.icon copy",
                 "FIXED: Deployed restore.sh per-username face icon (${CURRENT_USER}.face.icon) replaced with generic .face.icon in SDDM fallback chain",
-                "FIXED: SDDM Main.qml deployed copy now has corrected avatar fallback condition"
+                "FIXED: SDDM Main.qml deployed copy now has corrected avatar fallback condition",
+                "FIXED: SDDM wallpaper fallback — config.background (raw relative path 'wallpaper.png') replaced with fully-qualified file:/// URL; raw spaces in LoginScreen Settings file:/// URLs percent-encoded to %20"
             ]
         },
         {
