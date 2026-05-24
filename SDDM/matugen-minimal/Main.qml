@@ -285,11 +285,11 @@ Rectangle {
                         Image {
                             id: avatarImage
                             anchors.fill: parent
-                            source: "/usr/share/sddm/faces/" + root.currentUserName + ".face.icon"
+                            source: "/usr/share/sddm/faces/.face.icon"
                             fillMode: Image.PreserveAspectCrop
                             visible: false
                             onStatusChanged: {
-                                if (status == Image.Error) source = ""
+                                if (status == Image.Error) source = "/usr/share/sddm/faces/.face"
                             }
                         }
 
