@@ -429,6 +429,13 @@ Item {
     property string sysGPU: "Loading..."
     property string faceIconPath: ""
     property string sysUptime: "Loading..."
+    property int sysCpuPct: 0
+    property int sysRamPct: 0
+    property string sysRamUsed: "0"
+    property string sysRamTotal: "0"
+    property int sysDiskPct: 0
+    property string sysDiskUsed: "0"
+    property string sysDiskTotal: "0"
 
     Process {
         id: sysInfoProc
@@ -456,6 +463,51 @@ Item {
                     if (parts.length >= 7 && parts[6].trim() !== "") root.faceIconPath = parts[6].trim();
                 }
             }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // RESOURCE MONITOR (CPU, RAM, DISK, UPTIME — REFRESHED WHILE ON TAB 1)
+    // -------------------------------------------------------------------------
+    Process {
+        id: resMonProc
+        running: true
+        command: ["bash", "-c", "echo '42|60|3.2|7.9|35|85|460|2h 15m'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var text = this.text.trim();
+                if (!text) return;
+                var parts = text.split("|");
+                if (parts.length >= 8) {
+                    root.sysCpuPct = Math.min(parseInt(parts[0]) || 0, 100);
+                    root.sysRamPct = parseInt(parts[1]) || 0;
+                    root.sysRamUsed = parts[2] || "0";
+                    root.sysRamTotal = parts[3] || "0";
+                    root.sysDiskPct = parseInt(parts[4]) || 0;
+                    root.sysDiskUsed = parts[5] || "0";
+                    root.sysDiskTotal = parts[6] || "0";
+                    root.sysUptime = parts[7] || "Loading...";
+                }
+            }
+        }
+    }
+    Timer {
+        id: resMonTimer
+        interval: 5000
+        running: currentTab === 1
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            resMonProc.command = ["bash", "-c",
+                "cpu=$(top -bn1 -d 0.1 2>/dev/null | grep 'Cpu(s)' | awk '{print int($2)}'); " +
+                "[ -z \"$cpu\" ] && cpu=$(ps -eo pcpu | tail -n+2 | awk '{s+=$1} END{printf \"%d\", (s>100?100:s)}'); " +
+                "[ -z \"$cpu\" ] && cpu=0; " +
+                "ram=$(free -b | grep Mem | awk '{printf \"%d|%.1f|%.1f\", $3*100/$2, $3/1073741824, $2/1073741824}'); " +
+                "disk=$(df -BG / 2>/dev/null | tail -1 | awk '{gsub(/G/,\"\"); printf \"%d|%s|%s\", $5, $3, $2}'); " +
+                "up=$(uptime -p 2>/dev/null | sed 's/up //; s/ hours\\?/h/g; s/ minutes\\?/m/g; s/ days\\?/d/g; s/,//g' | xargs || echo \"Unknown\"); " +
+                "echo \"$cpu|$ram|$disk|$up\""
+            ];
+            resMonProc.running = true;
         }
     }
 
@@ -942,16 +994,6 @@ Item {
                 Behavior on slideY { NumberAnimation { duration: 300; easing.type: Easing.OutQuart } }
                 transform: Translate { y: slideY }
 
-                ListModel {
-                    id: systemDataModel
-                    ListElement { pkg: "Hyprland"; role: "Wayland Compositor"; icon: ""; clr: "blue"; link: "https://hyprland.org/" }
-                    ListElement { pkg: "Quickshell"; role: "UI Framework"; icon: "󰣆"; clr: "mauve"; link: "https://git.outfoxxed.me/outfoxxed/quickshell" }
-                    ListElement { pkg: "Matugen"; role: "Theme Engine"; icon: "󰏘"; clr: "peach"; link: "https://github.com/InioX/matugen" }
-                    ListElement { pkg: "Rofi Wayland"; role: "App Launcher"; icon: ""; clr: "green"; link: "https://github.com/lbonn/rofi" }
-                    ListElement { pkg: "Kitty"; role: "Terminal Emulator"; icon: "󰄛"; clr: "yellow"; link: "https://sw.kovidgoyal.net/kitty/" }
-                    ListElement { pkg: "SwayOSD / NC"; role: "Overlays & Notifs"; icon: "󰂚"; clr: "pink"; link: "https://github.com/ErikReider/SwayOSD" }
-                }
-
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.topMargin: root.s(15)
@@ -1310,77 +1352,251 @@ Item {
                         }
                     }
 
-                    Text { 
-                        text: "System Architecture"
-                        font.family: "JetBrains Mono"
-                        font.weight: Font.Black
-                        font.pixelSize: root.s(24)
-                        color: root.text
-                        Layout.alignment: Qt.AlignVCenter
-                        Layout.topMargin: root.s(5) 
-                    }
-                    
-                    GridLayout {
+                    // ─── ROTATING TIPS ────────────────────────
+                    Item {
+                        id: sysTabTips
                         Layout.fillWidth: true
-                        columns: 2
-                        rowSpacing: root.s(15)
-                        columnSpacing: root.s(15)
+                        Layout.preferredHeight: root.s(80)
+                        Layout.topMargin: root.s(6)
                         
-                        Repeater {
-                            model: systemDataModel
+                        property var tips: [
+                            "Press Super+R to reload QuickShell UI",
+                            "Press Super+Shift+S to open settings panel",
+                            "Press Super+W to open wallpaper picker",
+                            "Press Super+D to open app launcher",
+                            "Press Super+H to open this guide",
+                            "Press Super+B to open battery popup",
+                            "Press Super+N to open network manager",
+                            "Press Super+X to open volume popup",
+                            "Press Super+S to open calendar & weather",
+                            "Press Super+C to open clipboard manager",
+                            "Press Super+L to lock your screen",
+                            "Press Super+Q to kill the focused window",
+                            "Press Super+Space to play/pause media",
+                            "Press Super+T to open terminal",
+                            "Press Super+E to open file manager",
+                            "Press Super+F to open Spotify",
+                            "Press Super+A to open Discord",
+                            "Press Print to screenshot a region",
+                            "Press Super+Print to screenshot full screen",
+                            "Press Ctrl+Left/Right to switch workspaces",
+                            "Press Alt+Q to open music player",
+                            "Press Super+Shift+T to open focus timer",
+                            "Press Super+ arrows to move focus between windows",
+                            "Press Super+Shift+ arrows to resize active window",
+                            "Press Super+1-0 to switch to workspace 1-10",
+                            "Drop images in ~/Pictures/Wallpapers/ to add them to the picker",
+                            "Place MP4 files in ~/Pictures/Wallpapers/ for video wallpapers",
+                            "Drop images in ~/.config/hypr/Lockscreen Wallpaper/ to change the lock screen",
+                            "Replace wallpaper.png in /usr/share/sddm/themes/matugen-minimal/ to change the login screen",
+                            "Place a .face.icon in /usr/share/sddm/faces/ for the login screen avatar",
+                            "Settings are stored at ~/.config/hypr/settings.json",
+                            "Use the Report tab (Super+H) to report bugs with system info",
+                            "Battery alerts at 20%, 10%, and 5% — auto-suspend at 3%",
+                            "Volume slider goes up to 150% boost — drag past 100%",
+                            "Audio auto-switches when you plug or unplug headphones",
+                            "Plug in a USB drive to hear a connect chime",
+                            "Wallpaper colors apply system-wide via Matugen",
+                            "Lock screen has a built-in music player for local MP3s",
+                            "The update notifier checks for new versions every 10 minutes",
+                            "Press Super+R after editing QML files to see changes",
+                            "Double-click a workspace in overview to jump to it",
+                            "Drag the battery core up/down to adjust screen brightness"
+                        ]
+                        property int tipIndex: Math.floor(Math.random() * tips.length)
+                        property real tipOpacity: 1.0
+                        property bool tabActive: root.currentTab === 1
+                        onTabActiveChanged: {
+                            if (tabActive) {
+                                tipOpacity = 1.0;
+                                tipIndex = Math.floor(Math.random() * tips.length);
+                                cycleTimer.restart();
+                            }
+                        }
+
+                        Timer {
+                            id: cycleTimer
+                            interval: 10000
+                            repeat: true
+                            onTriggered: {
+                                sysTabTips.tipOpacity = 0;
+                                tipTransTimer.restart();
+                            }
+                        }
+                        Timer {
+                            id: tipTransTimer
+                            interval: 500
+                            onTriggered: {
+                                var newIdx;
+                                do {
+                                    newIdx = Math.floor(Math.random() * sysTabTips.tips.length);
+                                } while (newIdx === sysTabTips.tipIndex && sysTabTips.tips.length > 1);
+                                sysTabTips.tipIndex = newIdx;
+                                sysTabTips.tipOpacity = 1.0;
+                                cycleTimer.restart();
+                            }
+                        }
+                        
+                        Behavior on tipOpacity { NumberAnimation { duration: 800; easing.type: Easing.OutExpo } }
+
+                        Rectangle {
+                            id: sysTipCard
+                            anchors.fill: parent
+                            radius: root.s(12)
+                            color: "transparent"
+                            clip: true
+
+                            // Blurred background layer (does not affect children)
                             Rectangle {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: root.s(60)
-                                radius: root.s(10)
-                                property bool cardHovered: false
-                                color: cardHovered ? Qt.alpha(root.surface1, 0.5) : Qt.alpha(root.surface0, 0.4)
-                                border.color: cardHovered ? root[model.clr] : root.surface1
-                                border.width: cardHovered ? 2 : 1
-                                scale: sysCardMa.pressed ? 0.97 : (cardHovered ? 1.02 : 1.0)
-                                
-                                Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
-                                Behavior on color { ColorAnimation { duration: 200 } }
-                                Behavior on border.color { ColorAnimation { duration: 200 } }
-                                Behavior on border.width { NumberAnimation { duration: 200 } }
-                                
-                                Item {
-                                    anchors.fill: parent
-                                    anchors.margins: root.s(10)
-                                    
-                                    Item { 
-                                        id: sysIconBox
-                                        anchors.left: parent.left
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        width: root.s(36)
-                                        height: root.s(36)
-                                        scale: cardHovered ? 1.15 : 1.0
-                                        Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
-                                        Text { anchors.centerIn: parent; text: model.icon; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(22); color: root[model.clr] } 
+                                anchors.fill: parent
+                                radius: root.s(12)
+                                color: Qt.alpha(root.surface0, 0.15)
+                                layer.enabled: true
+                                layer.effect: MultiEffect { blurEnabled: true; blurMax: 20; blur: 0.5 }
+                            }
+
+                            // Gradient overlay
+                            Rectangle {
+                                anchors.fill: parent
+                                radius: root.s(12)
+                                color: Qt.alpha(root.base, 0.05)
+                                border.color: Qt.alpha(root.mauve, sysTipCardMa.containsMouse ? 0.4 : 0.15)
+                                border.width: 1
+
+                                Behavior on border.color { ColorAnimation { duration: 600 } }
+
+                                // Glow behind icon
+                                Rectangle {
+                                    x: root.s(-8)
+                                    y: root.s(-8)
+                                    width: root.s(60)
+                                    height: root.s(60)
+                                    radius: root.s(30)
+                                    color: Qt.alpha(root.mauve, 0.08)
+                                    layer.enabled: true
+                                    layer.effect: MultiEffect { blurEnabled: true; blurMax: 40; blur: 1.0 }
+                                    scale: sysTipCardMa.containsMouse ? 1.3 : 1.0
+                                    Behavior on scale { NumberAnimation { duration: 800; easing.type: Easing.OutExpo } }
+                                }
+
+                                RowLayout {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+                                    anchors.leftMargin: root.s(14)
+                                    anchors.rightMargin: root.s(14)
+                                    spacing: root.s(14)
+
+                                    Item {
+                                        Layout.preferredWidth: root.s(32)
+                                        Layout.preferredHeight: root.s(32)
+                                        Layout.alignment: Qt.AlignVCenter
+
+                                        property real pulse: 0
+                                        NumberAnimation on pulse {
+                                            from: 0.85; to: 1.0; duration: 2000
+                                            loops: Animation.Infinite; easing.type: Easing.InOutSine
+                                        }
+
+                                        Image {
+                                            anchors.centerIn: parent
+                                            width: root.s(28)
+                                            height: root.s(28)
+                                            source: "file://" + Quickshell.env("HOME") + "/.config/hypr/scripts/quickshell/guide/tip_icon.svg"
+                                            fillMode: Image.PreserveAspectFit
+                                            scale: parent.pulse
+                                            sourceSize.width: 56
+                                            sourceSize.height: 56
+                                        }
                                     }
-                                    
-                                    Column { 
-                                        anchors.left: sysIconBox.right
-                                        anchors.leftMargin: root.s(15)
-                                        anchors.right: parent.right
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        spacing: root.s(2)
-                                        Text { text: model.pkg; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(14); color: root.text } 
-                                        Text { text: model.role; font.family: "JetBrains Mono"; font.pixelSize: root.s(11); color: root.subtext0 } 
+
+                                    Text {
+                                        text: sysTabTips.tips[sysTabTips.tipIndex]
+                                        font.family: "JetBrains Mono"
+                                        font.pixelSize: root.s(11.5)
+                                        color: Qt.alpha(root.subtext0, 0.7)
+                                        wrapMode: Text.WordWrap
+                                        horizontalAlignment: Text.AlignLeft
+                                        maximumLineCount: 2
+                                        lineHeight: 1.35
+                                        opacity: sysTabTips.tipOpacity
+                                        Layout.fillWidth: true
                                     }
                                 }
-                                
-                                MouseArea { 
-                                    id: sysCardMa
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onEntered: parent.cardHovered = true
-                                    onExited: parent.cardHovered = false
-                                    onClicked: Quickshell.execDetached(["xdg-open", model.link]) 
+                            }
+
+                            MouseArea {
+                                id: sysTipCardMa
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    sysTabTips.tipOpacity = 0;
+                                    tipTransTimer.restart();
                                 }
                             }
                         }
                     }
+                    // ─── QUICK STATS ───────────────────────────
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: root.s(60)
+                        radius: root.s(10)
+                        color: Qt.alpha(root.surface0, 0.1)
+                        border.color: Qt.alpha(root.surface1, 0.3)
+                        border.width: 1
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: root.s(8)
+                            spacing: root.s(4)
+
+                            // CPU
+                            Item { Layout.fillWidth: true; Layout.fillHeight: true
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: root.s(2)
+                                    Text { text: ""; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(14); color: Qt.alpha(root.green, 0.7); Layout.alignment: Qt.AlignHCenter }
+                                    Text { text: root.sysCpuPct + "%"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(13); color: root.text; Layout.alignment: Qt.AlignHCenter }
+                                    Text { text: "CPU"; font.family: "JetBrains Mono"; font.pixelSize: root.s(9); color: Qt.alpha(root.subtext0, 0.5); Layout.alignment: Qt.AlignHCenter }
+                                }
+                            }
+
+                            // RAM
+                            Item { Layout.fillWidth: true; Layout.fillHeight: true
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: root.s(2)
+                                    Text { text: "󰍛"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(14); color: Qt.alpha(root.mauve, 0.7); Layout.alignment: Qt.AlignHCenter }
+                                    Text { text: root.sysRamUsed + "G / " + root.sysRamTotal + "G"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(11); color: root.text; Layout.alignment: Qt.AlignHCenter; elide: Text.ElideRight; Layout.maximumWidth: root.s(100) }
+                                    Text { text: root.sysRamPct + "% RAM"; font.family: "JetBrains Mono"; font.pixelSize: root.s(9); color: Qt.alpha(root.subtext0, 0.5); Layout.alignment: Qt.AlignHCenter }
+                                }
+                            }
+
+                            // Disk
+                            Item { Layout.fillWidth: true; Layout.fillHeight: true
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: root.s(2)
+                                    Text { text: "󰋊"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(14); color: Qt.alpha(root.blue, 0.7); Layout.alignment: Qt.AlignHCenter }
+                                    Text { text: root.sysDiskUsed + "G / " + root.sysDiskTotal + "G"; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(11); color: root.text; Layout.alignment: Qt.AlignHCenter; elide: Text.ElideRight; Layout.maximumWidth: root.s(100) }
+                                    Text { text: root.sysDiskPct + "% Disk"; font.family: "JetBrains Mono"; font.pixelSize: root.s(9); color: Qt.alpha(root.subtext0, 0.5); Layout.alignment: Qt.AlignHCenter }
+                                }
+                            }
+
+                            // Uptime
+                            Item { Layout.fillWidth: true; Layout.fillHeight: true
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: root.s(2)
+                                    Text { text: "󰅐"; font.family: "Iosevka Nerd Font"; font.pixelSize: root.s(14); color: Qt.alpha(root.peach, 0.7); Layout.alignment: Qt.AlignHCenter }
+                                    Text { text: root.sysUptime; font.family: "JetBrains Mono"; font.weight: Font.Bold; font.pixelSize: root.s(10); color: root.text; Layout.alignment: Qt.AlignHCenter; elide: Text.ElideRight; Layout.maximumWidth: root.s(80) }
+                                    Text { text: "Uptime"; font.family: "JetBrains Mono"; font.pixelSize: root.s(9); color: Qt.alpha(root.subtext0, 0.5); Layout.alignment: Qt.AlignHCenter }
+                                }
+                            }
+                        }
+                    }
+
                     Item { Layout.fillHeight: true }
                 }
 
@@ -2228,12 +2444,13 @@ Item {
             // TAB 5: ABOUT
             // ------------------------------------------
             Item {
+                id: aboutTab
                 anchors.fill: parent
                 opacity: root.currentTab === 5 ? 1.0 : 0.0
                 scale: root.currentTab === 5 ? 1.0 : 0.95
                 property real slideY: root.currentTab === 5 ? 0 : root.s(10)
                 enabled: root.currentTab === 5
-                
+
                 Behavior on scale { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
                 Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
                 Behavior on slideY { NumberAnimation { duration: 300; easing.type: Easing.OutQuart } }
@@ -2251,7 +2468,7 @@ Item {
                         Repeater {
                             model: [
                                 { name: "GitHub", icon: "", color: "mauve", url: "https://github.com/eprahemi" },
-                                { name: "Eprahemi", icon: "󰣇", color: "pink", url: "https://github.com/eprahemi/WifeRice" },
+                                { name: "Website", icon: "󰣇", color: "pink", url: "https://wiferice.pages.dev/home" },
                                 { name: "Wallpapers", icon: "", color: "sapphire", url: "https://wallvault.pages.dev/" }
                             ]
 
@@ -2299,15 +2516,6 @@ Item {
                                 }
                             }
                         }
-                    }
-
-                    // ─── TIP ─────────────────────────────────────────────
-                    Text {
-                        text: "Tip: Type 'update' in your terminal"
-                        font.family: "JetBrains Mono"
-                        font.pixelSize: root.s(11)
-                        color: Qt.alpha(root.subtext0, 0.5)
-                        Layout.alignment: Qt.AlignHCenter
                     }
 
                     // ─── DIVIDER ───────────────────────────────────────
