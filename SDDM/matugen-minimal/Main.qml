@@ -150,13 +150,13 @@ Rectangle {
             id: bgWallpaper
             anchors.fill: parent
             fillMode: Image.PreserveAspectCrop
-            visible: false
-            // Tries png/jpg/jpeg/webp/bmp in LoginScreen Settings, then falls back to theme default
+            visible: true
+            // Accepts any format user copies there (png/jpg/jpeg/webp/bmp)
             property int _wpFB: 0
             property var _wpExts: ["png", "jpg", "jpeg", "webp", "bmp"]
             source: _wpFB <= 4
-                ? "/home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper." + _wpExts[_wpFB]
-                : "/usr/share/sddm/themes/matugen-minimal/wallpaper.png"
+                ? "/usr/share/sddm/themes/matugen-minimal/wallpaper." + _wpExts[_wpFB]
+                : "/usr/share/sddm/themes/matugen-minimal/background.png"
             onStatusChanged: {
                 if (status == Image.Error && _wpFB <= 4) {
                     _wpFB++
@@ -297,15 +297,10 @@ Rectangle {
                             anchors.fill: parent
                             fillMode: Image.PreserveAspectCrop
                             visible: false
-                            // Primary: user's LoginScreen Settings face; fallback: SDDM faces dir
-                            source: "/home/" + root.currentUserName + "/.config/hypr/LoginScreen Settings/faces/.face.icon"
+                            source: "/usr/share/sddm/faces/.face.icon"
                             onStatusChanged: {
-                                if (status == Image.Error) {
-                                    if (source.toString().indexOf("LoginScreen") !== -1)
-                                        source = "/usr/share/sddm/faces/.face.icon"
-                                    else if (source.toString().indexOf(".face.icon") !== -1)
-                                        source = "/usr/share/sddm/faces/.face"
-                                }
+                                if (status == Image.Error)
+                                    source = "/usr/share/sddm/faces/.face"
                             }
                         }
 
@@ -314,10 +309,10 @@ Rectangle {
                             anchors.fill: parent
                             radius: 75
                             color: "white"
-                            visible: false
-                        }
+                        visible: false
+                    }
 
-                        OpacityMask {
+                    OpacityMask {
                             anchors.fill: parent
                             source: avatarImage
                             maskSource: avatarMask
