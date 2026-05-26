@@ -163,13 +163,16 @@ if [ -d "$SCRIPT_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; the
     for f in "$SCRIPT_DIR/SDDM/matugen-minimal/"*; do
         filename=$(basename "$f")
         case "$filename" in
-            wallpaper.png|wallpaper.jpg|wallpaper.jpeg|wallpaper.webp|wallpaper.bmp|background.png)
+            wallpaper.png|wallpaper.jpg|wallpaper.jpeg|wallpaper.webp|wallpaper.bmp)
                 ;;
             *)
                 sudo cp -f "$f" /usr/share/sddm/themes/matugen-minimal/
                 ;;
         esac
     done
+    # Always ensure background.png fallback exists (even if user removed it)
+    [ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ] && \
+        sudo cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/background.png
     # Deploy default wallpaper only if user has none
     _has_wp=0
     for ext in png jpg jpeg webp bmp; do
