@@ -137,42 +137,54 @@ fi
 
 echo ""
 
-# ─── INSTALL FACE ICON ─────────────────────────────────────────────────
+# ─── SDDM FACE ICON + WALLPAPER (never overwrite user's files) ────────
 
-echo "  [6/10] Installing user face icon..."
+echo "  [6/10] Installing SDDM face icon and wallpaper..."
 echo ""
 
-if [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && [ ! -f "$HOME/.config/hypr/Faces/.face.icon" ]; then
-    mkdir -p "$HOME/.config/hypr/Faces"
-    cp -f "$SCRIPT_DIR/Faces/.face.icon" "$HOME/.config/hypr/Faces/.face.icon"
-    echo "    [INSTALLED] ~/.config/hypr/Faces/.face.icon"
-fi
-
+# Face icon: only deploy if not already present
 if [ -f "$SCRIPT_DIR/Faces/.face.icon" ]; then
-    if command -v sudo &>/dev/null; then
-        sudo mkdir -p /usr/share/sddm/faces
-        sudo cp -f "$SCRIPT_DIR/Faces/.face.icon" "/usr/share/sddm/faces/.face.icon"
-        echo "    [INSTALLED] /usr/share/sddm/faces/.face.icon (SDDM Login)"
+    if [ ! -f /usr/share/sddm/faces/.face.icon ] && [ ! -f /usr/share/sddm/faces/.face ]; then
+        if command -v sudo &>/dev/null; then
+            sudo mkdir -p /usr/share/sddm/faces
+            sudo cp -f "$SCRIPT_DIR/Faces/.face.icon" /usr/share/sddm/faces/.face.icon
+        fi
+        echo "    [INSTALLED] /usr/share/sddm/faces/.face.icon"
+    else
+        echo "    [SKIPPED] /usr/share/sddm/faces/.face.icon — user file exists"
     fi
 fi
 
-# Ensure LoginScreen Settings has defaults — never overwrite user's files
-LOGIN_SCREEN_SETTINGS="$HOME/.config/hypr/LoginScreen Settings"
-mkdir -p "$LOGIN_SCREEN_SETTINGS/faces" "$LOGIN_SCREEN_SETTINGS/Wallpaper"
-# Face icon: only deploy if not already present
-if [ ! -f "$LOGIN_SCREEN_SETTINGS/faces/.face.icon" ]; then
-    [ -f "$SCRIPT_DIR/Faces/.face.icon" ] && cp -f "$SCRIPT_DIR/Faces/.face.icon" "$LOGIN_SCREEN_SETTINGS/faces/.face.icon" 2>/dev/null || true
-    echo "    [INSTALLED] ~/.config/hypr/LoginScreen Settings/faces/.face.icon"
-else
-    echo "    [SKIPPED] ~/.config/hypr/LoginScreen Settings/faces/.face.icon — user file exists"
-fi
 # Wallpaper: only deploy default if dir has no image files (any format)
-if [ -z "$(ls -A "$LOGIN_SCREEN_SETTINGS/Wallpaper/" 2>/dev/null | grep -iE '\.(png|jpg|jpeg|webp|bmp)$' 2>/dev/null)" ]; then
-    [ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_SETTINGS/Wallpaper/wallpaper.png" 2>/dev/null || true
-    echo "    [INSTALLED] ~/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper.png"
-else
-    echo "    [SKIPPED] ~/.config/hypr/LoginScreen Settings/Wallpaper/ — user files exist"
+# Also always deploy QML theme files (Main.qml, Colors.qml, etc.)
+if [ -d "$SCRIPT_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; then
+    sudo mkdir -p /usr/share/sddm/themes/matugen-minimal
+    # Always update QML/theme files
+    for f in "$SCRIPT_DIR/SDDM/matugen-minimal/"*; do
+        filename=$(basename "$f")
+        case "$filename" in
+            wallpaper.png|wallpaper.jpg|wallpaper.jpeg|wallpaper.webp|wallpaper.bmp|background.png)
+                ;;
+            *)
+                sudo cp -f "$f" /usr/share/sddm/themes/matugen-minimal/
+                ;;
+        esac
+    done
+    # Deploy default wallpaper only if user has none
+    _has_wp=0
+    for ext in png jpg jpeg webp bmp; do
+        [ -f "/usr/share/sddm/themes/matugen-minimal/wallpaper.$ext" ] && _has_wp=1 && break
+    done
+    if [ "$_has_wp" -eq 0 ] && [ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ]; then
+        sudo cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/
+        echo "    [INSTALLED] Default wallpaper to SDDM theme"
+    else
+        echo "    [SKIPPED] SDDM wallpaper — preserving user's"
+    fi
 fi
+
+# Legacy LoginScreen Settings dir (no longer used by SDDM, kept for manual/hyprlock use)
+mkdir -p "$HOME/.config/hypr/LoginScreen Settings/Wallpaper" "$HOME/.config/hypr/LoginScreen Settings/faces" 2>/dev/null || true
 
 echo ""
 

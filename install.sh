@@ -648,62 +648,65 @@ fi
 
 if [[ "$KEEP_WALLPAPERS" =~ ^[Yy]$ ]]; then
     echo -e "  ${Y}─${N} Keeping existing wallpapers (user choice)"
-else
-    # SDDM login theme — only deploy if user chose to overwrite
-    if [[ "$SDDM_OVERWRITE" =~ ^[Yy]$ ]] && [ -d "$INSTALL_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; then
-        sudo rm -rf /usr/share/sddm/themes/matugen-minimal
-        sudo mkdir -p /usr/share/sddm/themes/matugen-minimal
-        sudo cp -rf "$INSTALL_DIR/SDDM/matugen-minimal/"* /usr/share/sddm/themes/matugen-minimal/
-        sudo cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/
-        sudo mkdir -p /etc/sddm.conf.d
-        sudo tee /etc/sddm.conf.d/theme.conf > /dev/null <<'SDDMEOF'
+elif [ -d "$INSTALL_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; then
+    # ── ALWAYS update QML/theme files (Main.qml, Colors.qml, etc.) ──
+    sudo mkdir -p /usr/share/sddm/themes/matugen-minimal /etc/sddm.conf.d
+    for f in "$INSTALL_DIR/SDDM/matugen-minimal/"*; do
+        filename=$(basename "$f")
+        # Skip wallpaper images — preserve user's custom wallpaper
+        case "$filename" in
+            wallpaper.png|wallpaper.jpg|wallpaper.jpeg|wallpaper.webp|wallpaper.bmp|background.png)
+                ;;
+            *)
+                sudo cp -f "$f" /usr/share/sddm/themes/matugen-minimal/
+                ;;
+        esac
+    done
+    sudo tee /etc/sddm.conf.d/theme.conf > /dev/null <<'SDDMEOF'
 [Theme]
 Current=matugen-minimal
 SDDMEOF
-        echo -e "  ${G}✓${N} SDDM theme 'matugen-minimal' fully replaced with ours"
-        # Always overwrite system SDDM face icon
+    echo -e "  ${G}✓${N} SDDM theme QML files updated"
+
+    # ── Wallpaper + face icon: only overwrite if user said YES ──
+    if [[ "$SDDM_OVERWRITE" =~ ^[Yy]$ ]]; then
+        sudo cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/
+        echo -e "  ${G}✓${N} SDDM wallpaper deployed"
         if [ -f "$INSTALL_DIR/Faces/.face.icon" ]; then
             sudo mkdir -p /usr/share/sddm/faces
             sudo cp -f "$INSTALL_DIR/Faces/.face.icon" /usr/share/sddm/faces/.face.icon
             echo -e "  ${G}✓${N} SDDM face icon deployed"
         fi
-    elif [ -d "$INSTALL_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; then
-        # Only deploy theme files if user chose to keep wallpaper—never overwrite their wallaper
-        if [ ! -d /usr/share/sddm/themes/matugen-minimal ]; then
-            sudo mkdir -p /usr/share/sddm/themes/matugen-minimal
-            sudo cp -rf "$INSTALL_DIR/SDDM/matugen-minimal/"* /usr/share/sddm/themes/matugen-minimal/
-            sudo mkdir -p /etc/sddm.conf.d
-            sudo tee /etc/sddm.conf.d/theme.conf > /dev/null <<'SDDMEOF'
-[Theme]
-Current=matugen-minimal
-SDDMEOF
-            echo -e "  ${G}✓${N} SDDM theme deployed (wallpaper preserved)"
-        else
-            echo -e "  ${G}✓${N} SDDM theme already exists — keeping as-is"
-        fi
     else
-        echo -e "  ${Y}─${N} SDDM theme kept (user choice)"
+        # Deploy defaults only if user has NO wallpaper/face yet (first install)
+        local _has_wp=0
+        for ext in png jpg jpeg webp bmp; do
+            [ -f "/usr/share/sddm/themes/matugen-minimal/wallpaper.$ext" ] && _has_wp=1 && break
+        done
+        if [ "$_has_wp" -eq 0 ]; then
+            sudo cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/
+            echo -e "  ${Y}─${N} Default wallpaper deployed (no user wallpaper found)"
+        else
+            echo -e "  ${Y}─${N} SDDM wallpaper preserved (user choice)"
+        fi
+        if [ ! -f /usr/share/sddm/faces/.face.icon ] && [ ! -f /usr/share/sddm/faces/.face ]; then
+            if [ -f "$INSTALL_DIR/Faces/.face.icon" ]; then
+                sudo mkdir -p /usr/share/sddm/faces
+                sudo cp -f "$INSTALL_DIR/Faces/.face.icon" /usr/share/sddm/faces/.face.icon
+                echo -e "  ${Y}─${N} Default face icon deployed (no user icon found)"
+            fi
+        else
+            echo -e "  ${Y}─${N} SDDM face icon preserved (user choice)"
+        fi
     fi
-
-fi
-
-# Ensure LoginScreen Settings directory exists — never overwrite user's files
-LOGIN_SCREEN_DIR="$HOME/.config/hypr/LoginScreen Settings"
-mkdir -p "$LOGIN_SCREEN_DIR/Wallpaper" "$LOGIN_SCREEN_DIR/faces"
-# Wallpaper: only deploy default if dir has no image files (any format)
-if [ -z "$(ls -A "$LOGIN_SCREEN_DIR/Wallpaper/" 2>/dev/null | grep -iE '\.(png|jpg|jpeg|webp|bmp)$' 2>/dev/null)" ]; then
-    [ -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" ] && cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" "$LOGIN_SCREEN_DIR/Wallpaper/wallpaper.png" 2>/dev/null || true
-    echo -e "  ${G}✓${N} Default wallpaper deployed to LoginScreen Settings/Wallpaper/"
 else
-    echo -e "  ${Y}─${N} Wallpaper exists in LoginScreen Settings — keeping user's"
+    echo -e "  ${Y}─${N} SDDM theme kept (user choice)"
 fi
-# Face icon: only deploy if not already present
-if [ ! -f "$LOGIN_SCREEN_DIR/faces/.face.icon" ]; then
-    [ -f "$INSTALL_DIR/Faces/.face.icon" ] && cp -f "$INSTALL_DIR/Faces/.face.icon" "$LOGIN_SCREEN_DIR/faces/.face.icon" 2>/dev/null || true
-    echo -e "  ${G}✓${N} Default face icon deployed to LoginScreen Settings/faces/"
-else
-    echo -e "  ${Y}─${N} Face icon exists in LoginScreen Settings — keeping user's"
-fi
+
+# LoginScreen Settings no longer used by SDDM (v1.7.92+).
+# SDDM reads wallpaper/face from /usr/share/sddm/ directly.
+# This directory is kept for manual/hyprlock use only.
+mkdir -p "$HOME/.config/hypr/LoginScreen Settings/Wallpaper" "$HOME/.config/hypr/LoginScreen Settings/faces" 2>/dev/null || true
 
 # Clear wallpaper picker cache on first install or when folder was empty (user deleted all)
 if [ ! -d "$HOME/Pictures/Wallpapers" ] || [ -z "$(ls -A "$HOME/Pictures/Wallpapers" 2>/dev/null)" ]; then
