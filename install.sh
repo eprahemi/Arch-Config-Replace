@@ -646,10 +646,10 @@ if [ -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" ]; then
     echo -e "  ${Y}─${N} System lockscreen set — place your own image in ~/.config/hypr/Lockscreen Wallpaper/lock.* to override"
 fi
 
-if [[ "$KEEP_WALLPAPERS" =~ ^[Yy]$ ]]; then
-    echo -e "  ${Y}─${N} Keeping existing wallpapers (user choice)"
-elif [ -d "$INSTALL_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; then
-    # ── ALWAYS update QML/theme files (Main.qml, Colors.qml, etc.) ──
+# ── ALWAYS update SDDM QML/theme files (Main.qml, Colors.qml, etc.) ──
+# This is independent of KEEP_WALLPAPERS (desktop wallpapers) and
+# SDDM_OVERWRITE (whether to also deploy wallpaper/face images).
+if [ -d "$INSTALL_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; then
     sudo mkdir -p /usr/share/sddm/themes/matugen-minimal /etc/sddm.conf.d
     for f in "$INSTALL_DIR/SDDM/matugen-minimal/"*; do
         filename=$(basename "$f")
@@ -679,7 +679,7 @@ SDDMEOF
         fi
     else
         # Deploy defaults only if user has NO wallpaper/face yet (first install)
-        local _has_wp=0
+        _has_wp=0
         for ext in png jpg jpeg webp bmp; do
             [ -f "/usr/share/sddm/themes/matugen-minimal/wallpaper.$ext" ] && _has_wp=1 && break
         done
