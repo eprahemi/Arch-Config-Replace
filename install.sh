@@ -294,7 +294,7 @@ echo -e "  ${Y}─${N} Installing core applications..."
 sudo pacman -S --noconfirm --needed firefox kitty neovim thunar thunar-archive-plugin thunar-volman file-roller gwenview ark swayimg 2>&1 | sed 's/^/  /' || true
 
 echo -e "  ${Y}─${N} Installing media applications..."
-sudo pacman -S --noconfirm --needed vlc spotify-launcher obs-studio celluloid 2>&1 | sed 's/^/  /' || true
+sudo pacman -S --noconfirm --needed vlc spotify-launcher obs-studio 2>&1 | sed 's/^/  /' || true
 
 echo -e "  ${Y}─${N} Installing development tools..."
 # (VS Code is installed via AUR below — using visual-studio-code-bin instead of code)
