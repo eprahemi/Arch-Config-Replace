@@ -663,7 +663,9 @@ if [ -d "$INSTALL_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; th
         esac
     done
     # Always ensure background.png fallback exists (even if user removed it)
-    sudo cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/background.png
+    if [ -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" ]; then
+        sudo cp -f "$INSTALL_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/background.png
+    fi
     sudo tee /etc/sddm.conf.d/theme.conf > /dev/null <<'SDDMEOF'
 [Theme]
 Current=matugen-minimal

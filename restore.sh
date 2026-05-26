@@ -171,8 +171,12 @@ if [ -d "$SCRIPT_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; the
         esac
     done
     # Always ensure background.png fallback exists (even if user removed it)
-    [ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ] && \
+    # Try repo source first, then already-installed wallpaper.png
+    if [ -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" ]; then
         sudo cp -f "$SCRIPT_DIR/SDDM-Wallpaper/wallpaper.png" /usr/share/sddm/themes/matugen-minimal/background.png
+    elif [ -f /usr/share/sddm/themes/matugen-minimal/wallpaper.png ]; then
+        sudo cp -f /usr/share/sddm/themes/matugen-minimal/wallpaper.png /usr/share/sddm/themes/matugen-minimal/background.png
+    fi
     # Deploy default wallpaper only if user has none
     _has_wp=0
     for ext in png jpg jpeg webp bmp; do
