@@ -703,10 +703,7 @@ else
     echo -e "  ${Y}─${N} SDDM theme kept (user choice)"
 fi
 
-# LoginScreen Settings no longer used by SDDM (v1.7.92+).
-# SDDM reads wallpaper/face from /usr/share/sddm/ directly.
-# This directory is kept for manual/hyprlock use only.
-mkdir -p "$HOME/.config/hypr/LoginScreen Settings/Wallpaper" "$HOME/.config/hypr/LoginScreen Settings/faces" 2>/dev/null || true
+
 
 # Clear wallpaper picker cache on first install or when folder was empty (user deleted all)
 if [ ! -d "$HOME/Pictures/Wallpapers" ] || [ -z "$(ls -A "$HOME/Pictures/Wallpapers" 2>/dev/null)" ]; then

@@ -183,9 +183,6 @@ if [ -d "$SCRIPT_DIR/SDDM/matugen-minimal" ] && command -v sudo &>/dev/null; the
     fi
 fi
 
-# Legacy LoginScreen Settings dir (no longer used by SDDM, kept for manual/hyprlock use)
-mkdir -p "$HOME/.config/hypr/LoginScreen Settings/Wallpaper" "$HOME/.config/hypr/LoginScreen Settings/faces" 2>/dev/null || true
-
 echo ""
 
 # ─── COPY WALLPAPERS TO PICTURES FOLDER ───────────────────────────────
@@ -297,13 +294,13 @@ echo ""
 echo "  🖼  Face Icon:"
 echo "     • Lockscreen → ~/.config/hypr/Faces/.face.icon"
 echo "     • SDDM Login → /usr/share/sddm/faces/.face.icon"
-echo "     • SDDM Override → ~/.config/hypr/LoginScreen Settings/faces/.face.icon"
+
 echo ""
 echo "  🖼  Wallpapers:"
 echo "     • Folder → ~/Pictures/Wallpapers/ (for picker - Super+W)"
 echo "     • Lockscreen → /usr/share/wallpapers/lock.png (default)"
 echo "     • Login (SDDM) → /usr/share/sddm/themes/matugen-minimal/wallpaper.png"
-echo "     • SDDM Override → ~/.config/hypr/LoginScreen Settings/Wallpaper/wallpaper.png"
+
 echo ""
 echo "  📝 Terminal:"
 echo "     • ~/.zshrc installed (oh-my-zsh auto-installs)"
