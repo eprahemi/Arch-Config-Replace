@@ -1,7 +1,19 @@
 {
-  "latest_version": "1.7.91",
+  "latest_version": "1.7.92",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.92",
+            "changes": [
+                "CHANGED: SDDM assets moved to system paths only — ~/.config/hypr/LoginScreen Settings/ removed entirely. SDDM runs as sddm user and cannot read 700 home dirs — root cause of blank login screen fixed",
+                "FIXED: SDDM wallpaper FastBlur now works — bgWallpaper visible changed from false to true so FastBlur can grab pixels",
+                "FIXED: SDDM avatar Image block collapsed one-line QML — properly formatted now",
+                "NEW: background.png fallback deployed on every install/restore — multi-format chain: wallpaper.png/jpg/jpeg/webp/bmp → background.png",
+                "CHANGED: install.sh and restore.sh — SDDM QML files deploy every update unconditionally (not gated by KEEP_WALLPAPERS or SDDM_OVERWRITE)",
+                "FIXED: Website FAQ SDDM section corrected — documents system paths, explains why home directory paths don't work with SDDM",
+                "FIXED: background.png now restored on every install even if user deleted it — always-deploy policy"
+            ]
+        },
         {
             "version": "1.7.91",
             "changes": [
