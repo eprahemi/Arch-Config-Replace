@@ -1,7 +1,15 @@
 {
-  "latest_version": "1.7.98",
+  "latest_version": "1.7.99",
   "videos": [],
   "changelog": [
+    {
+      "version": "1.7.99",
+      "changes": [
+        "ADDED: Caelestia-style Thunar GTK theming — Papirus-Dark icons, adw-gtk3-dark, dynamic matugen colors",
+        "ADDED: GTK config deployment in install.sh — gtk.css, thunar.css, gtk4.css auto-installed",
+        "ADDED: Dynamic GTK4 CSS replaces hardcoded 8500-line Catppuccin file — now uses matugen wallpaper colors"
+      ]
+    },
     {
       "version": "1.7.98",
       "changes": [

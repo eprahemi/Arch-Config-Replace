@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.98"
+DOTS_VERSION="1.7.99"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -291,7 +291,7 @@ echo -e "  ${G}✓${N} Fonts installed"
 step_header 7 19 "Installing applications..."
 
 echo -e "  ${Y}─${N} Installing core applications..."
-sudo pacman -S --noconfirm --needed firefox kitty neovim thunar thunar-archive-plugin thunar-volman file-roller gwenview ark swayimg 2>&1 | sed 's/^/  /' || true
+sudo pacman -S --noconfirm --needed firefox kitty neovim thunar thunar-archive-plugin thunar-volman file-roller gwenview ark swayimg papirus-icon-theme adw-gtk-theme 2>&1 | sed 's/^/  /' || true
 
 echo -e "  ${Y}─${N} Installing media applications..."
 sudo pacman -S --noconfirm --needed vlc spotify-launcher obs-studio 2>&1 | sed 's/^/  /' || true
@@ -521,7 +521,28 @@ else
     echo -e "  ${Y}─${N} Matugen config preserved"
 fi
 
-step_header 16 19 "Deploying QuickShell QML files..."
+# GTK — deploy dynamic matugen-themed CSS for Thunar and other GTK apps
+if [[ "$KEEP_DESKTOP" =~ ^[Nn]$ ]]; then
+    for gtk_ver in gtk-3.0 gtk-4.0; do
+        src="$INSTALL_DIR/GTK/$gtk_ver"
+        tgt="$HOME/.config/$gtk_ver"
+        if [ -d "$src" ]; then
+            mkdir -p "$tgt"
+            cp -rf "$src/"* "$tgt/" 2>/dev/null || true
+        fi
+    done
+    # Apply Papirus-Dark + adw-gtk3-dark via gsettings
+    if command -v gsettings &>/dev/null; then
+        gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark' 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
+    fi
+    echo -e "  ${G}✓${N} GTK theme + icons deployed (Papirus-Dark, adw-gtk3-dark, matugen CSS)"
+else
+    echo -e "  ${Y}─${N} GTK config preserved"
+fi
+
+step_header 17 20 "Deploying QuickShell QML files..."
 
 QS_TARGET="$HYPR_TARGET/scripts/quickshell"
 mkdir -p "$QS_TARGET"
@@ -558,7 +579,7 @@ rm -f "$QS_TARGET"/sounds/network/*.wav "$QS_TARGET"/sounds/network/*.mp3 2>/dev
 # would restart with old code if we just kill)
 XDG_RUNTIME_DIR="/run/user/$(id -u "$CURRENT_USER")" systemctl --user restart audio-autoswitch.service 2>/dev/null || true
 
-step_header 17 19 "Deploying scripts and extras..."
+step_header 18 20 "Deploying scripts and extras..."
 
 # Deploy scripts (excluding quickshell which is handled above)
 if [ -d "$INSTALL_DIR/Hyprland/scripts" ]; then
@@ -610,7 +631,7 @@ if [ -f "$HYPR_TARGET/scripts/usb_sound.sh" ]; then
     chmod +x "$HYPR_TARGET/scripts/usb_sound.sh" 2>/dev/null || true
 fi
 
-step_header 18 19 "Setting up wallpapers..."
+step_header 19 20 "Setting up wallpapers..."
 
 # Always ensure lock screen wallpaper directory + README
 LOCK_WALL_DIR="$HOME/.config/hypr/Lockscreen Wallpaper"
@@ -808,7 +829,7 @@ echo -e "  ${G}✓${N} Wallpapers ready for picker (Super+W)"
 # ─── CLEANUP STALE REFERENCES ────────────────────────────────────────────
 
 echo ""
-step_header 19 19 "Finalizing..."
+step_header 20 20 "Finalizing..."
 
 # Remove old imperative-dots version file if it exists
 rm -f "$HOME/.local/state/imperative-dots-version" 2>/dev/null

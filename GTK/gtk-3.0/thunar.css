@@ -1,0 +1,81 @@
+/* ────────────────────────────────────────────────────────────
+   Thunar Dynamic Theme – matches Matugen palette
+   Uses matugen colors from colors-gtk.css (auto-imported via gtk.css)
+   ──────────────────────────────────────────────────────────── */
+
+/* ----- Side bar & main panes ----- */
+.sidebar .view,
+.standard-view .view {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
+/* ----- Selected file / folder ----- */
+.sidebar .view:selected,
+.standard-view .view:selected {
+    background-color: alpha(@accent_bg_color, 0.3);
+    color: @accent_color;
+}
+
+/* ----- Sidebar hover ----- */
+.sidebar .view:hover {
+    background-color: alpha(@accent_bg_color, 0.12);
+}
+
+/* ----- Toolbar & location bar ----- */
+toolbar,
+.location-bar {
+    background-color: @headerbar_bg_color;
+    color: @theme_fg_color;
+    border-bottom: 1px solid alpha(@theme_fg_color, 0.06);
+}
+
+/* ----- Menu bar & context menus ----- */
+menubar,
+menu,
+.menu {
+    background-color: @popover_bg_color;
+    color: @popover_fg_color;
+}
+
+menu menuitem:hover {
+    background-color: alpha(@accent_bg_color, 0.3);
+    color: @accent_color;
+}
+
+/* ----- Status bar ----- */
+statusbar {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
+/* ----- Path bar ----- */
+.path-bar button {
+    background-color: transparent;
+    color: @theme_fg_color;
+    border-radius: 4px;
+}
+
+.path-bar button:hover {
+    background-color: alpha(@accent_bg_color, 0.15);
+}
+
+.path-bar button:checked {
+    background-color: @accent_bg_color;
+    color: @accent_fg_color;
+}
+
+/* ----- Tree view headers ----- */
+treeview header button {
+    background-color: @headerbar_bg_color;
+    color: @theme_fg_color;
+    border: none;
+    border-right: 1px solid alpha(@theme_fg_color, 0.08);
+}
+
+/* ----- Selection across all views ----- */
+.view:selected,
+iconview:selected {
+    background-color: alpha(@accent_bg_color, 0.3);
+    color: @accent_color;
+}

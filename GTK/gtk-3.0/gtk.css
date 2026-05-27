@@ -1,0 +1,50 @@
+/* ──────────────────────────────────────────────
+   WifeRice Dynamic GTK3 Theme
+   Auto-generated from wallpaper colors via matugen
+   ────────────────────────────────────────────── */
+
+@import url("file:///home/eprahemi/.cache/matugen/colors-gtk.css");
+@import url("file:///home/eprahemi/.config/gtk-3.0/thunar.css");
+
+/* ─── General GTK refinements ─── */
+
+/* Selection color across all apps */
+.view:selected,
+iconview:selected {
+    background-color: alpha(@accent_bg_color, 0.3);
+    color: @accent_color;
+}
+
+/* Entry / input focus */
+entry:focus {
+    border-color: @accent_color;
+}
+
+/* Button accent */
+button.suggested-action {
+    background-color: @accent_bg_color;
+    color: @accent_fg_color;
+}
+
+/* Link buttons */
+button:checked {
+    background-color: alpha(@accent_bg_color, 0.2);
+    color: @accent_color;
+}
+
+/* Progress bar */
+progressbar trough {
+    background-color: alpha(@theme_fg_color, 0.1);
+    border-radius: 4px;
+}
+
+progressbar progress {
+    background-color: @accent_bg_color;
+    border-radius: 4px;
+}
+
+/* ─── LibreOffice / GTK3 app fix ─── */
+window.background {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
