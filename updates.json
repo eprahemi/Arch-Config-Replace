@@ -1,7 +1,13 @@
 {
-  "latest_version": "1.7.96",
+  "latest_version": "1.7.97",
   "videos": [],
   "changelog": [
+    {
+      "version": "1.7.97",
+      "changes": [
+        "Bump version 1.7.96 \u2192 1.7.97"
+      ]
+    },
     {
       "version": "1.7.96",
       "changes": [
