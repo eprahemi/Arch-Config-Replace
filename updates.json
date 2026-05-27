@@ -1,7 +1,14 @@
 {
-  "latest_version": "1.7.97",
+  "latest_version": "1.7.98",
   "videos": [],
   "changelog": [
+    {
+      "version": "1.7.98",
+      "changes": [
+        "FIXED: install.sh DOTS_VERSION was stuck at 1.7.93 — friend saw wrong version; now bumped to 1.7.98 to match latest",
+        "FIXED: GuidePopup.qml missing changelog entries for v1.7.93 through v1.7.97 — added 5 entries"
+      ]
+    },
     {
       "version": "1.7.97",
       "changes": [
