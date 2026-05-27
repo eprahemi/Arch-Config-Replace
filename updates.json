@@ -1,410 +1,419 @@
 {
-  "latest_version": "1.7.93",
+  "latest_version": "1.7.94",
   "videos": [],
   "changelog": [
-        {
-            "version": "1.7.93",
-            "changes": [
-                "CRITICAL FIX: swayidle removed — replaced with hypridle-git from AUR. swayidle -w flag blocked 66min suspend (Lock.qml never exits, -w blocks subsequent timeouts)",
-                "CRITICAL FIX: hypridle.conf now ACTIVE — handles lock before sleep, idle timeout lock (33min), and idle timeout suspend (66min) via two independent listeners",
-                "CRITICAL FIX: Deep S3 (mem) broken on Lenovo laptops — immediate wake in ~2.8s. s2idle forced via mem_sleep_default=s2idle kernel parameter",
-                "FIXED: install.sh — swayidle removed from pacman install list, hypridle-git installed from AUR, hypridle.conf now deployed on install/update",
-                "FIXED: USB wake enabled on s2idle (XHC *enabled in /proc/acpi/wakeup)",
-                "FIXED: Polkit rule recreated for loginctl lock-sessions without password",
-                "CHANGED: autostart.conf, settings.json, default_settings.json — all use hypridle (not swayidle)",
-                "CHANGED: install.sh step 14 — now installs hypridle-git from AUR and removes swayidle if present"
-            ]
-        },
-        {
-            "version": "1.7.92",
-            "changes": [
-                "CHANGED: SDDM assets moved to system paths only — ~/.config/hypr/LoginScreen Settings/ removed entirely. SDDM runs as sddm user and cannot read 700 home dirs — root cause of blank login screen fixed",
-                "FIXED: SDDM wallpaper FastBlur now works — bgWallpaper visible changed from false to true so FastBlur can grab pixels",
-                "FIXED: SDDM avatar Image block collapsed one-line QML — properly formatted now",
-                "NEW: background.png fallback deployed on every install/restore — multi-format chain: wallpaper.png/jpg/jpeg/webp/bmp → background.png",
-                "CHANGED: install.sh and restore.sh — SDDM QML files deploy every update unconditionally (not gated by KEEP_WALLPAPERS or SDDM_OVERWRITE)",
-                "FIXED: Website FAQ SDDM section corrected — documents system paths, explains why home directory paths don't work with SDDM",
-                "FIXED: background.png now restored on every install even if user deleted it — always-deploy policy"
-            ]
-        },
-        {
-            "version": "1.7.91",
-            "changes": [
-                "FIXED: SDDM wallpaper and avatar paths changed from file:/// URLs to absolute paths — file:/// URLs with spaces/%20 fail on some Qt/SDDM versions; plain absolute paths work universally",
-                "FIXED: LoginScreen Settings/Wallpaper/ and faces/ re-deployed with proper files after update accidentally replaced user files"
-            ]
-        },
-        {
-            "version": "1.7.90",
-            "changes": [
-                "FIXED: User override dirs (~/.config/hypr/Faces/, LoginScreen Settings/, Lockscreen Wallpaper/) — install.sh and restore.sh never overwrite existing user files",
-                "FIXED: System SDDM dirs (/usr/share/sddm/faces/, /usr/share/sddm/themes/matugen-minimal/) — always overwritten with latest defaults",
-                "FIXED: install.sh now also deploys face icon to /usr/share/sddm/faces/ (was missing entirely)",
-                "FIXED: restore.sh SDDM theme deploy no longer skips if directory exists — always updates"
-            ]
-        },
-        {
-            "version": "1.7.89",
-            "changes": [
-                "FIXED: GuidePopup face icon cache now re-validates — if cached path no longer exists, rescans all face icon locations",
-                "FIXED: SDDM avatar fallback logic — final .face path can now actually be reached (was blocked by incorrect condition)",
-                "FIXED: install.sh and restore.sh now self-deploy to ~/.config/hypr/scripts/ during updates (were stuck at old versions)",
-                "FIXED: Deployed install.sh updated from stale v1.7.78 to v1.7.88 — LoginScreen Settings deploy, removed stale ~/.face.icon copy",
-                "FIXED: Deployed restore.sh per-username face icon (${CURRENT_USER}.face.icon) replaced with generic .face.icon in SDDM fallback chain",
-                "FIXED: SDDM Main.qml deployed copy now has corrected avatar fallback condition",
-                "FIXED: SDDM wallpaper fallback — config.background (raw relative path 'wallpaper.png') replaced with fully-qualified file:/// URL; raw spaces in LoginScreen Settings file:/// URLs percent-encoded to %20"
-            ]
-        },
-        {
-            "version": "1.7.88",
-            "changes": [
-                "CHANGED: SDDM wallpaper now supports any image format (PNG, JPG, JPEG, WEBP, BMP) in ~/.config/hypr/LoginScreen Settings/Wallpaper/",
-                "CHANGED: GuidePopup tip updated — now points to LoginScreen Settings/ override folder instead of system SDDM path",
-                "FIXED: Repo SDDM Main.qml now has multi-format wallpaper fallback (was limited to wallpaper.png only)"
-            ]
-        },
-        {
-            "version": "1.7.83",
-            "changes": [
-                "NEW: GuidePopup System tab — rotating tips with SVG lightbulb icon, glass-morphism card, fade transitions",
-                "NEW: System tab Quick Stats — live CPU%, RAM, Disk, Uptime via resource monitor",
-                "CHANGED: Rotating tips moved from About tab to System tab; About tab shows only links + version",
-                "NEW: tip_icon.svg — custom lightbulb SVG icon with gradient fills and glow dots"
-            ]
-        },
-        {
-            "version": "1.7.84",
-            "changes": [
-                "FIXED: GuidePopup tipOpacity fatal error on non-About tabs — Behavior removed from all tabs except About",
-                "FIXED: CPU stat stuck at 0% — top -bn1 command with awk syntax fix + ps fallback",
-                "FIXED: Uptime stuck at 'Loading...' — resource monitor now populates sysUptime",
-                "FIXED: Uptime format changed from 'X hours, Y minutes' to 'Xh Ym'"
-            ]
-        },
-        {
-            "version": "1.7.85",
-            "changes": [
-                "FIXED: SDDM face icon now reads /usr/share/sddm/faces/.face.icon (generic) with fallback to .face instead of per-username file",
-                "FIXED: SDDM theme Main.qml updated in repo + deployed copy with onStatusChanged Image.Error fallback chain",
-                "CHANGED: restore.sh copies face icon to /usr/share/sddm/faces/.face.icon only (no username variant)"
-            ]
-        },
-        {
-            "version": "1.7.86",
-            "changes": [
-                "CHANGED: Face icon deployed only to ~/.config/hypr/Faces/.face.icon — ~/.face.icon is now manual-only fallback",
-                "FIXED: restore.sh condition and summary still referenced username-specific face icon path",
-                "FIXED: restore.sh face icon block split into correct separate blocks for hypr vs SDDM",
-                "FIXED: install.sh no longer copies face icon to ~/.face.icon (manual fallback only)"
-            ]
-        },
-        {
-            "version": "1.7.87",
-            "changes": [
-                "NEW: SDDM login screen reads ~/.config/hypr/LoginScreen Settings/ first — drop wallpaper.png and .face.icon there to customize login screen without touching system files",
-                "FIXED: SDDM theme wallpaper and avatar now check LoginScreen Settings before SDDM system paths",
-                "CHANGED: install.sh and restore.sh deploy default wallpaper + face icon to LoginScreen Settings/",
-                "CHANGED: SDDM avatar fallback chain: LoginScreen Settings → /usr/share/sddm/faces/.face.icon → /usr/share/sddm/faces/.face",
-                "CHANGED: SDDM wallpaper fallback chain: LoginScreen Settings → theme default wallpaper.png"
-            ]
-        },
-        {
-            "version": "1.7.82",
-            "changes": [
-                "FIXED: All ~/.Wallpapers/ references removed — no fallback, no migration code left behind",
-                "CHANGED: Face icon and lockscreen wallpaper paths consolidated under ~/.config/hypr/Faces/ and ~/.config/hypr/Lockscreen Wallpaper/"
-            ]
-        },
-        {
-            "version": "1.7.81",
-            "changes": [
-                "CHANGED: Face icon and lockscreen wallpaper organized under ~/.config/hypr/ — QML and scripts read from new paths first",
-                "FIXED: .face.icon deploy now copies hidden files correctly with /./ source path instead of * glob"
-            ]
-        },
-        {
-            "version": "1.7.80",
-            "changes": [
-                "FIXED: USB sounds path in deployed usb_sound.sh was stale (pointed to sounds/ not sounds/usb/)",
-                "FIXED: .face.icon now deployed to correct location that QML actually reads"
-            ]
-        },
-        {
-            "version": "1.7.79",
-            "changes": [
-                "REMOVED: Steam removed from install.sh AUR packages — saves 1.5GB of forced downloads; users who need it install manually with 'yay -S steam'"
-            ]
-        },
-        {
-            "version": "1.7.78",
-            "changes": [
-                "CHANGED: Network sounds (connect, disconnect, error, power_on, power_off, switch) converted from WAV to MP3 — 2.1MB → 220KB, same quality",
-                "CHANGED: Network sounds organized into subfolders inside sounds/network/: connection/, power/, navigation/",
-                "CLEANUP: Old network/sounds/ WAV files cleaned up on update"
-            ]
-        },
-        {
-            "version": "1.7.77",
-            "changes": [
-                "FIXED: Old MP3 sound files from previous versions now properly cleaned up on update — removes stale duplicates from battery/, sounds/, updater/, and music/ directories"
-            ]
-        },
-        {
-            "version": "1.7.76",
-            "changes": [
-                "SECURITY: Hardened shell script input validation across audio_autoswitch.sh and usb_sound.sh — prevents potential command injection via malformed USB device descriptors",
-                "SECURITY: Patched path traversal vector in settings_watcher.sh — sanitized template variable substitution to prevent arbitrary file read"
-            ]
-        },
-        {
-            "version": "1.7.75",
-            "changes": [
-                "SECURITY: Fixed unsafe temporary file handling in install.sh and restore.sh — migrated from predictable /tmp paths to mktemp-based random directories",
-                "SECURITY: Patched potential privilege escalation in udev rule cleanup — restricted rule removal to owner-only operations"
-            ]
-        },
-        {
-            "version": "1.7.74",
-            "changes": [
-                "CRITICAL FIX: swayidle 66-min timeout used 'hyprctl dispatch dpms off' instead of 'systemctl suspend' — after-resume only fires on system resume, not on user activity after DPMS off. Result: display stayed black after unlocking, requiring force restart",
-                "CHANGED: swayidle timeout 4000 now runs 'systemctl suspend' — system actually suspends at 66 min, after-resume fires correctly on wake, display turns back on"
-            ]
-        },
-        {
-            "version": "1.7.73",
-            "changes": [
-                "CHANGED: All sound MP3s reorganized into quickshell/sounds/{battery,usb,updater,music}/ subfolders — consistent single location for all audio assets",
-                "CHANGED: Script paths updated in battery_fetch.sh, check_battery.sh, usb_sound.sh, update_notifier.sh, music_control.sh, lock.sh",
-                "CLEANUP: Old empty battery/ and music/ directories removed (scripts/QML stay in original locations)"
-            ]
-        },
-        {
-            "version": "1.7.72",
-            "changes": [
-                "FIXED: 'Imperative' text in GuideAbout replaced with 'WifeRice'"
-            ]
-        },
-        {
-            "version": "1.7.71",
-            "changes": [
-                "FIXED: Kitty no longer crashes during update — hyprctl reload now runs detached after the script exits",
-                "FIXED: USB sound MP3 files no longer silently lost — now shipped in the repo and copied every update instead of generated once by ffmpeg",
-                "FIXED: install.sh now uses systemctl --user restart for audio-autoswitch.service instead of kill $pids — prevents stale duplicate instances",
-                "FIXED: settings_watcher.sh --compile reload also detached to prevent kitty crash during updates",
-                "NEW: USB/device plug/unplug sound MP3 files now ship with the repo at Hyprland/sounds/"
-            ]
-        },
-        {
-            "version": "1.7.70",
-            "changes": [
-                "CRITICAL FIX: Ctrl+Left/Right workspace navigation never worked — keybinding was only in generated keybindings.conf but NOT in keybinds.conf.template, so it was silently wiped on every settings_watcher --compile",
-                "FIXED: Added Ctrl+Left/Right to keybinds.conf.template so it survives regeneration and actually reaches users",
-                "FIXED: USB sounds played multiple times per plug/unplug — udev fires multiple events for one physical action (USB add, block add, partition add). Added 1s dedup rate limiter back to usb_sound.sh.",
-                "CHANGED: install.sh config preservation defaults flipped — Enter now means OVERWRITE (was 'keep'). Updates actually update users' configs now. Type Y explicitly to keep old configs.",
-                "NEW: AI Rule 11 — 'When we ship an update, THE USER GETS IT'. No more 'preserve' defaults that silently skip updates."
-            ]
-        },
-        {
-            "version": "1.7.69",
-            "changes": [
-                "CRITICAL FIX: USB/device plug/unplug sounds still not playing — udev RUN → su → pw-play chain was fundamentally unreliable (PipeWire not accessible from udev context)",
-                "COMPLETELY REPLACED: Removed udev RUN rules approach entirely — USB monitoring is now built directly into audio_autoswitch.sh (same script, same service, zero new files)",
-                "SAME METHOD AS BATTERY SOUNDS: Uses udevadm monitor --property (no root) in a background fork — runs as user process with full PipeWire access, exactly like battery_fetch.sh",
-                "audio_autoswitch.sh now has a USB udev monitor alongside its pactl subscribe audio listener — no separate service or script needed",
-                "Old 99-usb-sound.rules automatically removed from /etc/udev/rules.d/ on update"
-            ]
-        },
-        {
-            "version": "1.7.68",
-            "changes": [
-                "FIXED: USB/device sounds not playing for many users — udev rules were too restrictive",
-                "FIXED: Block rule used ENV{ID_FS_USAGE}=filesystem which missed some filesystems — now uses ENV{ID_BUS}=usb for reliable USB storage detection",
-                "FIXED: USB device rule required ENV{ID_MODEL}=?* which excluded devices without a model string — now removed, matched by ID_VENDOR_ID alone",
-                "NEW: usb_sound.sh --test plays both plug and unplug chimes for manual troubleshooting",
-                "NEW: usb_sound.sh --check shows diagnostics (sound file paths, PipeWire status, boot guard state)",
-                "FIXED: udev rule install errors no longer hidden behind '2>/dev/null' — logged to INSTALL_LOG with visible warning on failure"
-            ]
-        },
-        {
-            "version": "1.7.67",
-            "changes": [
-                "FIXED: settings_watcher.sh --compile errors were silently swallowed by '2>/dev/null || true' — if monitors.conf generation failed, Hyprland fell back to default 1.5 scale with no warning",
-                "FIXED: install.sh now logs compile errors to INSTALL_LOG and shows a yellow warning instead of a green checkmark when --compile fails"
-            ]
-        },
-        {
-            "version": "1.7.66",
-            "changes": [
-                "NEW: USB/device plug/unplug notification sounds — ascending chime on plug, descending chime on unplug",
-                "NEW: udev rules for USB storage (flash drives, external HDDs) and USB devices (mice, keyboards, headsets)",
-                "NEW: Headphone/Bluetooth plug/unplug sounds via audio_autoswitch.sh integration",
-                "NEW: usb_sound.sh with rate limiting (2s cooldown) and boot-time protection (skips first 60s of enumeration)",
-                "FIXED: Safe udev exec via su with XDG_RUNTIME_DIR set for PipeWire connectivity"
-            ]
-        },
-        {
-            "version": "1.7.65",
-            "changes": [
-                "NEW: swayimg — lightweight Wayland-native image viewer with pixelation/blur censor keys",
-                "NEW: MIME associations — Thunar for folders (fixes Discord/Vencord 'Open folder' opening Gwenview), Gwenview for image editing",
-                "NEW: Ctrl+Left/Right workspace navigation — does not interfere with Super+1-10 or swipe gestures",
-                "FIXED: restore.sh version made dynamic — reads from installed state file with fallback (was stuck at v1.7.59)",
-                "FIXED: Proton VPN package removed from install.sh — package not found in AUR, fallback also failed"
-            ]
-        },
-        {
-            "version": "1.7.64",
-            "changes": [
-                "FIXED: QuickShell package conflict — replaced official repo 'quickshell' with AUR 'quickshell-git' (same QML API, avoids conflict with existing git installs)"
-            ]
-        },
-        {
-            "version": "1.7.63",
-            "changes": [
-                "FIXED: VS Code package conflict — replaced official repo 'code' with AUR 'visual-studio-code-bin' (Microsoft's official binary, preferred by users)"
-            ]
-        },
-        {
-            "version": "1.7.62",
-            "changes": [
-                "FIXED: Hyprland config error 'input:touchpad:accel_profile does not exist' — removed invalid line from touchpad sub-block",
-                "accel_profile = flat in main input{} block already applies to both mouse and touchpad",
-                "FINAL POLISH: All 64 audit issues, scale cascade, gaming settings, and font fixes complete"
-            ]
-        },
-        {
-            "version": "1.7.61",
-            "changes": [
-                "CRITICAL FIX: Scale bug regression (v1.7.50) — settings_watcher.sh cascade loop caused Hyprland scale to reset to ~1.5",
-                "FIXED: Added PID lock file to settings_watcher.sh — prevents duplicate instances from racing",
-                "FIXED: --compile mode now kills old watcher before running, breaks the hyprctl reload cascade",
-                "NEW: Disabled mouse acceleration (accel_profile = flat) for gaming — precise aiming without pointer smoothing",
-                "NEW: Disabled touchpad acceleration (touchpad accel_profile = flat)"
-            ]
-        },
-        {
-            "version": "1.7.60",
-            "changes": [
-                "FIXED: ttf-ms-win11-auto AUR package consistently fails with symlink errors (exit status 4) — replaced with ttf-liberation and ttf-dejavu",
-                "FIXED: Installation log from v1.7.59 confirmed the ttf-ms-win11-auto failure — now permanently resolved",
-                "UPDATED: install.sh fonts step now includes ttf-liberation (metric-compatible Arial/Times/Courier) and ttf-dejavu (wider Unicode)",
-                "VERSION: Bumped to v1.7.60"
-            ]
-        },
-        {
-            "version": "1.7.59",
-            "changes": [
-                "COMPREHENSIVE AUDIT FIX: All 64 issues from full code audit resolved across install.sh, shell scripts, and configs",
-                "FIXED: install.sh 12 empty steps now filled with real package installs (GPU drivers, PipeWire, yay, fonts, apps)",
-                "FIXED: set -e hardened with || true guards throughout install.sh",
-                "FIXED: sudo keepalive properly killed on EXIT trap (was orphaned)",
-                "FIXED: rsync --delete guarded against empty source (prevents QML wipe on failed clone)",
-                "FIXED: TELEMETRY_OPT_OUT renamed to TELEMETRY_ENABLED for clarity",
-                "FIXED: lock.sh division by zero + empty PID guard (was kill '' = kills all processes)",
-                "FIXED: fetch_workspaces.sh JSON injection via unquoted heredoc",
-                "FIXED: restore.sh version was hardcoded to 1.7.20, chmod glob used find instead",
-                "FIXED: Discord webhook URLs extracted from 14 scripts into shared .telemetry_config",
-                "FIXED: hypridle.conf no longer deployed (swayidle is default idle daemon)",
-                "FIXED: update_notifier.sh now handles notification clicks (opens terminal)",
-                "FIXED: volume_listener.sh locale-independent parsing (LC_MESSAGES=C)",
-                "FIXED: sudo commands guarded with timeout to prevent hangs",
-                "FIXED: theme_profiles.sh wallpaper apply uses awwww directly",
-                "FIXED: tilde → $HOME across all shell scripts",
-                "FIXED: default_settings.json uiScale made integer consistent (1 not 1.0)",
-                "UPDATED: GuidePopup.qml changelog with v1.7.59 entry",
-                "VERSION: Bumped to v1.7.59"
-            ]
-        },
-        {
-            "version": "1.7.58",
-            "changes": [
-                "FIXED: Thunar and file managers show no thumbnails — thumbnail packages (tumbler, ffmpegthumbnailer, webp-pixbuf-loader) were never actually installed by install.sh",
-                "FIXED: WebP images missing thumbnails — webp-pixbuf-loader now installed for GdkPixbuf WebP support",
-                "FIXED: RAW/EPUB thumbnails missing — libopenraw and libgepub now installed",
-                "FIXED: Stale thumbnail cache cleared on install to force fresh regeneration"
-            ]
-        },
-        {
-            "version": "1.7.57",
-            "changes": [
-                "FIXED: External NTFS hard drives (Windows USB drives, external HDDs) failed to mount in Thunar with 'wrong fs type' error",
-                "FIXED: Kernel ntfs3 driver blacklisted — ntfs-3g FUSE driver used instead (better codepage/NLS support)",
-                "FIXED: Auto-installs ntfs-3g, creates /etc/modprobe.d/blacklist-ntfs3.conf, unloads ntfs3 module immediately",
-                "FIXED: Drives now appear in Thunar → Devices sidebar automatically after install/update"
-            ]
-        },
-        {
-            "version": "1.7.56",
-            "changes": [
-                "FIXED: Guide popup changelog was stuck at v1.7.52 — v1.7.53, v1.7.54, and v1.7.55 entries were missing from the hardcoded ListModel in GuidePopup.qml",
-                "FIXED: Added 'must update GuidePopup.qml' rule to AI memory so this never happens again"
-            ]
-        },
-        {
-            "version": "1.7.55",
-            "changes": [
-                "CRITICAL FIX: settings.json still referenced hypridle — autostart.conf was regenerated with hypridle on compile, but hypridle was removed. Result: NO idle daemon running — lid close suspended without locking",
-                "FIXED: settings.json and default_settings.json now use swayidle command directly",
-                "FIXED: DOTS_VERSION bumped so users actually receive the update notification"
-            ]
-        },
-        {
-            "version": "1.7.54",
-            "changes": [
-                "FIXED: hypridle crash — replaced with swayidle (hypridle v0.1.7 segfaults with sdbus-cpp 2.3.0 ABI mismatch)",
-                "FIXED: No more polkit auth prompts on lid close — Lock.qml runs directly via WlSessionLock Wayland protocol",
-                "FIXED: lock-session → lock-sessions (plural) in hypridle.conf",
-                "CHANGED: hypridle removed — swayidle is now the default idle daemon",
-                "CHANGED: autostart.conf uses swayidle with direct quickshell Lock.qml — no loginctl or polkit involved",
-                "NEW: swayidle added to install.sh dependencies",
-                "NEW: Display auto-off after 66min idle (33min lock + 33min dpms-off)",
-                "ENHANCED: swayidle now has 2-stage timeout — lock first, display off later"
-            ]
-        },
-        {
-            "version": "1.7.53",
-            "changes": [
-                "CHANGED: All toggle buttons (Caffeine, Night Light, DND, Power Profile, Gaming, VPN) removed from TopBar — streamlined for coders",
-                "CHANGED: System Monitor button removed from left sidebar",
-                "REMOVED: Gaming Mode — entire feature removed, not designed for dev workflow",
-                "NEW: SVG Icon engine — all previous emoji icons replaced with crisp PathSvg vector icons",
-                "NEW: SvgIcon.qml — reusable component using Qt Quick Shapes PathSvg for resolution-independent icons",
-                "ENHANCED: TopBar cleaner and tighter with only essential buttons (Settings, Quick Notes, Updates, Guide, Search)"
-            ]
-        },
-        {
-            "version": "1.7.52",
-            "changes": [
-                "ADDED: Caffeine Toggle — systemd-inhibit prevents suspend, indicator in TopBar",
-                "ADDED: Night Light — wlsunset blue light filter (3500K), auto-installs if missing, TopBar toggle",
-                "ADDED: Do Not Disturb — suppress all QuickShell notifications, TopBar indicator",
-                "ADDED: Power Profile Switcher — cycle balanced/performance/power-saver via powerprofilesctl, TopBar toggle",
-                "ADDED: Gaming Mode — one-click disables compositor effects, sets performance governor, enables DND + Caffeine",
-                "ADDED: VPN Quick Manager — toggle first WireGuard VPN via NetworkManager, TopBar indicator",
-                "ADDED: Quick Notes — floating text popup saves to ~/Notes.md (Super+Shift+N, TopBar button)",
-                "ADDED: System Monitor — live CPU/RAM/disk bars with 2s polling (Super+Shift+M, TopBar button)",
-                "ADDED: Workspace Overview — visual grid of all workspaces with window lists, click to switch (Super+Shift+W)",
-                "ADDED: Theme Profiles — save/restore wallpaper + toggle states via theme_profiles.sh",
-                "ENHANCED: TopBar now has 6 new toggle buttons (right) and 2 new utility buttons (left)",
-                "ENHANCED: All new features exposed via Super+Shift+ keybinds"
-            ]
-        },
-        {
-            "version": "1.7.51",
-            "changes": [
-                "FIXED: Website/dotfiles audit — 8 misinformation/inconsistency issues resolved across both repos",
-                "FIXED: updates.json latest_version was stuck at 1.7.28 — users missed 8 critical releases (quoting crash, scale fix, settings_watcher)",
-                "FIXED: Website changelog was 8 versions behind — stopped at v1.7.42, now complete through v1.7.51",
-                "FIXED: install-dots.html and faq.html said settings.json is 'never touched' — false since v1.7.48. Now correctly documents updated-every-release policy with backup safety net",
-                "FIXED: install.sh header comment used old broken double-quote one-liner syntax",
-                "FIXED: home.html showed fake '3.8k stars' badge — replaced with dynamic shields.io badge",
-                "FIXED: All website 'Last updated' dates refreshed to 2026-05-18"
-            ]
-        },
-        {
-            "version": "1.7.50",
+    {
+      "version": "1.7.94",
       "changes": [
-        "CRITICAL FIX: hyprctl reload does NOT apply monitor scale changes — settings_watcher now runs hyprctl keyword monitor for each monitor from settings.json after reload, forcing the correct scale to take effect immediately",
+        "Fix: before_sleep_cmd no longer blocks suspend \u2014 changed from quickshell Lock.qml to loginctl lock-session (hypridle holds sleep inhibitor waiting for persistent quickshell to exit)",
+        "Fix: lock timeout listener uses loginctl lock-session instead of quickshell directly",
+        "Fix: disable XHC+RP05+RP06+RP09 wake sources for stable s2idle (immediate wake from USB/PCIe)",
+        "Lock screen: quickshell Lock.qml via lock_cmd (hypridle does NOT wait for it)"
+      ]
+    },
+    {
+      "version": "1.7.93",
+      "changes": [
+        "CRITICAL FIX: swayidle removed \u2014 replaced with hypridle-git from AUR. swayidle -w flag blocked 66min suspend (Lock.qml never exits, -w blocks subsequent timeouts)",
+        "CRITICAL FIX: hypridle.conf now ACTIVE \u2014 handles lock before sleep, idle timeout lock (33min), and idle timeout suspend (66min) via two independent listeners",
+        "CRITICAL FIX: Deep S3 (mem) broken on Lenovo laptops \u2014 immediate wake in ~2.8s. s2idle forced via mem_sleep_default=s2idle kernel parameter",
+        "FIXED: install.sh \u2014 swayidle removed from pacman install list, hypridle-git installed from AUR, hypridle.conf now deployed on install/update",
+        "FIXED: USB wake enabled on s2idle (XHC *enabled in /proc/acpi/wakeup)",
+        "FIXED: Polkit rule recreated for loginctl lock-sessions without password",
+        "CHANGED: autostart.conf, settings.json, default_settings.json \u2014 all use hypridle (not swayidle)",
+        "CHANGED: install.sh step 14 \u2014 now installs hypridle-git from AUR and removes swayidle if present"
+      ]
+    },
+    {
+      "version": "1.7.92",
+      "changes": [
+        "CHANGED: SDDM assets moved to system paths only \u2014 ~/.config/hypr/LoginScreen Settings/ removed entirely. SDDM runs as sddm user and cannot read 700 home dirs \u2014 root cause of blank login screen fixed",
+        "FIXED: SDDM wallpaper FastBlur now works \u2014 bgWallpaper visible changed from false to true so FastBlur can grab pixels",
+        "FIXED: SDDM avatar Image block collapsed one-line QML \u2014 properly formatted now",
+        "NEW: background.png fallback deployed on every install/restore \u2014 multi-format chain: wallpaper.png/jpg/jpeg/webp/bmp \u2192 background.png",
+        "CHANGED: install.sh and restore.sh \u2014 SDDM QML files deploy every update unconditionally (not gated by KEEP_WALLPAPERS or SDDM_OVERWRITE)",
+        "FIXED: Website FAQ SDDM section corrected \u2014 documents system paths, explains why home directory paths don't work with SDDM",
+        "FIXED: background.png now restored on every install even if user deleted it \u2014 always-deploy policy"
+      ]
+    },
+    {
+      "version": "1.7.91",
+      "changes": [
+        "FIXED: SDDM wallpaper and avatar paths changed from file:/// URLs to absolute paths \u2014 file:/// URLs with spaces/%20 fail on some Qt/SDDM versions; plain absolute paths work universally",
+        "FIXED: LoginScreen Settings/Wallpaper/ and faces/ re-deployed with proper files after update accidentally replaced user files"
+      ]
+    },
+    {
+      "version": "1.7.90",
+      "changes": [
+        "FIXED: User override dirs (~/.config/hypr/Faces/, LoginScreen Settings/, Lockscreen Wallpaper/) \u2014 install.sh and restore.sh never overwrite existing user files",
+        "FIXED: System SDDM dirs (/usr/share/sddm/faces/, /usr/share/sddm/themes/matugen-minimal/) \u2014 always overwritten with latest defaults",
+        "FIXED: install.sh now also deploys face icon to /usr/share/sddm/faces/ (was missing entirely)",
+        "FIXED: restore.sh SDDM theme deploy no longer skips if directory exists \u2014 always updates"
+      ]
+    },
+    {
+      "version": "1.7.89",
+      "changes": [
+        "FIXED: GuidePopup face icon cache now re-validates \u2014 if cached path no longer exists, rescans all face icon locations",
+        "FIXED: SDDM avatar fallback logic \u2014 final .face path can now actually be reached (was blocked by incorrect condition)",
+        "FIXED: install.sh and restore.sh now self-deploy to ~/.config/hypr/scripts/ during updates (were stuck at old versions)",
+        "FIXED: Deployed install.sh updated from stale v1.7.78 to v1.7.88 \u2014 LoginScreen Settings deploy, removed stale ~/.face.icon copy",
+        "FIXED: Deployed restore.sh per-username face icon (${CURRENT_USER}.face.icon) replaced with generic .face.icon in SDDM fallback chain",
+        "FIXED: SDDM Main.qml deployed copy now has corrected avatar fallback condition",
+        "FIXED: SDDM wallpaper fallback \u2014 config.background (raw relative path 'wallpaper.png') replaced with fully-qualified file:/// URL; raw spaces in LoginScreen Settings file:/// URLs percent-encoded to %20"
+      ]
+    },
+    {
+      "version": "1.7.88",
+      "changes": [
+        "CHANGED: SDDM wallpaper now supports any image format (PNG, JPG, JPEG, WEBP, BMP) in ~/.config/hypr/LoginScreen Settings/Wallpaper/",
+        "CHANGED: GuidePopup tip updated \u2014 now points to LoginScreen Settings/ override folder instead of system SDDM path",
+        "FIXED: Repo SDDM Main.qml now has multi-format wallpaper fallback (was limited to wallpaper.png only)"
+      ]
+    },
+    {
+      "version": "1.7.83",
+      "changes": [
+        "NEW: GuidePopup System tab \u2014 rotating tips with SVG lightbulb icon, glass-morphism card, fade transitions",
+        "NEW: System tab Quick Stats \u2014 live CPU%, RAM, Disk, Uptime via resource monitor",
+        "CHANGED: Rotating tips moved from About tab to System tab; About tab shows only links + version",
+        "NEW: tip_icon.svg \u2014 custom lightbulb SVG icon with gradient fills and glow dots"
+      ]
+    },
+    {
+      "version": "1.7.84",
+      "changes": [
+        "FIXED: GuidePopup tipOpacity fatal error on non-About tabs \u2014 Behavior removed from all tabs except About",
+        "FIXED: CPU stat stuck at 0% \u2014 top -bn1 command with awk syntax fix + ps fallback",
+        "FIXED: Uptime stuck at 'Loading...' \u2014 resource monitor now populates sysUptime",
+        "FIXED: Uptime format changed from 'X hours, Y minutes' to 'Xh Ym'"
+      ]
+    },
+    {
+      "version": "1.7.85",
+      "changes": [
+        "FIXED: SDDM face icon now reads /usr/share/sddm/faces/.face.icon (generic) with fallback to .face instead of per-username file",
+        "FIXED: SDDM theme Main.qml updated in repo + deployed copy with onStatusChanged Image.Error fallback chain",
+        "CHANGED: restore.sh copies face icon to /usr/share/sddm/faces/.face.icon only (no username variant)"
+      ]
+    },
+    {
+      "version": "1.7.86",
+      "changes": [
+        "CHANGED: Face icon deployed only to ~/.config/hypr/Faces/.face.icon \u2014 ~/.face.icon is now manual-only fallback",
+        "FIXED: restore.sh condition and summary still referenced username-specific face icon path",
+        "FIXED: restore.sh face icon block split into correct separate blocks for hypr vs SDDM",
+        "FIXED: install.sh no longer copies face icon to ~/.face.icon (manual fallback only)"
+      ]
+    },
+    {
+      "version": "1.7.87",
+      "changes": [
+        "NEW: SDDM login screen reads ~/.config/hypr/LoginScreen Settings/ first \u2014 drop wallpaper.png and .face.icon there to customize login screen without touching system files",
+        "FIXED: SDDM theme wallpaper and avatar now check LoginScreen Settings before SDDM system paths",
+        "CHANGED: install.sh and restore.sh deploy default wallpaper + face icon to LoginScreen Settings/",
+        "CHANGED: SDDM avatar fallback chain: LoginScreen Settings \u2192 /usr/share/sddm/faces/.face.icon \u2192 /usr/share/sddm/faces/.face",
+        "CHANGED: SDDM wallpaper fallback chain: LoginScreen Settings \u2192 theme default wallpaper.png"
+      ]
+    },
+    {
+      "version": "1.7.82",
+      "changes": [
+        "FIXED: All ~/.Wallpapers/ references removed \u2014 no fallback, no migration code left behind",
+        "CHANGED: Face icon and lockscreen wallpaper paths consolidated under ~/.config/hypr/Faces/ and ~/.config/hypr/Lockscreen Wallpaper/"
+      ]
+    },
+    {
+      "version": "1.7.81",
+      "changes": [
+        "CHANGED: Face icon and lockscreen wallpaper organized under ~/.config/hypr/ \u2014 QML and scripts read from new paths first",
+        "FIXED: .face.icon deploy now copies hidden files correctly with /./ source path instead of * glob"
+      ]
+    },
+    {
+      "version": "1.7.80",
+      "changes": [
+        "FIXED: USB sounds path in deployed usb_sound.sh was stale (pointed to sounds/ not sounds/usb/)",
+        "FIXED: .face.icon now deployed to correct location that QML actually reads"
+      ]
+    },
+    {
+      "version": "1.7.79",
+      "changes": [
+        "REMOVED: Steam removed from install.sh AUR packages \u2014 saves 1.5GB of forced downloads; users who need it install manually with 'yay -S steam'"
+      ]
+    },
+    {
+      "version": "1.7.78",
+      "changes": [
+        "CHANGED: Network sounds (connect, disconnect, error, power_on, power_off, switch) converted from WAV to MP3 \u2014 2.1MB \u2192 220KB, same quality",
+        "CHANGED: Network sounds organized into subfolders inside sounds/network/: connection/, power/, navigation/",
+        "CLEANUP: Old network/sounds/ WAV files cleaned up on update"
+      ]
+    },
+    {
+      "version": "1.7.77",
+      "changes": [
+        "FIXED: Old MP3 sound files from previous versions now properly cleaned up on update \u2014 removes stale duplicates from battery/, sounds/, updater/, and music/ directories"
+      ]
+    },
+    {
+      "version": "1.7.76",
+      "changes": [
+        "SECURITY: Hardened shell script input validation across audio_autoswitch.sh and usb_sound.sh \u2014 prevents potential command injection via malformed USB device descriptors",
+        "SECURITY: Patched path traversal vector in settings_watcher.sh \u2014 sanitized template variable substitution to prevent arbitrary file read"
+      ]
+    },
+    {
+      "version": "1.7.75",
+      "changes": [
+        "SECURITY: Fixed unsafe temporary file handling in install.sh and restore.sh \u2014 migrated from predictable /tmp paths to mktemp-based random directories",
+        "SECURITY: Patched potential privilege escalation in udev rule cleanup \u2014 restricted rule removal to owner-only operations"
+      ]
+    },
+    {
+      "version": "1.7.74",
+      "changes": [
+        "CRITICAL FIX: swayidle 66-min timeout used 'hyprctl dispatch dpms off' instead of 'systemctl suspend' \u2014 after-resume only fires on system resume, not on user activity after DPMS off. Result: display stayed black after unlocking, requiring force restart",
+        "CHANGED: swayidle timeout 4000 now runs 'systemctl suspend' \u2014 system actually suspends at 66 min, after-resume fires correctly on wake, display turns back on"
+      ]
+    },
+    {
+      "version": "1.7.73",
+      "changes": [
+        "CHANGED: All sound MP3s reorganized into quickshell/sounds/{battery,usb,updater,music}/ subfolders \u2014 consistent single location for all audio assets",
+        "CHANGED: Script paths updated in battery_fetch.sh, check_battery.sh, usb_sound.sh, update_notifier.sh, music_control.sh, lock.sh",
+        "CLEANUP: Old empty battery/ and music/ directories removed (scripts/QML stay in original locations)"
+      ]
+    },
+    {
+      "version": "1.7.72",
+      "changes": [
+        "FIXED: 'Imperative' text in GuideAbout replaced with 'WifeRice'"
+      ]
+    },
+    {
+      "version": "1.7.71",
+      "changes": [
+        "FIXED: Kitty no longer crashes during update \u2014 hyprctl reload now runs detached after the script exits",
+        "FIXED: USB sound MP3 files no longer silently lost \u2014 now shipped in the repo and copied every update instead of generated once by ffmpeg",
+        "FIXED: install.sh now uses systemctl --user restart for audio-autoswitch.service instead of kill $pids \u2014 prevents stale duplicate instances",
+        "FIXED: settings_watcher.sh --compile reload also detached to prevent kitty crash during updates",
+        "NEW: USB/device plug/unplug sound MP3 files now ship with the repo at Hyprland/sounds/"
+      ]
+    },
+    {
+      "version": "1.7.70",
+      "changes": [
+        "CRITICAL FIX: Ctrl+Left/Right workspace navigation never worked \u2014 keybinding was only in generated keybindings.conf but NOT in keybinds.conf.template, so it was silently wiped on every settings_watcher --compile",
+        "FIXED: Added Ctrl+Left/Right to keybinds.conf.template so it survives regeneration and actually reaches users",
+        "FIXED: USB sounds played multiple times per plug/unplug \u2014 udev fires multiple events for one physical action (USB add, block add, partition add). Added 1s dedup rate limiter back to usb_sound.sh.",
+        "CHANGED: install.sh config preservation defaults flipped \u2014 Enter now means OVERWRITE (was 'keep'). Updates actually update users' configs now. Type Y explicitly to keep old configs.",
+        "NEW: AI Rule 11 \u2014 'When we ship an update, THE USER GETS IT'. No more 'preserve' defaults that silently skip updates."
+      ]
+    },
+    {
+      "version": "1.7.69",
+      "changes": [
+        "CRITICAL FIX: USB/device plug/unplug sounds still not playing \u2014 udev RUN \u2192 su \u2192 pw-play chain was fundamentally unreliable (PipeWire not accessible from udev context)",
+        "COMPLETELY REPLACED: Removed udev RUN rules approach entirely \u2014 USB monitoring is now built directly into audio_autoswitch.sh (same script, same service, zero new files)",
+        "SAME METHOD AS BATTERY SOUNDS: Uses udevadm monitor --property (no root) in a background fork \u2014 runs as user process with full PipeWire access, exactly like battery_fetch.sh",
+        "audio_autoswitch.sh now has a USB udev monitor alongside its pactl subscribe audio listener \u2014 no separate service or script needed",
+        "Old 99-usb-sound.rules automatically removed from /etc/udev/rules.d/ on update"
+      ]
+    },
+    {
+      "version": "1.7.68",
+      "changes": [
+        "FIXED: USB/device sounds not playing for many users \u2014 udev rules were too restrictive",
+        "FIXED: Block rule used ENV{ID_FS_USAGE}=filesystem which missed some filesystems \u2014 now uses ENV{ID_BUS}=usb for reliable USB storage detection",
+        "FIXED: USB device rule required ENV{ID_MODEL}=?* which excluded devices without a model string \u2014 now removed, matched by ID_VENDOR_ID alone",
+        "NEW: usb_sound.sh --test plays both plug and unplug chimes for manual troubleshooting",
+        "NEW: usb_sound.sh --check shows diagnostics (sound file paths, PipeWire status, boot guard state)",
+        "FIXED: udev rule install errors no longer hidden behind '2>/dev/null' \u2014 logged to INSTALL_LOG with visible warning on failure"
+      ]
+    },
+    {
+      "version": "1.7.67",
+      "changes": [
+        "FIXED: settings_watcher.sh --compile errors were silently swallowed by '2>/dev/null || true' \u2014 if monitors.conf generation failed, Hyprland fell back to default 1.5 scale with no warning",
+        "FIXED: install.sh now logs compile errors to INSTALL_LOG and shows a yellow warning instead of a green checkmark when --compile fails"
+      ]
+    },
+    {
+      "version": "1.7.66",
+      "changes": [
+        "NEW: USB/device plug/unplug notification sounds \u2014 ascending chime on plug, descending chime on unplug",
+        "NEW: udev rules for USB storage (flash drives, external HDDs) and USB devices (mice, keyboards, headsets)",
+        "NEW: Headphone/Bluetooth plug/unplug sounds via audio_autoswitch.sh integration",
+        "NEW: usb_sound.sh with rate limiting (2s cooldown) and boot-time protection (skips first 60s of enumeration)",
+        "FIXED: Safe udev exec via su with XDG_RUNTIME_DIR set for PipeWire connectivity"
+      ]
+    },
+    {
+      "version": "1.7.65",
+      "changes": [
+        "NEW: swayimg \u2014 lightweight Wayland-native image viewer with pixelation/blur censor keys",
+        "NEW: MIME associations \u2014 Thunar for folders (fixes Discord/Vencord 'Open folder' opening Gwenview), Gwenview for image editing",
+        "NEW: Ctrl+Left/Right workspace navigation \u2014 does not interfere with Super+1-10 or swipe gestures",
+        "FIXED: restore.sh version made dynamic \u2014 reads from installed state file with fallback (was stuck at v1.7.59)",
+        "FIXED: Proton VPN package removed from install.sh \u2014 package not found in AUR, fallback also failed"
+      ]
+    },
+    {
+      "version": "1.7.64",
+      "changes": [
+        "FIXED: QuickShell package conflict \u2014 replaced official repo 'quickshell' with AUR 'quickshell-git' (same QML API, avoids conflict with existing git installs)"
+      ]
+    },
+    {
+      "version": "1.7.63",
+      "changes": [
+        "FIXED: VS Code package conflict \u2014 replaced official repo 'code' with AUR 'visual-studio-code-bin' (Microsoft's official binary, preferred by users)"
+      ]
+    },
+    {
+      "version": "1.7.62",
+      "changes": [
+        "FIXED: Hyprland config error 'input:touchpad:accel_profile does not exist' \u2014 removed invalid line from touchpad sub-block",
+        "accel_profile = flat in main input{} block already applies to both mouse and touchpad",
+        "FINAL POLISH: All 64 audit issues, scale cascade, gaming settings, and font fixes complete"
+      ]
+    },
+    {
+      "version": "1.7.61",
+      "changes": [
+        "CRITICAL FIX: Scale bug regression (v1.7.50) \u2014 settings_watcher.sh cascade loop caused Hyprland scale to reset to ~1.5",
+        "FIXED: Added PID lock file to settings_watcher.sh \u2014 prevents duplicate instances from racing",
+        "FIXED: --compile mode now kills old watcher before running, breaks the hyprctl reload cascade",
+        "NEW: Disabled mouse acceleration (accel_profile = flat) for gaming \u2014 precise aiming without pointer smoothing",
+        "NEW: Disabled touchpad acceleration (touchpad accel_profile = flat)"
+      ]
+    },
+    {
+      "version": "1.7.60",
+      "changes": [
+        "FIXED: ttf-ms-win11-auto AUR package consistently fails with symlink errors (exit status 4) \u2014 replaced with ttf-liberation and ttf-dejavu",
+        "FIXED: Installation log from v1.7.59 confirmed the ttf-ms-win11-auto failure \u2014 now permanently resolved",
+        "UPDATED: install.sh fonts step now includes ttf-liberation (metric-compatible Arial/Times/Courier) and ttf-dejavu (wider Unicode)",
+        "VERSION: Bumped to v1.7.60"
+      ]
+    },
+    {
+      "version": "1.7.59",
+      "changes": [
+        "COMPREHENSIVE AUDIT FIX: All 64 issues from full code audit resolved across install.sh, shell scripts, and configs",
+        "FIXED: install.sh 12 empty steps now filled with real package installs (GPU drivers, PipeWire, yay, fonts, apps)",
+        "FIXED: set -e hardened with || true guards throughout install.sh",
+        "FIXED: sudo keepalive properly killed on EXIT trap (was orphaned)",
+        "FIXED: rsync --delete guarded against empty source (prevents QML wipe on failed clone)",
+        "FIXED: TELEMETRY_OPT_OUT renamed to TELEMETRY_ENABLED for clarity",
+        "FIXED: lock.sh division by zero + empty PID guard (was kill '' = kills all processes)",
+        "FIXED: fetch_workspaces.sh JSON injection via unquoted heredoc",
+        "FIXED: restore.sh version was hardcoded to 1.7.20, chmod glob used find instead",
+        "FIXED: Discord webhook URLs extracted from 14 scripts into shared .telemetry_config",
+        "FIXED: hypridle.conf no longer deployed (swayidle is default idle daemon)",
+        "FIXED: update_notifier.sh now handles notification clicks (opens terminal)",
+        "FIXED: volume_listener.sh locale-independent parsing (LC_MESSAGES=C)",
+        "FIXED: sudo commands guarded with timeout to prevent hangs",
+        "FIXED: theme_profiles.sh wallpaper apply uses awwww directly",
+        "FIXED: tilde \u2192 $HOME across all shell scripts",
+        "FIXED: default_settings.json uiScale made integer consistent (1 not 1.0)",
+        "UPDATED: GuidePopup.qml changelog with v1.7.59 entry",
+        "VERSION: Bumped to v1.7.59"
+      ]
+    },
+    {
+      "version": "1.7.58",
+      "changes": [
+        "FIXED: Thunar and file managers show no thumbnails \u2014 thumbnail packages (tumbler, ffmpegthumbnailer, webp-pixbuf-loader) were never actually installed by install.sh",
+        "FIXED: WebP images missing thumbnails \u2014 webp-pixbuf-loader now installed for GdkPixbuf WebP support",
+        "FIXED: RAW/EPUB thumbnails missing \u2014 libopenraw and libgepub now installed",
+        "FIXED: Stale thumbnail cache cleared on install to force fresh regeneration"
+      ]
+    },
+    {
+      "version": "1.7.57",
+      "changes": [
+        "FIXED: External NTFS hard drives (Windows USB drives, external HDDs) failed to mount in Thunar with 'wrong fs type' error",
+        "FIXED: Kernel ntfs3 driver blacklisted \u2014 ntfs-3g FUSE driver used instead (better codepage/NLS support)",
+        "FIXED: Auto-installs ntfs-3g, creates /etc/modprobe.d/blacklist-ntfs3.conf, unloads ntfs3 module immediately",
+        "FIXED: Drives now appear in Thunar \u2192 Devices sidebar automatically after install/update"
+      ]
+    },
+    {
+      "version": "1.7.56",
+      "changes": [
+        "FIXED: Guide popup changelog was stuck at v1.7.52 \u2014 v1.7.53, v1.7.54, and v1.7.55 entries were missing from the hardcoded ListModel in GuidePopup.qml",
+        "FIXED: Added 'must update GuidePopup.qml' rule to AI memory so this never happens again"
+      ]
+    },
+    {
+      "version": "1.7.55",
+      "changes": [
+        "CRITICAL FIX: settings.json still referenced hypridle \u2014 autostart.conf was regenerated with hypridle on compile, but hypridle was removed. Result: NO idle daemon running \u2014 lid close suspended without locking",
+        "FIXED: settings.json and default_settings.json now use swayidle command directly",
+        "FIXED: DOTS_VERSION bumped so users actually receive the update notification"
+      ]
+    },
+    {
+      "version": "1.7.54",
+      "changes": [
+        "FIXED: hypridle crash \u2014 replaced with swayidle (hypridle v0.1.7 segfaults with sdbus-cpp 2.3.0 ABI mismatch)",
+        "FIXED: No more polkit auth prompts on lid close \u2014 Lock.qml runs directly via WlSessionLock Wayland protocol",
+        "FIXED: lock-session \u2192 lock-sessions (plural) in hypridle.conf",
+        "CHANGED: hypridle removed \u2014 swayidle is now the default idle daemon",
+        "CHANGED: autostart.conf uses swayidle with direct quickshell Lock.qml \u2014 no loginctl or polkit involved",
+        "NEW: swayidle added to install.sh dependencies",
+        "NEW: Display auto-off after 66min idle (33min lock + 33min dpms-off)",
+        "ENHANCED: swayidle now has 2-stage timeout \u2014 lock first, display off later"
+      ]
+    },
+    {
+      "version": "1.7.53",
+      "changes": [
+        "CHANGED: All toggle buttons (Caffeine, Night Light, DND, Power Profile, Gaming, VPN) removed from TopBar \u2014 streamlined for coders",
+        "CHANGED: System Monitor button removed from left sidebar",
+        "REMOVED: Gaming Mode \u2014 entire feature removed, not designed for dev workflow",
+        "NEW: SVG Icon engine \u2014 all previous emoji icons replaced with crisp PathSvg vector icons",
+        "NEW: SvgIcon.qml \u2014 reusable component using Qt Quick Shapes PathSvg for resolution-independent icons",
+        "ENHANCED: TopBar cleaner and tighter with only essential buttons (Settings, Quick Notes, Updates, Guide, Search)"
+      ]
+    },
+    {
+      "version": "1.7.52",
+      "changes": [
+        "ADDED: Caffeine Toggle \u2014 systemd-inhibit prevents suspend, indicator in TopBar",
+        "ADDED: Night Light \u2014 wlsunset blue light filter (3500K), auto-installs if missing, TopBar toggle",
+        "ADDED: Do Not Disturb \u2014 suppress all QuickShell notifications, TopBar indicator",
+        "ADDED: Power Profile Switcher \u2014 cycle balanced/performance/power-saver via powerprofilesctl, TopBar toggle",
+        "ADDED: Gaming Mode \u2014 one-click disables compositor effects, sets performance governor, enables DND + Caffeine",
+        "ADDED: VPN Quick Manager \u2014 toggle first WireGuard VPN via NetworkManager, TopBar indicator",
+        "ADDED: Quick Notes \u2014 floating text popup saves to ~/Notes.md (Super+Shift+N, TopBar button)",
+        "ADDED: System Monitor \u2014 live CPU/RAM/disk bars with 2s polling (Super+Shift+M, TopBar button)",
+        "ADDED: Workspace Overview \u2014 visual grid of all workspaces with window lists, click to switch (Super+Shift+W)",
+        "ADDED: Theme Profiles \u2014 save/restore wallpaper + toggle states via theme_profiles.sh",
+        "ENHANCED: TopBar now has 6 new toggle buttons (right) and 2 new utility buttons (left)",
+        "ENHANCED: All new features exposed via Super+Shift+ keybinds"
+      ]
+    },
+    {
+      "version": "1.7.51",
+      "changes": [
+        "FIXED: Website/dotfiles audit \u2014 8 misinformation/inconsistency issues resolved across both repos",
+        "FIXED: updates.json latest_version was stuck at 1.7.28 \u2014 users missed 8 critical releases (quoting crash, scale fix, settings_watcher)",
+        "FIXED: Website changelog was 8 versions behind \u2014 stopped at v1.7.42, now complete through v1.7.51",
+        "FIXED: install-dots.html and faq.html said settings.json is 'never touched' \u2014 false since v1.7.48. Now correctly documents updated-every-release policy with backup safety net",
+        "FIXED: install.sh header comment used old broken double-quote one-liner syntax",
+        "FIXED: home.html showed fake '3.8k stars' badge \u2014 replaced with dynamic shields.io badge",
+        "FIXED: All website 'Last updated' dates refreshed to 2026-05-18"
+      ]
+    },
+    {
+      "version": "1.7.50",
+      "changes": [
+        "CRITICAL FIX: hyprctl reload does NOT apply monitor scale changes \u2014 settings_watcher now runs hyprctl keyword monitor for each monitor from settings.json after reload, forcing the correct scale to take effect immediately",
         "CRITICAL FIX: Fixes the 'everything oversized' bug (Chrome, kitty, fonts, notifications too big after update)",
         "CRITICAL FIX: install.sh now also calls settings_watcher.sh --compile after scripts deploy to regenerate monitors.conf"
       ]
@@ -412,16 +421,16 @@
     {
       "version": "1.7.49",
       "changes": [
-        "CRITICAL FIX: GuidePopup.qml update buttons used double quotes for bash -c \"$(curl ...)\" — install.sh double quotes terminated the string prematurely, crashing the terminal",
+        "CRITICAL FIX: GuidePopup.qml update buttons used double quotes for bash -c \"$(curl ...)\" \u2014 install.sh double quotes terminated the string prematurely, crashing the terminal",
         "CRITICAL FIX: Changed to single quotes + eval to prevent quoting crash",
-        "CRITICAL FIX: install.sh never called settings_watcher.sh --compile after deploying settings.json — monitors.conf stayed stale, runtime scale stuck at old value",
+        "CRITICAL FIX: install.sh never called settings_watcher.sh --compile after deploying settings.json \u2014 monitors.conf stayed stale, runtime scale stuck at old value",
         "CHANGED: settings.json always overwritten with auto-detected monitor name (backup to /tmp/, validation restores backup if invalid)"
       ]
     },
     {
       "version": "1.7.48",
       "changes": [
-        "ADDED: Auto-detect monitor name on fresh install — reads first connected display from sysfs, injects real name into settings.json instead of hardcoded eDP-1",
+        "ADDED: Auto-detect monitor name on fresh install \u2014 reads first connected display from sysfs, injects real name into settings.json instead of hardcoded eDP-1",
         "ADDED: Falls back to default if detection fails or jq is missing",
         "ADDED: Final validation checks JSON is valid before deploying"
       ]
@@ -429,15 +438,15 @@
     {
       "version": "1.7.47",
       "changes": [
-        "CHANGED: settings.json was only deployed if not exists — preserving user keybinds, startup apps, and monitor config",
-        "NOTE: Reverted in v1.7.49 — settings.json now overwritten every time to push monitor/scaling fixes to all users"
+        "CHANGED: settings.json was only deployed if not exists \u2014 preserving user keybinds, startup apps, and monitor config",
+        "NOTE: Reverted in v1.7.49 \u2014 settings.json now overwritten every time to push monitor/scaling fixes to all users"
       ]
     },
     {
       "version": "1.7.46",
       "changes": [
-        "FIXED: audio_autoswitch.sh reacted to EVERY pactl event — including user-initiated default-sink changes",
-        "FIXED: USB headset → Bluetooth manual switch was overridden on any subsequent event",
+        "FIXED: audio_autoswitch.sh reacted to EVERY pactl event \u2014 including user-initiated default-sink changes",
+        "FIXED: USB headset \u2192 Bluetooth manual switch was overridden on any subsequent event",
         "CHANGED: Now only reacts to sink 'new' (device plugged) and 'remove' (device unplugged) events",
         "CHANGED: Telemetry prompt moved to beginning of install",
         "FIXED: Opting out of telemetry now also removes old scripts and timers from previous installs"
@@ -447,7 +456,7 @@
       "version": "1.7.45",
       "changes": [
         "ADDED: Telemetry opt-out prompt before script deployment",
-        "ADDED: Matugen version detection (v2 vs v3) — v3 users get a compatibility warning",
+        "ADDED: Matugen version detection (v2 vs v3) \u2014 v3 users get a compatibility warning",
         "FIXED: Telemetry was deployed unconditionally without asking user"
       ]
     },
@@ -463,46 +472,46 @@
       "version": "1.7.43",
       "changes": [
         "FIXED: audio_autoswitch.sh only matched headphone/headset/bluez/bluetooth as external audio sinks",
-        "FIXED: USB audio devices (e.g. GeneralPlus USB Audio Device) were ignored — script stayed on built-in audio",
+        "FIXED: USB audio devices (e.g. GeneralPlus USB Audio Device) were ignored \u2014 script stayed on built-in audio",
         "ADDED: 'usb' to the external device pattern so USB audio sinks are now detected and auto-switched"
       ]
     },
     {
       "version": "1.7.28",
       "changes": [
-        "ADDED: Amethyst Noir theme — always-on deep purple/indigo palette (noirBg, noirText, noirRed, noirOverlay0, noirSubtext0) across all popups",
-        "ADDED: 150% Auto-Boost — drag volume past 100% enables boost (red accent), drag below 100% disables, smooth tabColor interpolation amethyst->noirRed from 100-150%",
-        "ADDED: Position-based slider gradient — amethyst at 0-100%, smooth transition to noirRed at 100-150%",
-        "ADDED: Continuous bezier wave with Math.sin-based amplitude decay — wave amplitude smoothly reaches 0 at full volume",
-        "ADDED: Battery popup profile-based theming — performance=noirRed, balanced=amethyst, power-saver=noirOverlay0",
-        "ADDED: Battery orb — removed icon, shows percentage only (charging=󰂄, normal=󱐋)",
-        "ADDED: Audio auto-switch — headphones/Bluetooth become default on plug, revert to Built-in on unplug (audio_autoswitch.sh + systemd service)",
-        "ADDED: audio_autoswitch.service — systemd user service, auto-starts on login, restarts on failure",
-        "CHANGED: TopBar volume pill — noirBg text on peach bg, noirText on red bg, noirRed/noirRedGlow gradient when boosted",
-        "CHANGED: audio_wait.sh — timeout 2 fallback so top bar polls every 2s when wpctl changes don't trigger pactl events",
-        "FIXED: VolumePopup activeTab — declared as proper property string (was missing, broke tab switching)",
-        "REMOVED: Boost toggle button — boost is purely auto via drag threshold (no degrade animation needed)",
+        "ADDED: Amethyst Noir theme \u2014 always-on deep purple/indigo palette (noirBg, noirText, noirRed, noirOverlay0, noirSubtext0) across all popups",
+        "ADDED: 150% Auto-Boost \u2014 drag volume past 100% enables boost (red accent), drag below 100% disables, smooth tabColor interpolation amethyst->noirRed from 100-150%",
+        "ADDED: Position-based slider gradient \u2014 amethyst at 0-100%, smooth transition to noirRed at 100-150%",
+        "ADDED: Continuous bezier wave with Math.sin-based amplitude decay \u2014 wave amplitude smoothly reaches 0 at full volume",
+        "ADDED: Battery popup profile-based theming \u2014 performance=noirRed, balanced=amethyst, power-saver=noirOverlay0",
+        "ADDED: Battery orb \u2014 removed icon, shows percentage only (charging=\udb80\udc84, normal=\udb85\udc0b)",
+        "ADDED: Audio auto-switch \u2014 headphones/Bluetooth become default on plug, revert to Built-in on unplug (audio_autoswitch.sh + systemd service)",
+        "ADDED: audio_autoswitch.service \u2014 systemd user service, auto-starts on login, restarts on failure",
+        "CHANGED: TopBar volume pill \u2014 noirBg text on peach bg, noirText on red bg, noirRed/noirRedGlow gradient when boosted",
+        "CHANGED: audio_wait.sh \u2014 timeout 2 fallback so top bar polls every 2s when wpctl changes don't trigger pactl events",
+        "FIXED: VolumePopup activeTab \u2014 declared as proper property string (was missing, broke tab switching)",
+        "REMOVED: Boost toggle button \u2014 boost is purely auto via drag threshold (no degrade animation needed)",
         "REMOVED: Battery popup audio volume slider"
       ]
     },
     {
       "version": "1.7.27",
       "changes": [
-        "ADDED: QuickShell Amethyst Noir — hardcoded deep purple/indigo palette, no more wallpaper-based color changes (MatugenColors.qml rewritten)",
-        "FIXED: BatteryPopup crash on charger plug/unplug — replaced NumberAnimation driving requestPaint with crash-safe Timer + Date.now()",
-        "ADDED: 10 new BatteryPopup visual effects — liquid depth layers, shimmer band, surface foam, floating embers, pulse ripples, ring plasma sweep, audio-reactive turbulence, lava lamp blobs, charging bubbles, click ripple",
-        "ADDED: Glow pulse on battery core hover — inner halo brightens smoothly",
-        "ADDED: Drag-to-brightness on battery core — drag up/down to adjust screen brightness",
+        "ADDED: QuickShell Amethyst Noir \u2014 hardcoded deep purple/indigo palette, no more wallpaper-based color changes (MatugenColors.qml rewritten)",
+        "FIXED: BatteryPopup crash on charger plug/unplug \u2014 replaced NumberAnimation driving requestPaint with crash-safe Timer + Date.now()",
+        "ADDED: 10 new BatteryPopup visual effects \u2014 liquid depth layers, shimmer band, surface foam, floating embers, pulse ripples, ring plasma sweep, audio-reactive turbulence, lava lamp blobs, charging bubbles, click ripple",
+        "ADDED: Glow pulse on battery core hover \u2014 inner halo brightens smoothly",
+        "ADDED: Drag-to-brightness on battery core \u2014 drag up/down to adjust screen brightness",
         "ADDED: Click ripple expanding ring on battery core tap"
       ]
     },
     {
       "version": "1.7.26",
       "changes": [
-        "ADDED: Offline detection — if Discord webhook fails, button shows 'Failed - no internet' and keeps your typed message",
+        "ADDED: Offline detection \u2014 if Discord webhook fails, button shows 'Failed - no internet' and keeps your typed message",
         "ADDED: Polished Discord embed with category emojis, severity colors, ANSI system info block, and ISO timestamp",
         "FIXED: Category/Severity chips now use blue highlight when selected (were invisible before)",
-        "FIXED: Chip selection now works — properties moved to correct scope so clicks register",
+        "FIXED: Chip selection now works \u2014 properties moved to correct scope so clicks register",
         "FIXED: System info toggle collapse works in nested layouts",
         "CHANGED: report_send.sh now returns curl exit code so QML detects network failures"
       ]
@@ -516,58 +525,58 @@
     {
       "version": "1.7.24",
       "changes": [
-        "CHANGED: Lock screen music no longer plays automatically — press the play button in the bottom-left to start",
+        "CHANGED: Lock screen music no longer plays automatically \u2014 press the play button in the bottom-left to start",
         "FIXED: Lock screen music now stops when user unlocks (added pkill pw-play fallback in lock.sh)"
       ]
     },
     {
       "version": "1.7.23",
       "changes": [
-        "ADDED: update() command back in .zshrc — type 'update' in terminal to check and install the latest version",
+        "ADDED: update() command back in .zshrc \u2014 type 'update' in terminal to check and install the latest version",
         "FIXED: .zshrc now force-overwritten on every update (removed deploy-once guard) so new functions reach existing users"
       ]
     },
     {
       "version": "1.7.22",
       "changes": [
-        "CRITICAL: Fixed partial git clone silently wiping ~/.config/hypr — added key-file integrity check after clone + pre-wipe safety check for hyprland.conf in source + full backup before wipe"
+        "CRITICAL: Fixed partial git clone silently wiping ~/.config/hypr \u2014 added key-file integrity check after clone + pre-wipe safety check for hyprland.conf in source + full backup before wipe"
       ]
     },
     {
       "version": "1.7.21",
       "changes": [
-        "ADDED: Update notification sound — plays update-notification.mp3 when a new version is available"
+        "ADDED: Update notification sound \u2014 plays update-notification.mp3 when a new version is available"
       ]
     },
     {
       "version": "1.7.20",
       "changes": [
-        "ADDED: Charger plug/unplug sounds — plays charger-plug-sound.mp3 when plugged in, charger-unplug-sound.mp3 when unplugged"
+        "ADDED: Charger plug/unplug sounds \u2014 plays charger-plug-sound.mp3 when plugged in, charger-unplug-sound.mp3 when unplugged"
       ]
     },
     {
       "version": "1.7.19",
       "changes": [
-        "CRITICAL: Fixed Hyprland config wipe on update — replaced destructive Syu with safe config restore and settings.json backup"
+        "CRITICAL: Fixed Hyprland config wipe on update \u2014 replaced destructive Syu with safe config restore and settings.json backup"
       ]
     },
     {
       "version": "1.7.18",
       "changes": [
-        "FIXED: Thunar thumbnails not showing — fixed RAW/ODF/EPUB tumbler plugins, auto-clears cache on install/update"
+        "FIXED: Thunar thumbnails not showing \u2014 fixed RAW/ODF/EPUB tumbler plugins, auto-clears cache on install/update"
       ]
     },
     {
       "version": "1.7.17",
       "changes": [
-        "FIXED: Battery sounds now play reliably — battery_fetch.sh uses pw-play/paplay + nohup"
+        "FIXED: Battery sounds now play reliably \u2014 battery_fetch.sh uses pw-play/paplay + nohup"
       ]
     },
     {
       "version": "1.7.16",
       "changes": [
-        "FIXED: Lock screen (Super+L) password always rejected — quickshell PAM service 'quickshell.service.pam' had no config file, fell through to pam_deny.so",
-        "FIXED: Thunar admin:// and polkit privilege escalation not working — polkit-1 PAM config existed in /usr/lib/pam.d/ but was not linked in /etc/pam.d/",
+        "FIXED: Lock screen (Super+L) password always rejected \u2014 quickshell PAM service 'quickshell.service.pam' had no config file, fell through to pam_deny.so",
+        "FIXED: Thunar admin:// and polkit privilege escalation not working \u2014 polkit-1 PAM config existed in /usr/lib/pam.d/ but was not linked in /etc/pam.d/",
         "ADDED: Installer now creates /etc/pam.d/quickshell.service.pam and symlinks /etc/pam.d/polkit-1 on new installs and updates"
       ]
     },
@@ -586,8 +595,8 @@
     {
       "version": "1.7.13",
       "changes": [
-        "FIXED: Update checker now follows redirects (curl -sL) — GuidePopup, UpdaterPopup, and update_notifier were silently failing",
-        "REMOVED: Terminal update() function from .zshrc — updates now via Guide popup and notification tap only",
+        "FIXED: Update checker now follows redirects (curl -sL) \u2014 GuidePopup, UpdaterPopup, and update_notifier were silently failing",
+        "REMOVED: Terminal update() function from .zshrc \u2014 updates now via Guide popup and notification tap only",
         "REMOVED: 'Type update in terminal' tip from Guide popup",
         "FIXED: GuidePopup missing closing brace after removing terminal hint"
       ]
@@ -595,7 +604,7 @@
     {
       "version": "1.7.12",
       "changes": [
-        "ADDED: Lock screen audio — music plays on lock via pw-play with playlist management",
+        "ADDED: Lock screen audio \u2014 music plays on lock via pw-play with playlist management",
         "ADDED: Media controls (prev/play/next) in lock screen for playlist navigation",
         "FIXED: Volume slider now controls only pw-play stream (not system audio)",
         "FIXED: Volume starts at 50% every lock, slider syncs correctly"
@@ -604,7 +613,7 @@
     {
       "version": "1.7.11",
       "changes": [
-        "CLEANUP: Removed stale ilyamiro references — deletes old imperative-dots-version file on update"
+        "CLEANUP: Removed stale ilyamiro references \u2014 deletes old imperative-dots-version file on update"
       ]
     },
     {
@@ -624,27 +633,27 @@
     {
       "version": "1.7.8",
       "changes": [
-        "FIXED: SDDM login wallpaper preserved on reinstall — theme files update but wallpaper (any filename) is never overwritten"
+        "FIXED: SDDM login wallpaper preserved on reinstall \u2014 theme files update but wallpaper (any filename) is never overwritten"
       ]
     },
     {
       "version": "1.4.3",
       "changes": [
-        "FIXED: WiFi/Bluetooth popup not opening — removed faulty character counter",
-        "FIXED: Hero Orb volume — smooth drag, no glitching, instant mute text",
+        "FIXED: WiFi/Bluetooth popup not opening \u2014 removed faulty character counter",
+        "FIXED: Hero Orb volume \u2014 smooth drag, no glitching, instant mute text",
         "FIXED: Orb volume sensitivity and muting issues"
       ]
     },
     {
       "version": "1.4.2",
       "changes": [
-        "FIXED: Hero Orb volume control — smooth drag, no glitching, instant mute text"
+        "FIXED: Hero Orb volume control \u2014 smooth drag, no glitching, instant mute text"
       ]
     },
     {
       "version": "1.4.1",
       "changes": [
-        "FIXED: Repo cleaned — only 1 default wallpaper, no duplicate images"
+        "FIXED: Repo cleaned \u2014 only 1 default wallpaper, no duplicate images"
       ]
     },
     {
@@ -657,7 +666,7 @@
     {
       "version": "1.3.9",
       "changes": [
-        "ADDED: Hero Orb volume control — drag up/down to adjust volume, tap to mute"
+        "ADDED: Hero Orb volume control \u2014 drag up/down to adjust volume, tap to mute"
       ]
     },
     {
@@ -669,7 +678,7 @@
     {
       "version": "1.3.7",
       "changes": [
-        "REBRAND: Project renamed to Eprahemi — new ASCII art banner everywhere",
+        "REBRAND: Project renamed to Eprahemi \u2014 new ASCII art banner everywhere",
         "REBRAND: All display names updated from WaveRice to Eprahemi",
         "FIXED: SDDM login wallpaper no longer overwritten on update",
         "UPDATE: All 9 Module preview images replaced with new screenshots"
@@ -682,7 +691,7 @@
         "ADDED: Print support (cups, cups-pdf, system-config-printer, sane-airscan) enabled",
         "ADDED: Common drivers (NetworkManager, iwd, firmware, mesa-utils, vulkan-tools)",
         "FIXED: Wallpaper picker no longer slow on first open after reboot",
-        "FIXED: Thumbnail cache no longer wiped on every install — only on first install",
+        "FIXED: Thumbnail cache no longer wiped on every install \u2014 only on first install",
         "ADDED: Thumbnails pre-generated during install for all local wallpapers",
         "ADDED: Color markers pre-extracted during install (no lazy delay)"
       ]
@@ -690,8 +699,8 @@
     {
       "version": "1.3.5",
       "changes": [
-        "FIXED: Face icon no longer overwritten on update — only set default if user has none",
-        "FIXED: Wallpapers no longer overwritten on update — only copy defaults on first install",
+        "FIXED: Face icon no longer overwritten on update \u2014 only set default if user has none",
+        "FIXED: Wallpapers no longer overwritten on update \u2014 only copy defaults on first install",
         "FIXED: SDDM wallpaper only copied if user's Wallpapers folder is empty",
         "FIXED: Weather .env API key never touched by installer (already safe)",
         "FIXED: Wallpaper path uses actual device username (always dynamic)"
@@ -700,21 +709,21 @@
     {
       "version": "1.3.3",
       "changes": [
-        "FIXED: Avatar now truly circular — clip:true clips to bounding box not rounded shape. Using OpacityMask from QtGraphicalEffects instead"
+        "FIXED: Avatar now truly circular \u2014 clip:true clips to bounding box not rounded shape. Using OpacityMask from QtGraphicalEffects instead"
       ]
     },
     {
       "version": "1.3.2",
       "changes": [
         "FIXED: Wallpaper now uses real FastBlur (QtGraphicalEffects) instead of pixelation",
-        "FIXED: Avatar now circular — added implicitWidth/Height so layout allocates 150x150",
+        "FIXED: Avatar now circular \u2014 added implicitWidth/Height so layout allocates 150x150",
         "FIXED: Added qt5-graphicaleffects to installer (required for FastBlur on Qt5 SDDM)"
       ]
     },
     {
       "version": "1.3.1",
       "changes": [
-        "FIXED: Black TTY on boot — SDDM not installed at all! sddm-qt6 AUR package doesn't exist, yay -S failed silently",
+        "FIXED: Black TTY on boot \u2014 SDDM not installed at all! sddm-qt6 AUR package doesn't exist, yay -S failed silently",
         "FIXED: Install official SDDM from pacman (always works) instead of broken sddm-qt6 AUR",
         "FIXED: Main.qml now works on both Qt5 and Qt6 SDDM (no QtQuick.Effects dependency)",
         "FIXED: Avatar uses clip+radius instead of MultiEffect mask (works on Qt5)",
@@ -763,7 +772,7 @@
     {
       "version": "1.2.5",
       "changes": [
-        "FIXED: Guide About section layout completely restructured — cards, version, check button, and tip stacked vertically with proper spacing",
+        "FIXED: Guide About section layout completely restructured \u2014 cards, version, check button, and tip stacked vertically with proper spacing",
         "FIXED: Update check timeout reduced to 3 seconds (was 5)",
         "FIXED: Check for Updates button now properly centered in a ColumnLayout (was broken Layout properties)",
         "IMPROVED: Version display added above check button",
@@ -793,14 +802,14 @@
     {
       "version": "1.2.1",
       "changes": [
-        "ADDED: 'update' terminal command — type 'update' to check for new version and install",
+        "ADDED: 'update' terminal command \u2014 type 'update' to check for new version and install",
         "ADDED: Terminal hint in Guide About section below Check for Updates button"
       ]
     },
     {
       "version": "1.2.0",
       "changes": [
-        "ADDED: Check for Updates button in Guide (Super+H) → About section",
+        "ADDED: Check for Updates button in Guide (Super+H) \u2192 About section",
         "ADDED: Button shows 'You have the best updated version!' when up-to-date",
         "ADDED: Button shows 'Update Available vX.X.X' and triggers one-liner install when clicked"
       ]
@@ -835,14 +844,14 @@
       "version": "1.1.6",
       "changes": [
         "FIXED: Removed /usr/share/wallpapers copy from install.sh (was causing Permission denied error)",
-        "FIXED: Removed lock screen wallpaper copy — user only asked to replace lock.png in Wallpapers/ folder",
+        "FIXED: Removed lock screen wallpaper copy \u2014 user only asked to replace lock.png in Wallpapers/ folder",
         "FIXED: Restore.sh no longer copies to /usr/share/wallpapers/lock.png"
       ]
     },
     {
       "version": "1.1.5",
       "changes": [
-        "FIXED: Removed ALL hardcoded /home/eprahemi/ paths — now works for any username",
+        "FIXED: Removed ALL hardcoded /home/eprahemi/ paths \u2014 now works for any username",
         "FIXED: settings.json wallpaperDir was hardcoded to eprahemi, now empty (QML falls back to $HOME/Pictures/Wallpapers)",
         "FIXED: env.conf.template shader cache path now uses {{SHADER_CACHE}} placeholder",
         "FIXED: settings_watcher.sh now substitutes {{SHADER_CACHE}} with $HOME/.cache/nvidia",
@@ -855,7 +864,7 @@
     {
       "version": "1.1.4",
       "changes": [
-        "FIXED: awww wallpaper setter now installed (awww-git from AUR) — was missing, friend saw Hyprland logo",
+        "FIXED: awww wallpaper setter now installed (awww-git from AUR) \u2014 was missing, friend saw Hyprland logo",
         "FIXED: Wallpapers now actually get applied on first install"
       ]
     },
@@ -872,7 +881,7 @@
       "changes": [
         "FIXED: Replaced lock.png with Himeno Hot Face.png as default wallpaper",
         "FIXED: Wallpaper picker now clears thumbnail cache on install (no more 'no wallpaper found')",
-        "FIXED: Wallpapers now force-overwrite on re-install (cp -n → cp -f)",
+        "FIXED: Wallpapers now force-overwrite on re-install (cp -n \u2192 cp -f)",
         "FIXED: Glob pattern for wallpaper selection now handles spaces in filenames",
         "FIXED: Lock screen wallpaper now copied from any wallpaper in ~/Pictures/Wallpapers/",
         "FIXED: restore.sh updated to match new wallpaper strategy",
