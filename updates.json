@@ -7,6 +7,7 @@
       "changes": [
         "Fix: before_sleep_cmd no longer blocks suspend \u2014 changed from quickshell Lock.qml to loginctl lock-session (hypridle holds sleep inhibitor waiting for persistent quickshell to exit)",
         "Fix: lock timeout listener uses loginctl lock-session instead of quickshell directly",
+        "Change: suspend timeout reduced from 66min to ~43min (10 min after lock)",
         "Fix: disable XHC+RP05+RP06+RP09 wake sources for stable s2idle (immediate wake from USB/PCIe)",
         "Lock screen: quickshell Lock.qml via lock_cmd (hypridle does NOT wait for it)"
       ]
