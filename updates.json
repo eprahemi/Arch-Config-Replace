@@ -1,7 +1,13 @@
 {
-  "latest_version": "1.7.95",
+  "latest_version": "1.7.96",
   "videos": [],
   "changelog": [
+    {
+      "version": "1.7.96",
+      "changes": [
+        "Fix: install.sh cp -f \u2192 cp -rf for Hyprland/config/ directory (was silently failing, config/*.conf files never deployed, causing \"globbing error found no match\")"
+      ]
+    },
     {
       "version": "1.7.95",
       "changes": [

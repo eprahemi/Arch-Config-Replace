@@ -467,11 +467,11 @@ echo -e "  ${G}✓${N} settings.json deployed (overwritten)"
 
 # Keybinds
 if [[ "$KEEP_KEYBINDS" =~ ^[Nn]$ ]]; then
-    cp -f "$INSTALL_DIR/Hyprland/config" "$HYPR_TARGET/" 2>/dev/null || true
+    cp -rf "$INSTALL_DIR/Hyprland/config" "$HYPR_TARGET/" 2>/dev/null || true
     echo -e "  ${G}✓${N} Keybinds overwritten"
 else
-    if [ ! -f "$HYPR_TARGET/config" ]; then
-        cp -f "$INSTALL_DIR/Hyprland/config" "$HYPR_TARGET/" 2>/dev/null || true
+    if [ ! -d "$HYPR_TARGET/config" ]; then
+        cp -rf "$INSTALL_DIR/Hyprland/config" "$HYPR_TARGET/" 2>/dev/null || true
     fi
     echo -e "  ${Y}─${N} Keybinds preserved"
 fi
