@@ -5,7 +5,7 @@
 #  One-liner: bash -c 'eval "$(curl -fsSL https://raw.githubusercontent.com/eprahemi/WifeRice/main/install.sh)"'
 # ===========================================================================
 
-DOTS_VERSION="1.7.92"
+DOTS_VERSION="1.7.93"
 DOTS_VERSION_NAME=""
 
 set -e
@@ -328,7 +328,7 @@ echo -e "  ${G}✓${N} Qt6/SDDM/Quickshell setup complete"
 
 step_header 9 19 "Installing Bluetooth, Print, and drivers..."
 
-sudo pacman -S --noconfirm --needed libmtp mtpfs gvfs-mtp gvfs-gphoto2 android-file-transfer swayidle ntfs-3g 2>&1 | sed 's/^/  /' || true
+sudo pacman -S --noconfirm --needed libmtp mtpfs gvfs-mtp gvfs-gphoto2 android-file-transfer ntfs-3g 2>&1 | sed 's/^/  /' || true
 sudo usermod -aG adbusers "$CURRENT_USER" 2>&1 | sed 's/^/  /' || true
 
 step_header 10 19 "Setting up Flatpak..."
@@ -382,11 +382,24 @@ else
     echo -e "  ${Y}─${N} Flatpak not available — skipping"
 fi
 
-step_header 14 19 "Cleaning system..."
-# Remove hypridle if still installed — replaced by swayidle
-if pacman -Q hypridle &>/dev/null; then
-    sudo pacman -R --noconfirm hypridle 2>&1 | sed 's/^/  /' || true
-    echo -e "  ${Y}─${N} Removed deprecated hypridle package"
+step_header 14 19 "Installing hypridle-git and cleaning..."
+
+# Remove swayidle if still installed — replaced by hypridle-git
+if pacman -Q swayidle &>/dev/null; then
+    sudo pacman -R --noconfirm swayidle 2>&1 | sed 's/^/  /' || true
+    echo -e "  ${Y}─${N} Removed deprecated swayidle package"
+fi
+
+# Install hypridle-git from AUR (repo version has sdbus-c++ ABI crash with -Syu)
+if command -v yay &>/dev/null; then
+    if ! pacman -Q hypridle-git &>/dev/null; then
+        echo -e "  ${Y}─${N} Installing hypridle-git from AUR..."
+        yay -S --noconfirm --needed hypridle-git 2>&1 | sed 's/^/  /' || true
+    else
+        echo -e "  ${Y}─${N} hypridle-git already installed"
+    fi
+else
+    echo -e "  ${Y}!${N} yay not available — hypridle-git must be installed manually from AUR"
 fi
 
 step_header 15 19 "Deploying Hyprland core config..."
@@ -396,7 +409,8 @@ mkdir -p "$HYPR_TARGET/scripts"
 
 # Hyprland core config — always deploy
 cp -f "$INSTALL_DIR/Hyprland/hyprland.conf" "$HYPR_TARGET/" 2>/dev/null || true
-# hypridle.conf NOT deployed — hypridle replaced by swayidle (kept in repo for reference only)
+# hypridle.conf deployed — hypridle-git is the default idle daemon
+cp -f "$INSTALL_DIR/Hyprland/hypridle.conf" "$HYPR_TARGET/" 2>/dev/null || true
 cp -f "$INSTALL_DIR/Hyprland/colors.conf" "$HYPR_TARGET/" 2>/dev/null || true
 # settings.json — always overwritten to push latest monitor/scaling fixes to all users
 # User's current settings.json is backed up in case of emergency rollback

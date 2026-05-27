@@ -1,7 +1,20 @@
 {
-  "latest_version": "1.7.92",
+  "latest_version": "1.7.93",
   "videos": [],
   "changelog": [
+        {
+            "version": "1.7.93",
+            "changes": [
+                "CRITICAL FIX: swayidle removed — replaced with hypridle-git from AUR. swayidle -w flag blocked 66min suspend (Lock.qml never exits, -w blocks subsequent timeouts)",
+                "CRITICAL FIX: hypridle.conf now ACTIVE — handles lock before sleep, idle timeout lock (33min), and idle timeout suspend (66min) via two independent listeners",
+                "CRITICAL FIX: Deep S3 (mem) broken on Lenovo laptops — immediate wake in ~2.8s. s2idle forced via mem_sleep_default=s2idle kernel parameter",
+                "FIXED: install.sh — swayidle removed from pacman install list, hypridle-git installed from AUR, hypridle.conf now deployed on install/update",
+                "FIXED: USB wake enabled on s2idle (XHC *enabled in /proc/acpi/wakeup)",
+                "FIXED: Polkit rule recreated for loginctl lock-sessions without password",
+                "CHANGED: autostart.conf, settings.json, default_settings.json — all use hypridle (not swayidle)",
+                "CHANGED: install.sh step 14 — now installs hypridle-git from AUR and removes swayidle if present"
+            ]
+        },
         {
             "version": "1.7.92",
             "changes": [
